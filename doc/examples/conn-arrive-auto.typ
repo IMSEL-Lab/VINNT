@@ -1,7 +1,6 @@
 #import "../../src/lib.typ": *
 #set page(width: auto, height: auto, margin: 3mm)
 // @show
-// Three arrivals on one edge, spaced without picking numbers
 #draw-network(
   (
     conv(name: "a", label: "a"), conv(name: "b", label: "b"),

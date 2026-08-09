@@ -1,7 +1,6 @@
 #import "../../src/lib.typ": *
 #set page(width: auto, height: auto, margin: 3mm)
 // @show
-// Twelve identical blocks, written once
 #let block(i) = (
   custom(name: "a" + str(i), label: if i == 1 { "attn" },
          fill: rgb("#466A9F"), width: 0.25, height: 3.5, depth: 3.5,

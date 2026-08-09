@@ -1,7 +1,6 @@
 #import "../../src/lib.typ": *
 #set page(width: auto, height: auto, margin: 3mm)
 // @show
-// Named layers inside a branch are ordinary targets
 #draw-network(
   (
     conv(name: "in", label: "in"),

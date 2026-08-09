@@ -29,7 +29,6 @@
   
   conv(channels: ("3", "128"), widths: (0.2,), height: 8, depth: 8, name: "output"),
 ), connections: (
-  // Decoder skip connections (matching test_simple.py architecture)
   connection(from: "down4", to: "up1", type: "skip", mode: "air", pos: 2.5, touch-layer: true),
   connection(from: "down3", to: "up2", type: "skip", mode: "air", pos: 3.4, touch-layer: true),
   connection(from: "down2", to: "up3", type: "skip", mode: "air", pos: 4.1, touch-layer: true),

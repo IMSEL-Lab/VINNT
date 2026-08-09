@@ -1,7 +1,6 @@
 #import "../../src/lib.typ": *
 #set page(width: auto, height: auto, margin: 3mm)
 // @show
-// Layer swatches and route samples in one legend
 #draw-network(
   (
     conv(name: "a", legend: "convolution"),

@@ -16,7 +16,6 @@
   pool(height: 1.5, depth: 1.5, name: "p5"),
   conv(channels: ("4096", "4096"), widths: (1.5, 1.5), height: 1.5, depth: 1.5, label: "fc to conv", name: "fc"),
   
-  // Upsampling path
   conv(channels: ("K", "I/32"), widths: (0.3,), height: 2.5, depth: 2.5, label: "fc8 to conv", name: "s32", offset: 0.8, show-relu: false),
   deconv(channels: ("K", "I/16"), height: 3.5, depth: 3.5, name: "up1", offset: 1),
   sum(radius: 0.5, symbol: "+", name: "add1", offset: 1),

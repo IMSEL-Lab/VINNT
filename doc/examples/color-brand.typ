@@ -1,7 +1,6 @@
 #import "../../src/lib.typ": *
 #set page(width: auto, height: auto, margin: 3mm)
 // @show
-// A whole figure recoloured to one scheme
 #let garnet = rgb("#73000A")
 #let atlantic = rgb("#466A9F")
 #let honeycomb = rgb("#A49137")

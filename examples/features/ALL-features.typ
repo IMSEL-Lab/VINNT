@@ -4,16 +4,16 @@
 
 #draw-network((
     input(image: "default"),
-    conv(offset: 2), // Next layers are automatically connected with arrows
     conv(offset: 2),
-    pool(), // Pool layers are sticked to previous convolution block (by default))
-    conv(widths: (1, 1), offset: 3) // you can offset layers
+    conv(offset: 2),
+    pool(),
+    conv(widths: (1, 1), offset: 3)
 ))
 
 #draw-network((
-    convres(// Each layer type has its own color
+    convres(
       widths: (1, 2),
-      channels: (32, 64, 128), // An extra channel will be used as diagonal axis label
+      channels: (32, 64, 128),
       height: 6,
       depth: 8,
       label: "residual convolution",
@@ -21,18 +21,18 @@
       channels: ("", "text also works"),
       height: 4,
       depth: 6,
-      connection-label: "connection label", // label of the connection to the NEXT layer
+      connection-label: "connection label",
     ),conv(
       widths: (1.5, 1.5),
       height: 2,
       depth: 3,
       label: "whole block label",
-      legend: "CUSTOM NAME", // you can overwrite the default legend of predefined layers
+      legend: "CUSTOM NAME",
       offset: 4,
     ),fc(
       channels: (10,),
       height: 5,
-      depth: 0, // With no depth, the layer is drawn as a 2D rectangle
+      depth: 0,
       label: "2D layer",
       offset: 2,
     ),
@@ -51,8 +51,8 @@ show-legend: true,
   connection(from: "b", to: "d", type: "skip", mode: "flat", label: "flat mode", pos: 5),
   connection(from: "c", to: "e", type: "skip", mode: "air", label: "air mode (+touch layer instead of arrow)", pos: 5, touch-layer: true),
 ),
-palette: "cold", // There is a "warm" and a "cold" color palette.
-show-relu: true // visualize relu using darker color on convolution layers
+palette: "cold",
+show-relu: true
 )
 
 #draw-network((
@@ -68,7 +68,7 @@ show-relu: true // visualize relu using darker color on convolution layers
     fill: rgb("#FF6B6B"),
     opacity: 0.9,
     offset: 1.7,
-    image: [hi] // Add any content (image, text etc.)
+    image: [hi]
   ),custom(
     widths: (0.3, 0.4, 0.3), height: 5, depth: 5,
     label: "custom color+bandfill", 
@@ -80,6 +80,5 @@ show-relu: true // visualize relu using darker color on convolution layers
   ),
 ),
 show-legend: true,
-legend-title: "My new layers" // You can also change the legend title
+legend-title: "My new layers"
 )
-

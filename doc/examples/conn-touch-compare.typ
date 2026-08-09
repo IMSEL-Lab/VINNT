@@ -8,9 +8,7 @@
     concat(name: "cat", label: "concat", depth: 5),
   ),
   connections: (
-    // on the axis arrow in front of the target
     connection(from: "a", to: "cat"),
-    // on the target block itself
     connection(from: "b", to: "cat", touch-layer: true),
   ),
 )

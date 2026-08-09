@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 # Regenerate golden baseline images for the regression harness.
-#
-# Run this only when a rendering change is intentional and has been inspected.
-# Pass example paths to re-bless a subset:
-#   tests/bless.sh                                  # all examples
-#   tests/bless.sh examples/networks/U-Net.typ      # one example
 set -euo pipefail
 
 cd "$(dirname "$0")/.."

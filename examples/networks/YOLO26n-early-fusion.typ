@@ -2,11 +2,6 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// YOLO26-n with early (pixel-level) RGB-IR fusion. Both inputs arrive as
-// (3, 640, 640); a concat stacks them to six channels and a pointwise
-// convolution mixes them back down to three. From P1 onward the figure is the
-// stock YOLO26-n.
-
 #let fusion-color = rgb("#73000A")
 #let sppf-color = rgb("#466A9F")
 #let lateral-color = rgb("#466A9F")
@@ -18,7 +13,6 @@
 #let lbl = (label-orient: "diagonal")
 
 #draw-network((
-  // ---- Early fusion: two sensors, one tensor ----
   branch(spread: 13, lead: 2.5, branches: (
     (input(image: "default", shape: (3, 640, 640), label: "RGB", channels: (3, 640), name: "rgb", label-orient: "horizontal"),),
     (input(image: image("bird-ir.jpg"), shape: (3, 640, 640), label: "IR ×3", channels: (3, 640), name: "ir", label-orient: "horizontal"),),
@@ -27,7 +21,6 @@
   custom(shape: (3, 640, 640), label: "1×1 mix", channels: (3, 640),
     fill: fusion-color, opacity: 0.9, legend: "Early fusion (1×1 mix)", name: "mix", offset: auto, ..lbl),
 
-  // ---- Backbone ----
   conv(shape: (16, 320, 320), label: "P1/2", channels: (16, 320), name: "p1", offset: auto, ..lbl),
   conv(shape: (32, 160, 160), label: "P2/4", channels: (32, 160), name: "p2", offset: auto, ..lbl),
   convres(shape: (64, 160, 160), label: "C3k2", channels: (64, 160), name: "c2", offset: auto, ..lbl),
@@ -46,7 +39,6 @@
   custom(shape: (256, 20, 20), label: "C2PSA", channels: (256, 20),
     fill: attn-color, opacity: 0.9, legend: "C2PSA (attention)", name: "p5", offset: auto, ..lbl),
 
-  // ---- Top-down (FPN) ----
   unpool(shape: (256, 40, 40), label: "upsample", name: "u4", offset: auto, label-orient: "horizontal", label-dx: 0.55),
   concat(shape: (384, 40, 40), name: "cat4", label: "concat", offset: auto, ..lbl),
   convres(shape: (128, 40, 40), label: "C3k2", channels: (128, 40), name: "n4", offset: auto, ..lbl),
@@ -55,7 +47,6 @@
   concat(shape: (192, 80, 80), name: "cat3", label: "concat", offset: auto, ..lbl),
   convres(shape: (64, 80, 80), label: "C3k2", channels: (64, 80), name: "n3", offset: auto, ..lbl),
 
-  // ---- Bottom-up (PAN) ----
   conv(shape: (64, 40, 40), label: "down", channels: (64, 40), name: "d4", offset: auto, ..lbl),
   concat(shape: (192, 40, 40), name: "cat4b", label: "concat", offset: auto, label-dx: 0.5, ..lbl),
   convres(shape: (128, 40, 40), label: "C3k2", channels: (128, 40), name: "n4b", offset: auto, ..lbl),
@@ -64,7 +55,6 @@
   concat(shape: (384, 20, 20), name: "cat5", label: "concat", offset: auto, label-dx: 0.45, ..lbl),
   convres(shape: (256, 20, 20), label: "C3k2", channels: (256, 20), name: "n5", offset: auto, ..lbl),
 
-  // ---- Head ----
   branch(spread: 7, lead: 3.0, rejoin-lead: 4.6, spread-mode: "depth", branches: (
     (custom(width: 0.5, height: 2.6, depth: 1.4, label: "Detect P3", channels: (256, 80),
       fill: head-color, opacity: 0.9, show-relu: false, legend: "Detect (NMS-free)", name: "hp3", label-orient: "horizontal"),),

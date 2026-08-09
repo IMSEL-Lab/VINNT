@@ -1,7 +1,6 @@
 #import "../../src/lib.typ": *
 #set page(width: auto, height: auto, margin: 3mm)
 // @show
-// A whole small classifier, using nothing but types and labels
 #draw-network(
   (
     input(image: "default", label: "image", channels: (3, 224)),

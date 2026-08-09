@@ -10,8 +10,6 @@
 #set text(size: 10pt, lang: "en", hyphenate: true)
 #set par(justify: true, leading: 0.62em)
 #show raw: set text(font: "DejaVu Sans Mono")
-// Inline code is unbreakable, so at body size a long identifier such as
-// `connection-label` overhangs the measure. A touch smaller keeps it inside.
 #show raw.where(block: false): set text(size: 0.88em)
 #show link: set text(fill: atlantic)
 
@@ -98,10 +96,10 @@ Every example in this manual assumes an import like that one. Import
 
 #snippet(```typ
 #draw-network(
-  layers,            // an array: the only positional argument
-  connections: (),   // routes between named layers
-  groups: (),        // labelled brackets under named layers
-  ...                // figure-wide settings, chapter 14
+  layers,
+  connections: (),
+  groups: (),
+  ...
 )
 ```)
 
@@ -385,8 +383,8 @@ meant:
 Two helpers are exported for figures that do compute their own geometry:
 
 #snippet(```typ
-depth-shear(6)       // 1.8 -- how far a depth-6 block leans right
-min-clear-offset(6)  // 3.6 -- smallest gap a connection can descend into
+depth-shear(6)
+min-clear-offset(6)
 ```)
 
 A connection descending between two blocks arrives at the midpoint of the arrow

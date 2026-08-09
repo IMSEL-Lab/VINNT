@@ -15,7 +15,7 @@
     fill: rgb("#FF6B6B"),
     opacity: 0.9,
     offset: 1.7,
-    image: [hi] // Add any content (image, text etc.)
+    image: [hi]
   ),custom(
     widths: (0.3, 0.4, 0.3), height: 5, depth: 5,
     label: "custom color+bandfill", 
@@ -27,5 +27,5 @@
   ),
 ),
 show-legend: true,
-legend-title: "My new layers" // You can also change the legend title
+legend-title: "My new layers"
 )

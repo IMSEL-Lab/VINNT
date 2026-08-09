@@ -2,14 +2,6 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// ViT-B/16, imported from the pretrained torchvision checkpoint.
-//
-//   uv run tools/import_model.py --torchvision vit_b_16 --weights DEFAULT \
-//       --group-depth 3 -o vit_b_16.json
-//
-// `by-op` separates attention from the MLP projections by the module class
-// they came from.
-
 #let data = json("vit_b_16.json")
 
 #let attn-color = rgb("#1F414D")
@@ -26,8 +18,6 @@
     ),
   ),
   groups: groups-from-shapes(data).map(g => group(
-    // The importer names each block by its module path; the bracket only needs
-    // the index at the end of it.
     from: g.from, to: g.to, label: g.label.split("_").last(),
   )),
   show-legend: true,
