@@ -16,7 +16,7 @@ kind that open a paper's method section. Built on
 [CeTZ](https://typst.app/universe/package/cetz/).
 
 ```typ
-#import "@preview/vinnt:0.1.0": *
+#import "@preview/vinnt:0.1.1": *
 ```
 
 Requires Typst 0.15 or newer. Not yet on Typst Universe so you will have to point the

@@ -39,7 +39,7 @@
   #v(1.4cm)
   #block(width: 80%, image("build/types-overview.pdf", width: 100%))
   #v(1.4cm)
-  #text(size: 10pt)[Version 0.1.0 · J.C. Vaught]
+  #text(size: 10pt)[Version 0.1.1 · J.C. Vaught]
   #v(4pt)
   #text(size: 9pt, fill: grey-70)[Every figure in this manual is compiled from the code printed beside it.]
 ]
@@ -79,7 +79,7 @@ files than quoted as fragments.
 == Installing
 
 #snippet(```typ
-#import "@preview/vinnt:0.1.0": draw-network, conv, pool, input
+#import "@preview/vinnt:0.1.1": draw-network, conv, pool, input
 ```)
 
 Every example in this manual assumes an import like that one. Import
