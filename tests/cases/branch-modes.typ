@@ -2,16 +2,11 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Branch spread modes. vertical (default) stacks branches above and below the
-// trunk with right-angled fan-out and rejoin; depth stacks them along the
-// projection axis with parallel spines. Both centre on the trunk.
-
 #let blk(lbl, h: 2.4, d: 1.4) = conv(widths: (0.4,), height: h, depth: d, label: lbl, offset: 1.3,
 )
 #let inp = input(height: 3, depth: 3, label: "in", show-connection: true)
 #let out = concat(height: 3, depth: 3, label: "out", offset: 1.6)
 
-// ---- vertical, two branches: one above, one below, trunk line empty ----
 #draw-network((
   inp,
   branch(spread: 6, branches: ((blk("a"),), (blk("b"),))),
@@ -20,7 +15,6 @@
 
 #v(8mm)
 
-// ---- vertical, three branches: middle sits on the trunk line ----
 #draw-network((
   inp,
   branch(spread: 9, branches: ((blk("a"),), (blk("b"),), (blk("c"),))),
@@ -29,7 +23,6 @@
 
 #v(8mm)
 
-// ---- depth, two branches: one away, one near, trunk line empty ----
 #draw-network((
   inp,
   branch(spread: 5, spread-mode: "depth", branches: ((blk("a"),), (blk("b"),))),
@@ -38,7 +31,6 @@
 
 #v(8mm)
 
-// ---- depth, three branches: middle on the trunk line, spines split both ways ----
 #draw-network((
   inp,
   branch(spread: 7, spread-mode: "depth", branches: ((blk("a"),), (blk("b"),), (blk("c"),))),
@@ -47,7 +39,6 @@
 
 #v(8mm)
 
-// ---- depth, four branches: two away, two near ----
 #draw-network((
   inp,
   branch(spread: 10, spread-mode: "depth",
@@ -57,9 +48,6 @@
 
 #v(8mm)
 
-// ---- mixed sizes: the teeth land on each block's own arrow anchor, so blocks
-// of different heights and depths join correctly rather than sharing one row
-// geometry. The rejoin waits for the widest block's sheared edge. ----
 #draw-network((
   inp,
   branch(spread: 8, spread-mode: "depth", branches: (
@@ -72,7 +60,6 @@
 
 #v(8mm)
 
-// ---- unequal lengths, depth mode: the rejoin spine waits for the longest ----
 #draw-network((
   inp,
   branch(spread: 5, spread-mode: "depth", branches: (
@@ -84,12 +71,6 @@
 
 #v(8mm)
 
-// ---- open ends: a branch need not close both sides into the trunk ----
-//
-// A branch with nothing before it is open at the start by definition: the
-// branches simply begin, which is how a multi-input network starts. open: "end"
-// leaves the other side loose instead, so one trunk fans out into independent
-// outputs and nothing merges.
 #draw-network((
   inp,
   blk("shared"),
@@ -101,7 +82,6 @@
 
 #v(8mm)
 
-// Both at once: two inputs converge, one trunk, two outputs.
 #draw-network((
   branch(spread: 6, branches: (
     (input(height: 2.6, depth: 2.6, label: "sensor a", show-connection: true),),

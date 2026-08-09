@@ -2,14 +2,6 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// depth-shear and min-clear-offset. A layer's far face leans right by
-// depth * depth-multiplier. Both figures below are identical except for the
-// offset before the last layer.
-
-// Compared with a tolerance, not for equality: the default multiplier of 0.3
-// has no exact binary representation, so depth-shear(4.5) is 1.3499999999999999
-// rather than 1.35. Rounding inside the library would be worse than living with
-// this, since the value feeds coordinates rather than being shown to anyone.
 #let approx(a, b) = calc.abs(a - b) < 1e-9
 
 #assert(approx(depth-shear(4.5), 1.35), message: "depth-shear(4.5) should be 1.35")
@@ -25,11 +17,8 @@
   connection(from: "src", to: "b", type: "skip", mode: "air", pos: 2),
 ))
 
-// offset equal to the shear: the descent lands inside layer a's sheared top
-// face and is drawn across it.
 #fig(depth-shear(6))
 
 #v(8mm)
 
-// offset at the computed minimum: the descent clears the shear.
 #fig(min-clear-offset(6))

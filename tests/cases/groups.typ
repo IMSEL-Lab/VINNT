@@ -2,14 +2,10 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Group brackets: square, spanning the drawn footprint including the
-// isometric shear.
-
 #let layer(n, h) = conv(widths: (0.4,), height: h, depth: h,
   name: "l" + str(n), label: "l" + str(n), offset: 1.2,
 )
 
-// The ordinary case: two groups over two layers each.
 #draw-network(
   (layer(1, 3), layer(2, 3), layer(3, 2), layer(4, 2)),
   groups: (
@@ -20,11 +16,6 @@
 
 #v(9mm)
 
-// Edge cases in one figure:
-//   l1        a group spanning a single layer
-//   l2 - l3   adjacent to the next group, so the two must not run together
-//   l4 - l5   ditto
-//   l1 - l5   an outer group enclosing all of them, on its own row
 #draw-network(
   (layer(1, 3), layer(2, 3), layer(3, 3), layer(4, 2), layer(5, 2)),
   groups: (

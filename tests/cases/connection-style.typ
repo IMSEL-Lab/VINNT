@@ -2,11 +2,6 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Per-connection stroke styling: color, dash, thickness (multiplies the
-// palette width) and legend (drawn as a line sample). All four skips have
-// identical geometry, so any difference is the style. Arrowheads take the
-// line colour.
-
 #let garnet = rgb("#73000A")
 #let atlantic = rgb("#466A9F")
 

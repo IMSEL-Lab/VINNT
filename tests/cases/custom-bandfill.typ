@@ -2,14 +2,6 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// A custom layer shows an activation band only when it has one to show.
-// Network-level show-relu is on for all three layers.
-//
-// Expected:
-//   1. no bandfill declared, inherits show-relu   -> flat, no band
-//   2. bandfill declared                          -> banded in #FFE66D
-//   3. no bandfill but explicit show-relu: true   -> banded in the palette default
-
 #draw-network((
   custom(
     widths: (0.3, 0.3), height: 4, depth: 4,

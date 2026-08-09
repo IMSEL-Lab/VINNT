@@ -2,15 +2,8 @@
 
 #set page(width: auto, height: auto, margin: 4mm)
 
-// A sum node as a connection endpoint: its anchors sit on the flat circle,
-// with no depth-lean.
-//
-// Expected in both rows: one arrowhead per gap, the coloured route leaving from
-// the trunk line just behind the head, and the bracket ending at the circle.
-
 #let blk(n, l) = conv(widths: (0.4,), height: 3, depth: 2, label: l, offset: 1.8, name: n)
 
-// Departing the sum, and arriving at it.
 #draw-network((
   input(height: 3, depth: 2, label: "in", show-connection: true, name: "i"),
   sum(label: "sum", radius: 0.42, name: "s", offset: 1.6),
@@ -24,7 +17,6 @@
 
 #v(8mm)
 
-// The same, with the sum immediately after a branch rejoin.
 #draw-network((
   branch(spread: 6, branches: (
     (input(height: 3, depth: 2, label: "a", show-connection: true),),
