@@ -11,7 +11,7 @@
 // reader does not need to see on every page; everything after the `// @show`
 // marker is what gets printed.
 
-#import "../src/schema.typ": layer-keys, connection-keys, group-keys
+#import "../src/keys.typ": layer-keys, connection-keys, group-keys
 
 // House palette.
 #let garnet = rgb("#73000A")
