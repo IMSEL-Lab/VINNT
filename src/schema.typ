@@ -1,15 +1,4 @@
-// Option tables, input validation and layer constructors.
-//
-// A dictionary API has one characteristic failure: a key the drawing code does
-// not read is silently ignored. `hieght: 4` does not fail, it draws a figure
-// that is merely wrong, so the package looks broken rather than the typo
-// looking like a typo. The tables below say which options each layer type
-// actually understands, `check-layers` turns anything else into an error, and
-// the constructors at the bottom are built from the same tables so the two
-// cannot disagree about what `conv` accepts.
-
-// Options every drawn layer understands. `sum` and `branch` are not drawn as
-// prisms and have their own sets, further down.
+// Options every drawn layer understands; `sum` and `branch` have their own sets below.
 #let layer-common-keys = (
   "type", "name", "label", "legend", "offset", "shape", "repeat",
   "height", "depth", "channels", "fill", "opacity", "image",
@@ -17,9 +6,7 @@
   "label-orient", "label-dx", "label-dy", "label-anchor", "label-angle",
 )
 
-// What each type adds. A block's thickness means channel count only for the
-// three types that take `widths`; the rest have a fixed thickness that says
-// something else, which is why `width` is not universal.
+// What each type adds on top of the common set.
 #let layer-extra-keys = (
   input: ("width", "input-style"),
   conv: ("widths", "bandfill", "show-relu", "xlabel", "ylabel", "zlabel"),
@@ -40,16 +27,14 @@
 #let layer-keys = {
   let m = (:)
   for (ty, extra) in layer-extra-keys { m.insert(ty, layer-common-keys + extra) }
-  // A node rather than a block: it has a radius and a symbol instead of a
-  // width, a depth that only affects how far routes clear it, and no shape.
+  // A node, not a block: radius and symbol instead of a width, and no shape.
   m.insert("sum", (
     "type", "name", "label", "legend", "offset", "height", "depth", "channels",
     "fill", "opacity", "radius", "symbol", "stroke",
     "show-connection", "connection-label",
     "label-orient", "label-dx", "label-dy", "label-anchor", "label-angle",
   ))
-  // A container: it draws no block of its own, so none of the block options
-  // apply to it. They apply to the layers inside its branches.
+  // A container: it draws no block of its own, so no block options apply.
   m.insert("branch", (
     "type", "name", "branches", "spread", "spread-mode", "lead", "rejoin-lead", "open",
   ))
@@ -63,8 +48,7 @@
 
 #let group-keys = ("from", "to", "label", "offset", "color")
 
-// Levenshtein distance, so an unknown key can be reported alongside the key it
-// was probably meant to be. Two short strings, so the quadratic fill is fine.
+// Levenshtein distance, used to suggest the key an unknown one was probably meant to be.
 #let edit-distance(a, b) = {
   let a = a.clusters()
   let b = b.clusters()
@@ -80,9 +64,7 @@
   prev.last()
 }
 
-// The nearest candidate, when it is near enough to be worth naming. The
-// threshold grows with the key's length so that a long name tolerates two
-// slips while a three-letter one does not get matched to something unrelated.
+// The nearest candidate, when it is near enough to be worth naming.
 #let did-you-mean(key, candidates) = {
   if type(key) != str { return "" }
   let best = none
@@ -133,9 +115,7 @@
   check-keys("layer", "on " + where + " (type \"" + ty + "\")", l, layer-keys.at(ty))
 }
 
-// Every name declared anywhere in the layer tree, branches included, so that a
-// connection or group naming a layer that does not exist is an error rather
-// than a route that quietly fails to be drawn.
+// Every name declared anywhere in the layer tree, branches included.
 #let collect-names(layers) = {
   let names = ()
   for l in layers {
@@ -230,22 +210,7 @@
   }
 }
 
-// ---------------------------------------------------------------------------
-// Constructors
-//
-// `conv(shape: (64, 160, 160), label: "P2")` rather than
-// `(type: "conv", shape: (64, 160, 160), label: "P2")`. The dictionary form
-// still works everywhere and is validated identically; the constructors exist
-// because a named parameter is checked by Typst before this package sees it,
-// and because the signature of each one is the list of options that type
-// accepts, which is a reference an editor can show you while you type.
-//
-// A layer distinguishes an absent option from one set to `none`: an absent
-// `bandfill` derives a band colour from the layer's fill, and an absent
-// `offset` on a pool attaches it to the block in front of it. So the
-// constructors default every parameter to a private sentinel and drop the ones
-// still holding it, rather than passing `none` through.
-
+// Constructors. A private sentinel, so an absent option stays absent rather than becoming `none`.
 #let unset = (vinnt-unset: true)
 
 #let mk(ty, args) = {
@@ -481,9 +446,6 @@
   lead: lead, rejoin-lead: rejoin-lead, open: open,
 ))
 
-// Connections and groups get the same treatment, for the same reason: a
-// misspelled `colour` on a connection is otherwise a route that comes out the
-// default colour with nothing to say why.
 #let connection(
   from: unset, to: unset, type: unset, mode: unset, pos: unset, clearance: unset,
   label: unset, legend: unset, color: unset, dash: unset, thickness: unset,
