@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.1.1
+
+### Breaking
+
+- Plain dictionaries are no longer accepted as layers, connections or groups.
+  Every layer is written with its constructor, so `(type: "conv", label: "a")`
+  becomes `conv(label: "a")`, and connections and groups are written as
+  `connection(from: .., to: ..)` and `group(from: .., to: ..)`. A dictionary in
+  any of those positions is now an error naming the constructor to use. A
+  dictionary of options still spreads into a constructor as `conv(..opts)`,
+  which is the intended form for generated figures.
+
+### Internal
+
+- `src/lib.typ` is split into focused modules (keys, validate, ctor, theme,
+  geom, primitives, layers, routing, legend, import, draw), with `lib.typ` as
+  a thin re-export. The public surface and every rendered figure are unchanged;
+  the golden-image suite is pixel-identical against 0.1.0.
+
 ## 0.1.0
 
 First release. Layered neural network architectures drawn as isometric block
