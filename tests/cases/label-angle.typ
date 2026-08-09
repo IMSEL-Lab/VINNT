@@ -2,7 +2,7 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Tier 1.2 -- label-angle.
+// label-angle.
 //
 // Shifting labels apart only buys so much room; past a certain density the
 // labels simply do not fit side by side at any vertical offset. Rotating them

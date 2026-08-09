@@ -2,7 +2,7 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Tier 3.11 -- shape.
+// shape.
 //
 // A layer may state its tensor shape as (channels, height, width) and have its
 // geometry derived, rather than being sized by eye.

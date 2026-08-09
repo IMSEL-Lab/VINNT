@@ -2,7 +2,7 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Tier 1.2 -- label-orient.
+// label-orient.
 //
 // The three orientations anyone actually reaches for, each paired with the
 // anchor that places it correctly against its layer. Nothing here sets

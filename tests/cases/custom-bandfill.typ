@@ -2,7 +2,7 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Tier 1.1 -- a custom layer must show an activation band only when it has one
+// A custom layer must show an activation band only when it has one
 // to show. All three layers below are identical except for how they relate to
 // the band, and the network-level show-relu is on for all of them.
 //

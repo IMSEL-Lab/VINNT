@@ -2,7 +2,7 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Tier 2.7 -- group brackets.
+// Group brackets.
 //
 // Backbone, neck and head are the phrases anyone uses out loud to explain one of
 // these figures, and there was no way to draw them.

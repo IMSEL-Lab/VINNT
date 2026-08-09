@@ -3,8 +3,8 @@
 
 Recompiles every bundled example against the working tree and pixel-diffs the
 result against its baseline in tests/golden/. A clean run is the operational
-definition of backward compatibility: any new feature must default to v0.3
-behavior, so an unexplained diff is a regression.
+definition of backward compatibility: any new feature must default to the
+existing behavior, so an unexplained diff is a regression.
 
 Usage:
     python3 tests/regress.py                 # check every example
@@ -28,7 +28,7 @@ CURRENT = ROOT / "tests" / "current"
 
 def examples(selectors):
     # The bundled gallery guards backward compatibility; tests/cases holds the
-    # small single-variable figures that pin each new v0.4 feature.
+    # small single-variable figures that each pin one feature.
     found = sorted(ROOT.glob("examples/*/*.typ")) + sorted(ROOT.glob("tests/cases/*.typ"))
     if selectors:
         found = [p for p in found if p.stem in selectors]

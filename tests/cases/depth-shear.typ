@@ -2,7 +2,7 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Tier 1.3 -- depth-shear and min-clear-offset.
+// depth-shear and min-clear-offset.
 //
 // Layers are drawn in isometric projection, so a layer's far face leans right
 // by depth * depth-multiplier. The visual gap between two adjacent layers is

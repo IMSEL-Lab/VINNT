@@ -2,7 +2,7 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Tier 2.10 (partial) -- pos: auto.
+// pos: auto.
 //
 // pos is measured from the centre axis, so a value that clears the blocks has
 // to be worked out from the layer dimensions, and every route needs its own

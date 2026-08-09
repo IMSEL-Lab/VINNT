@@ -2,7 +2,7 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Tier 1.2 -- label-anchor and label-dx.
+// label-anchor and label-dx.
 //
 // label-anchor chooses which edge of the text box is pinned to the label
 // position, so a label can be hung off to one side instead of centred. Combined

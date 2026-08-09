@@ -2,7 +2,7 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Tier 2.8 -- repeat: N.
+// repeat: N.
 //
 // repeat: N means N identical copies of the block in series, each feeding the
 // next. It describes one layer entry, not a run of them: (conv, pool) repeated

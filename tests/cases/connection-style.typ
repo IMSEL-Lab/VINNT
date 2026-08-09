@@ -2,7 +2,7 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Tier 2.5 -- per-connection stroke styling.
+// Per-connection stroke styling.
 //
 // All four skips below have identical geometry: same span, same mode, same pos,
 // shifted along the axis. Matching the routing is what isolates styling from

@@ -2,7 +2,7 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Tier 3.9 -- arrive-offset.
+// arrive-offset.
 //
 // touch-layer lands a route on the target layer itself rather than on the axis
 // in front of it, choosing a side from the routing mode: air arrives on the top

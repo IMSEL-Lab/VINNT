@@ -2,7 +2,7 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Tier 4.13 -- parallel branches.
+// Parallel branches.
 //
 // draw-network advances one cursor along one axis, so anything genuinely
 // parallel had to be collapsed into a single block with arrows pointed at it.

@@ -2,7 +2,7 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Tier 1.2 -- label-dy.
+// label-dy.
 //
 // Layer labels are placed at a fixed spot beneath each block with no awareness
 // of their neighbours, so long labels on tightly spaced layers overlap. Before
