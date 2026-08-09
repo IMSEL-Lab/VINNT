@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network, from-shapes, groups-from-shapes
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 
@@ -39,7 +39,7 @@
       Linear: (legend: "MLP projection"),
     ),
   ),
-  groups: groups-from-shapes(data).map(g => (
+  groups: groups-from-shapes(data).map(g => group(
     // The importer names each block by its module path; the bracket only needs
     // the index at the end of it.
     from: g.from, to: g.to, label: g.label.split("_").last(),

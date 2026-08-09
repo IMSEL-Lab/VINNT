@@ -10,8 +10,8 @@
     concat(name: "cat", label: "concat", depth: 5, height: 5),
   ),
   connections: (
-    (from: "a", to: "cat", mode: "air", ..t),
-    (from: "b", to: "cat", mode: "flat", ..t),
-    (from: "c", to: "cat", mode: "depth", ..t),
+    connection(from: "a", to: "cat", mode: "air", ..t),
+    connection(from: "b", to: "cat", mode: "flat", ..t),
+    connection(from: "c", to: "cat", mode: "depth", ..t),
   ),
 )

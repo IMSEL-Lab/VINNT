@@ -7,7 +7,7 @@
     concat(name: "cat", label: "concat", depth: 6),
   ),
   connections: (
-    (from: "a", to: "cat", touch-layer: true, arrive-offset: -0.6),
-    (from: "b", to: "cat", touch-layer: true, arrive-offset: 0.6),
+    connection(from: "a", to: "cat", touch-layer: true, arrive-offset: -0.6),
+    connection(from: "b", to: "cat", touch-layer: true, arrive-offset: 0.6),
   ),
 )

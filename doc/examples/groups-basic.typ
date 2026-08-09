@@ -7,7 +7,7 @@
     conv(name: "d1"), conv(name: "d2"),
   ),
   groups: (
-    (from: "e1", to: "e2", label: "Encoder"),
-    (from: "d1", to: "d2", label: "Decoder"),
+    group(from: "e1", to: "e2", label: "Encoder"),
+    group(from: "d1", to: "d2", label: "Decoder"),
   ),
 )

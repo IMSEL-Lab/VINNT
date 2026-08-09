@@ -7,5 +7,5 @@
     conv(name: "b", label: "b"),
     conv(name: "c", label: "c"),
   ),
-  connections: ((from: "a", to: "c"),),
+  connections: (connection(from: "a", to: "c"),),
 )

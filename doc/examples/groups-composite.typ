@@ -10,8 +10,8 @@
     conv(name: "h1", label: "head", shape: (64, 40, 40)),
   ),
   groups: (
-    (from: "s1", to: "s3", label: "Backbone"),
-    (from: "n1", to: "n1", label: "Neck"),
-    (from: "h1", to: "h1", label: "Head"),
+    group(from: "s1", to: "s3", label: "Backbone"),
+    group(from: "n1", to: "n1", label: "Neck"),
+    group(from: "h1", to: "h1", label: "Head"),
   ),
 )

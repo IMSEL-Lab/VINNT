@@ -18,8 +18,8 @@
     softmax(name: "s", label: "softmax"),
   ),
   groups: (
-    (from: "c1", to: "c3", label: "Feature extractor"),
-    (from: "g", to: "s", label: "Classifier"),
+    group(from: "c1", to: "c3", label: "Feature extractor"),
+    group(from: "g", to: "s", label: "Classifier"),
   ),
   show-legend: true,
   show-relu: true,

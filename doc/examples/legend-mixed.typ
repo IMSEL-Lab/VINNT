@@ -9,8 +9,8 @@
     conv(name: "c"),
   ),
   connections: (
-    (from: "a", to: "c", color: rgb("#73000A"), legend: "shortcut"),
-    (from: "b", to: "c", color: rgb("#466A9F"), dash: "dashed",
+    connection(from: "a", to: "c", color: rgb("#73000A"), legend: "shortcut"),
+    connection(from: "b", to: "c", color: rgb("#466A9F"), dash: "dashed",
      legend: "auxiliary"),
   ),
   show-legend: true,

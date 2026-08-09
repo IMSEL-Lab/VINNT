@@ -7,8 +7,8 @@
     conv(name: "c"), conv(name: "d"),
   ),
   connections: (
-    (from: "a", to: "d"),
-    (from: "b", to: "c"),
+    connection(from: "a", to: "d"),
+    connection(from: "b", to: "c"),
   ),
   lane-unit: 2.0,
 )

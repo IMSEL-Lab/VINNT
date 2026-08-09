@@ -15,6 +15,6 @@
   (custom(name: "in", label: "tokens", width: 0.2,
           height: 3.5, depth: 3.5),)
     + range(1, 7).map(block).flatten(),
-  groups: ((from: "a1", to: "m6", label: "6 encoder blocks"),),
+  groups: (group(from: "a1", to: "m6", label: "6 encoder blocks"),),
   show-legend: true,
 )

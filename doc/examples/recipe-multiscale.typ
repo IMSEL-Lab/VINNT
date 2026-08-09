@@ -13,5 +13,5 @@
         (conv(name: "h5", label: "head P5", shape: (64, 10, 10)),),
       )),
   ),
-  groups: ((from: "p3", to: "p5", label: "Backbone"),),
+  groups: (group(from: "p3", to: "p5", label: "Backbone"),),
 )

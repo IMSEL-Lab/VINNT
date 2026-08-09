@@ -12,9 +12,9 @@
     concat(name: "cat", label: "concat"),
   ),
   connections: (
-    (from: "in", to: "cat", mode: "flat",
+    connection(from: "in", to: "cat", mode: "flat",
      color: rgb("#73000A"), legend: "bypass"),
   ),
-  groups: ((from: "a", to: "b", label: "parallel paths"),),
+  groups: (group(from: "a", to: "b", label: "parallel paths"),),
   show-legend: true,
 )

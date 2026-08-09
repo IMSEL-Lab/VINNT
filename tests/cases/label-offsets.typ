@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 
@@ -13,9 +13,9 @@
 // the middle layer of the second row.
 
 #let row(mid) = (
-  (type: "conv", widths: (0.3,), height: 3, depth: 3, label: "convolution"),
-  (type: "conv", widths: (0.3,), height: 3, depth: 3, label: "downsample", offset: 0.58, ..mid),
-  (type: "conv", widths: (0.3,), height: 3, depth: 3, label: "projection", offset: 0.58),
+  conv(widths: (0.3,), height: 3, depth: 3, label: "convolution"),
+  conv(widths: (0.3,), height: 3, depth: 3, label: "downsample", offset: 0.58, ..mid),
+  conv(widths: (0.3,), height: 3, depth: 3, label: "projection", offset: 0.58),
 )
 
 // Collides: three labels compete for the same band of space.

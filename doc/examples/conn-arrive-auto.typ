@@ -9,8 +9,8 @@
     concat(name: "cat", label: "concat", depth: 6),
   ),
   connections: (
-    (from: "a", to: "cat", touch-layer: true),
-    (from: "b", to: "cat", touch-layer: true),
-    (from: "c", to: "cat", touch-layer: true),
+    connection(from: "a", to: "cat", touch-layer: true),
+    connection(from: "b", to: "cat", touch-layer: true),
+    connection(from: "c", to: "cat", touch-layer: true),
   ),
 )

@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 
@@ -12,9 +12,9 @@
 // facing edges and pushes them clear of the middle one.
 
 #let row(a, b, c) = (
-  (type: "conv", widths: (0.3,), height: 3, depth: 3, label: "convolution", ..a),
-  (type: "conv", widths: (0.3,), height: 3, depth: 3, label: "downsample", offset: 0.4, ..b),
-  (type: "conv", widths: (0.3,), height: 3, depth: 3, label: "projection", offset: 0.4, ..c),
+  conv(widths: (0.3,), height: 3, depth: 3, label: "convolution", ..a),
+  conv(widths: (0.3,), height: 3, depth: 3, label: "downsample", offset: 0.4, ..b),
+  conv(widths: (0.3,), height: 3, depth: 3, label: "projection", offset: 0.4, ..c),
 )
 
 // Centred on each layer, the default.

@@ -4,7 +4,7 @@
 #draw-network(
   (conv(name: "a"), conv(name: "b"), conv(name: "c"), conv(name: "d")),
   groups: (
-    (from: "a", to: "b", label: "backbone", color: rgb("#73000A")),
-    (from: "c", to: "d", label: "head", color: rgb("#466A9F")),
+    group(from: "a", to: "b", label: "backbone", color: rgb("#73000A")),
+    group(from: "c", to: "d", label: "head", color: rgb("#466A9F")),
   ),
 )

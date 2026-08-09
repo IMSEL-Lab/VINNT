@@ -9,8 +9,8 @@
   ),
   connections: (
     // on the axis arrow in front of the target
-    (from: "a", to: "cat"),
+    connection(from: "a", to: "cat"),
     // on the target block itself
-    (from: "b", to: "cat", touch-layer: true),
+    connection(from: "b", to: "cat", touch-layer: true),
   ),
 )

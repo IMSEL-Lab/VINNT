@@ -8,6 +8,6 @@
     conv(name: "c", label: "c"),
   ),
   // names are how connections and groups find a layer
-  connections: ((from: "a", to: "c"),),
-  groups: ((from: "a", to: "b", label: "pair"),),
+  connections: (connection(from: "a", to: "c"),),
+  groups: (group(from: "a", to: "b", label: "pair"),),
 )

@@ -13,14 +13,14 @@
     conv(name: "out", label: "out", shape: (128, 28, 28)),
   ),
   connections: (
-    (from: "in", to: "a1", color: rgb("#466A9F"),
+    connection(from: "in", to: "a1", color: rgb("#466A9F"),
      legend: "identity"),
-    (from: "a1", to: "a2", color: rgb("#73000A"), dash: "dashed",
+    connection(from: "a1", to: "a2", color: rgb("#73000A"), dash: "dashed",
      legend: "projected"),
   ),
   groups: (
-    (from: "b1", to: "a1", label: "stage 1"),
-    (from: "b2", to: "a2", label: "stage 2"),
+    group(from: "b1", to: "a1", label: "stage 1"),
+    group(from: "b2", to: "a2", label: "stage 2"),
   ),
   show-legend: true,
 )

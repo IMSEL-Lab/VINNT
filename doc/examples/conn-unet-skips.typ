@@ -11,7 +11,7 @@
     deconv(name: "d2", label: "d2", height: 6, depth: 6),
   ),
   connections: (
-    (from: "e2", to: "d3", touch-layer: true),
-    (from: "e1", to: "d2", touch-layer: true),
+    connection(from: "e2", to: "d3", touch-layer: true),
+    connection(from: "e1", to: "d2", touch-layer: true),
   ),
 )

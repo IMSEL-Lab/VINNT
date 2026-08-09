@@ -10,9 +10,9 @@
     conv(name: "out", label: "out", widths: (0.3,)),
   ),
   connections: (
-    (from: "in", to: "add", color: rgb("#466A9F"),
+    connection(from: "in", to: "add", color: rgb("#466A9F"),
      legend: "identity shortcut"),
   ),
-  groups: ((from: "c1", to: "add", label: "residual block"),),
+  groups: (group(from: "c1", to: "add", label: "residual block"),),
   show-legend: true,
 )

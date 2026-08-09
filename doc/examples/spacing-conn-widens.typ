@@ -8,5 +8,5 @@
     conv(name: "b", label: "b", depth: 6),
     conv(name: "c", label: "c", depth: 6),
   ),
-  connections: ((from: "a", to: "c"),),
+  connections: (connection(from: "a", to: "c"),),
 )

@@ -8,8 +8,8 @@
     conv(name: "d"), conv(name: "e"),
   ),
   connections: (
-    (from: "a", to: "e"),
-    (from: "b", to: "d"),
-    (from: "c", to: "d"),
+    connection(from: "a", to: "e"),
+    connection(from: "b", to: "d"),
+    connection(from: "c", to: "d"),
   ),
 )

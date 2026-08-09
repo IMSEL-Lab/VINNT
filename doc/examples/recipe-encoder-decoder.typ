@@ -14,14 +14,14 @@
     conv(name: "out", label: "out", shape: (1, 128, 128)),
   ),
   connections: (
-    (from: "e2", to: "d3", touch-layer: true,
+    connection(from: "e2", to: "d3", touch-layer: true,
      color: rgb("#466A9F"), legend: "skip"),
-    (from: "e1", to: "d2", touch-layer: true,
+    connection(from: "e1", to: "d2", touch-layer: true,
      color: rgb("#466A9F")),
   ),
   groups: (
-    (from: "e1", to: "e3", label: "Encoder"),
-    (from: "d3", to: "out", label: "Decoder"),
+    group(from: "e1", to: "e3", label: "Encoder"),
+    group(from: "d3", to: "out", label: "Decoder"),
   ),
   show-legend: true,
 )

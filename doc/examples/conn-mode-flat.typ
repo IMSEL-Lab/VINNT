@@ -3,5 +3,5 @@
 // @show
 #draw-network(
   (conv(name: "a"), conv(), conv(name: "c")),
-  connections: ((from: "a", to: "c", mode: "flat"),),
+  connections: (connection(from: "a", to: "c", mode: "flat"),),
 )

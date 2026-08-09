@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network, depth-shear, min-clear-offset
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 
@@ -23,11 +23,11 @@
 #assert(approx(min-clear-offset(6), 3.6), message: "min-clear-offset is twice the shear")
 
 #let fig(off) = draw-network((
-  (type: "conv", widths: (0.3,), height: 4, depth: 6, label: "source", name: "src"),
-  (type: "conv", widths: (0.3,), height: 4, depth: 6, label: "a", offset: 3, name: "a"),
-  (type: "conv", widths: (0.3,), height: 4, depth: 6, label: "b", offset: off, name: "b"),
+  conv(widths: (0.3,), height: 4, depth: 6, label: "source", name: "src"),
+  conv(widths: (0.3,), height: 4, depth: 6, label: "a", offset: 3, name: "a"),
+  conv(widths: (0.3,), height: 4, depth: 6, label: "b", offset: off, name: "b"),
 ), connections: (
-  (from: "src", to: "b", type: "skip", mode: "air", pos: 2),
+  connection(from: "src", to: "b", type: "skip", mode: "air", pos: 2),
 ))
 
 // offset equal to the shear: the descent lands inside layer a's sheared top

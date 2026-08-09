@@ -9,6 +9,15 @@
 // Smallest offset that lets a connection descend between two layers without crossing them.
 #let min-clear-offset(depth, depth-multiplier: 0.3) = 2 * depth-shear(depth, depth-multiplier: depth-multiplier)
 
+// The constructor for each importable layer type, so imported dumps go
+// through the same argument checking as hand-written layers.
+#let layer-ctors = (
+  input: input, conv: conv, convres: convres, deconv: deconv,
+  pool: pool, unpool: unpool, concat: concat, gap: gap, fc: fc,
+  softmax: softmax, convsoftmax: convsoftmax, output: output,
+  custom: custom, sum: sum,
+)
+
 // Turn an imported model dump into a layer list; `label` picks "leaf", "path", "op", "shape" or none.
 #let from-shapes(
   data,
@@ -37,8 +46,15 @@
       }
     }
 
+    let ty = r.at("type")
+    if type(ty) != str or ty not in layer-ctors {
+      panic(
+        "vinnt: imported layer " + repr(r.at("name")) + " has type " + repr(ty)
+          + ", which no constructor matches. Importable types: "
+          + layer-ctors.keys().sorted().join(", ") + "."
+      )
+    }
     let l = (
-      type: r.at("type"),
       name: r.at("name"),
       offset: auto,
     )
@@ -52,7 +68,7 @@
       l.insert("channels", (shape.at(0),))
     }
 
-    if l.type in ("conv", "convres", "custom") {
+    if ty in ("conv", "convres", "custom") {
       l.insert("show-relu", r.at("relu", default: false))
     }
     let n = r.at("repeat", default: 1)
@@ -61,7 +77,7 @@
     for (k, v) in defaults { l.insert(k, v) }
     for (k, v) in by-op.at(r.at("op", default: ""), default: (:)) { l.insert(k, v) }
     for (k, v) in overrides.at(r.at("name"), default: (:)) { l.insert(k, v) }
-    l
+    layer-ctors.at(ty)(..l)
   })
 }
 
@@ -77,7 +93,7 @@
       runs.push((label: g, from: r.at("name"), to: r.at("name")))
     }
   }
-  runs.map(g => (from: g.from, to: g.to, label: g.label) + rest.named())
+  runs.map(g => group(from: g.from, to: g.to, label: g.label, ..rest.named()))
 }
 
 #let draw-network(

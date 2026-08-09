@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network, from-shapes, groups-from-shapes
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 

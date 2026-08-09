@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 4mm)
 
@@ -13,9 +13,9 @@
 // is in tests/cases/sum-node-custom.typ.
 
 #draw-network((
-  (type: "input", label: "input", height: 3, depth: 3, show-connection: true),
-  (type: "sum", label: "add", offset: 1.2),
-  (type: "output", label: "output", height: 3, offset: 1.2),
+  input(label: "input", height: 3, depth: 3, show-connection: true),
+  sum(label: "add", offset: 1.2),
+  output(label: "output", height: 3, offset: 1.2),
 ),
 show-legend: true,
 )

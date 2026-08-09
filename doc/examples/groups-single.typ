@@ -4,5 +4,5 @@
 // from and to may be the same layer
 #draw-network(
   (conv(name: "a"), conv(name: "b"), conv(name: "c")),
-  groups: ((from: "b", to: "b", label: "just this one"),),
+  groups: (group(from: "b", to: "b", label: "just this one"),),
 )

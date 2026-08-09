@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 
@@ -19,12 +19,11 @@
 // the edge into k + 1 intervals and sit at the interior boundaries, ordered by
 // where each route starts so the fan does not cross itself.
 
-#let src(n) = (
-  type: "conv", widths: (0.3,), height: 2.5, depth: 2.5,
+#let src(n) = conv(widths: (0.3,), height: 2.5, depth: 2.5,
   name: "s" + str(n), label: "s" + str(n), offset: 1.1,
 )
 
-#let cat = (type: "concat", height: 3.2, depth: 3.2, name: "cat", label: "concat", offset: 2.6)
+#let cat = concat(height: 3.2, depth: 3.2, name: "cat", label: "concat", offset: 2.6)
 
 // Three routes fanning onto the top edge, spaced by hand. flat and depth
 // arrivals use the same offset-along-the-edge code with a different edge chosen
@@ -32,9 +31,9 @@
 #draw-network(
   (src(1), src(2), src(3), cat),
   connections: (
-    (from: "s1", to: "cat", touch-layer: true, pos: auto, arrive-offset: -0.35),
-    (from: "s2", to: "cat", touch-layer: true, pos: auto, arrive-offset: 0),
-    (from: "s3", to: "cat", touch-layer: true, pos: auto, arrive-offset: 0.35),
+    connection(from: "s1", to: "cat", touch-layer: true, pos: auto, arrive-offset: -0.35),
+    connection(from: "s2", to: "cat", touch-layer: true, pos: auto, arrive-offset: 0),
+    connection(from: "s3", to: "cat", touch-layer: true, pos: auto, arrive-offset: 0.35),
   ),
 )
 
@@ -45,9 +44,9 @@
 #draw-network(
   (src(1), src(2), src(3), cat),
   connections: (
-    (from: "s1", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
-    (from: "s2", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
-    (from: "s3", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
+    connection(from: "s1", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
+    connection(from: "s2", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
+    connection(from: "s3", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
   ),
 )
 
@@ -58,10 +57,10 @@
 #draw-network(
   (src(1), src(2), src(3), src(4), src(5), cat),
   connections: (
-    (from: "s1", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
-    (from: "s2", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
-    (from: "s3", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
-    (from: "s4", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
-    (from: "s5", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
+    connection(from: "s1", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
+    connection(from: "s2", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
+    connection(from: "s3", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
+    connection(from: "s4", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
+    connection(from: "s5", to: "cat", touch-layer: true, pos: auto, arrive-offset: auto),
   ),
 )

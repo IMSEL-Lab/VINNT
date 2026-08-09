@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 
@@ -19,16 +19,15 @@
 // itself; an even count leaves the trunk line empty, so no block sits directly
 // on the main path.
 
-#let blk(lbl, h: 2.4, d: 1.4) = (
-  type: "conv", widths: (0.4,), height: h, depth: d, label: lbl, offset: 1.3,
+#let blk(lbl, h: 2.4, d: 1.4) = conv(widths: (0.4,), height: h, depth: d, label: lbl, offset: 1.3,
 )
-#let inp = (type: "input", height: 3, depth: 3, label: "in", show-connection: true)
-#let out = (type: "concat", height: 3, depth: 3, label: "out", offset: 1.6)
+#let inp = input(height: 3, depth: 3, label: "in", show-connection: true)
+#let out = concat(height: 3, depth: 3, label: "out", offset: 1.6)
 
 // ---- vertical, two branches: one above, one below, trunk line empty ----
 #draw-network((
   inp,
-  (type: "branch", spread: 6, branches: ((blk("a"),), (blk("b"),))),
+  branch(spread: 6, branches: ((blk("a"),), (blk("b"),))),
   out,
 ))
 
@@ -37,7 +36,7 @@
 // ---- vertical, three branches: middle sits on the trunk line ----
 #draw-network((
   inp,
-  (type: "branch", spread: 9, branches: ((blk("a"),), (blk("b"),), (blk("c"),))),
+  branch(spread: 9, branches: ((blk("a"),), (blk("b"),), (blk("c"),))),
   out,
 ))
 
@@ -46,7 +45,7 @@
 // ---- depth, two branches: one away, one near, trunk line empty ----
 #draw-network((
   inp,
-  (type: "branch", spread: 5, spread-mode: "depth", branches: ((blk("a"),), (blk("b"),))),
+  branch(spread: 5, spread-mode: "depth", branches: ((blk("a"),), (blk("b"),))),
   out,
 ))
 
@@ -55,7 +54,7 @@
 // ---- depth, three branches: middle on the trunk line, spines split both ways ----
 #draw-network((
   inp,
-  (type: "branch", spread: 7, spread-mode: "depth", branches: ((blk("a"),), (blk("b"),), (blk("c"),))),
+  branch(spread: 7, spread-mode: "depth", branches: ((blk("a"),), (blk("b"),), (blk("c"),))),
   out,
 ))
 
@@ -64,7 +63,7 @@
 // ---- depth, four branches: two away, two near ----
 #draw-network((
   inp,
-  (type: "branch", spread: 10, spread-mode: "depth",
+  branch(spread: 10, spread-mode: "depth",
     branches: ((blk("a"),), (blk("b"),), (blk("c"),), (blk("d"),))),
   out,
 ))
@@ -76,7 +75,7 @@
 // geometry. The rejoin waits for the widest block's sheared edge. ----
 #draw-network((
   inp,
-  (type: "branch", spread: 8, spread-mode: "depth", branches: (
+  branch(spread: 8, spread-mode: "depth", branches: (
     (blk("tall", h: 4.2, d: 1.0),),
     (blk("wide", h: 1.6, d: 3.2),),
     (blk("small", h: 1.2, d: 0.8),),
@@ -89,7 +88,7 @@
 // ---- unequal lengths, depth mode: the rejoin spine waits for the longest ----
 #draw-network((
   inp,
-  (type: "branch", spread: 5, spread-mode: "depth", branches: (
+  branch(spread: 5, spread-mode: "depth", branches: (
     (blk("a1"), blk("a2"), blk("a3")),
     (blk("b1"),),
   )),
@@ -107,9 +106,9 @@
 #draw-network((
   inp,
   blk("shared"),
-  (type: "branch", spread: 6, open: "end", branches: (
-    (blk("task a"), (type: "output", label: "out a", height: 2, depth: 0.3, offset: 1.2)),
-    (blk("task b"), (type: "output", label: "out b", height: 2, depth: 0.3, offset: 1.2)),
+  branch(spread: 6, open: "end", branches: (
+    (blk("task a"), output(label: "out a", height: 2, depth: 0.3, offset: 1.2)),
+    (blk("task b"), output(label: "out b", height: 2, depth: 0.3, offset: 1.2)),
   )),
 ))
 
@@ -117,13 +116,13 @@
 
 // Both at once: two inputs converge, one trunk, two outputs.
 #draw-network((
-  (type: "branch", spread: 6, branches: (
-    ((type: "input", height: 2.6, depth: 2.6, label: "sensor a", show-connection: true),),
-    ((type: "input", height: 2.6, depth: 2.6, label: "sensor b", show-connection: true),),
+  branch(spread: 6, branches: (
+    (input(height: 2.6, depth: 2.6, label: "sensor a", show-connection: true),),
+    (input(height: 2.6, depth: 2.6, label: "sensor b", show-connection: true),),
   )),
-  (type: "concat", height: 2.8, depth: 2.8, label: "fuse", offset: 1.6),
+  concat(height: 2.8, depth: 2.8, label: "fuse", offset: 1.6),
   blk("shared"),
-  (type: "branch", spread: 6, open: "end", branches: (
+  branch(spread: 6, open: "end", branches: (
     (blk("boxes"),),
     (blk("classes"),),
   )),

@@ -110,23 +110,17 @@ connection or a group, or one of those figure-wide settings.
 
 = Writing a layer
 
-A layer is a dictionary with a `type` and whatever options you want:
-
-#ex("basics-dict", fig-width: 88%)
-
-Every type also has a constructor, which is the same thing with the `type`
-filled in:
+A layer is a constructor call. Every type has one, named after it, and its
+arguments are the options:
 
 #ex("basics-ctor", fig-width: 88%)
 
-Those two produce identical figures, and they mix freely in one list:
-
-#ex("basics-mixed", fig-width: 88%)
-
-Prefer the constructor form. Its signature is exactly the set of options that
-type accepts, so an editor can list them while you type, and Typst rejects a
-misspelled argument by name before the package ever sees it. The dictionary form
-stays supported everywhere, including inside `branches`.
+A constructor's signature is exactly the set of options that type accepts, so
+an editor can list them while you type, and Typst rejects a misspelled argument
+by name before the package ever sees it. A plain dictionary in the layer list
+is an error rather than a second way to write the same thing, so every figure
+reads the same. When options arrive as a dictionary anyway --- shared settings,
+an imported dump --- spread it into the constructor: `conv(..opts)`.
 
 == Options that do not exist are errors
 
@@ -162,8 +156,8 @@ connection or group naming a layer that has no such `name`.
 
 == The list is just an array
 
-Nothing requires you to write layers out one by one. A layer is a dictionary and
-the list is an array, so ordinary Typst builds both. Sharing options across
+Nothing requires you to write layers out one by one. The list is an array and a
+constructor is a function, so ordinary Typst builds both. Sharing options across
 several layers is a spread:
 
 #ex-wide("basics-shared", fig-width: 74%)
@@ -600,7 +594,7 @@ It takes bands and an activation band exactly as a convolution does:
 
 == Building a vocabulary
 
-A `custom` layer with its options fixed is a function returning a dictionary, so
+A `custom` layer with its options fixed is a function returning a layer, so
 your own block types are a few lines. This is the intended way to draw something
 the package has no name for --- attention, a gate, a state-space block --- rather
 than repurposing a type that means something else to a reader.
@@ -1041,8 +1035,8 @@ rather than in the figure:
 #ex-wide("recipe-programmatic", fig-width: 100%, fig-height: 7.5cm)
 
 This is the general answer to any figure that is getting long. The layer list is
-an array and a layer is a dictionary; anything Typst can do to those, you can do
-to a figure.
+an array and a constructor is a function; anything Typst can do to those, you
+can do to a figure.
 
 = Every option
 
@@ -1118,8 +1112,9 @@ Every message the package raises, and what causes it.
   Not one of the fourteen. See section 16.1.
 ]
 
-#opt("layer N has no `type`")[
-  Every layer dictionary states one. Constructors fill it in for you.
+#opt("layer N is a plain dictionary")[
+  Every layer comes from a constructor. Write `(type: "conv", ..)` as
+  `conv(..)`; a dictionary of options spreads into it as `conv(..opts)`.
 ]
 
 #opt("connection N refers to \"X\", which is not the `name` of any layer")[

@@ -7,7 +7,7 @@
     conv(name: "c"), conv(name: "d"),
   ),
   connections: (
-    (from: "a", to: "c", color: rgb("#73000A"), thickness: 2),
-    (from: "b", to: "d", color: rgb("#466A9F"), dash: "dashed"),
+    connection(from: "a", to: "c", color: rgb("#73000A"), thickness: 2),
+    connection(from: "b", to: "d", color: rgb("#466A9F"), dash: "dashed"),
   ),
 )

@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 
@@ -26,15 +26,15 @@
 #let garnet = rgb("#73000A")
 #let atlantic = rgb("#466A9F")
 
-#let layer(n) = (type: "conv", widths: (0.3,), height: 2.5, depth: 2.5, name: "l" + str(n), offset: 1.0)
+#let layer(n) = conv(widths: (0.3,), height: 2.5, depth: 2.5, name: "l" + str(n), offset: 1.0)
 
 #draw-network(
   range(1, 10).map(layer),
   connections: (
-    (from: "l1", to: "l3", type: "skip", pos: 2.2, label: "default", legend: "plain skip"),
-    (from: "l3", to: "l5", type: "skip", pos: 2.2, label: "dashed", dash: "dashed", legend: "auxiliary"),
-    (from: "l5", to: "l7", type: "skip", pos: 2.2, label: "colour", color: garnet, legend: "residual add"),
-    (from: "l7", to: "l9", type: "skip", pos: 2.2, label: "thick + dotted",
+    connection(from: "l1", to: "l3", type: "skip", pos: 2.2, label: "default", legend: "plain skip"),
+    connection(from: "l3", to: "l5", type: "skip", pos: 2.2, label: "dashed", dash: "dashed", legend: "auxiliary"),
+    connection(from: "l5", to: "l7", type: "skip", pos: 2.2, label: "colour", color: garnet, legend: "residual add"),
+    connection(from: "l7", to: "l9", type: "skip", pos: 2.2, label: "thick + dotted",
       color: atlantic, dash: "dotted", thickness: 2, legend: "attention route"),
   ),
   show-legend: true,

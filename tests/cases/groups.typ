@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 
@@ -12,8 +12,7 @@
 // of the front face by the isometric shear, so a bracket sits under the whole
 // block rather than under its front face only.
 
-#let layer(n, h) = (
-  type: "conv", widths: (0.4,), height: h, depth: h,
+#let layer(n, h) = conv(widths: (0.4,), height: h, depth: h,
   name: "l" + str(n), label: "l" + str(n), offset: 1.2,
 )
 
@@ -21,8 +20,8 @@
 #draw-network(
   (layer(1, 3), layer(2, 3), layer(3, 2), layer(4, 2)),
   groups: (
-    (from: "l1", to: "l2", label: "encoder"),
-    (from: "l3", to: "l4", label: "decoder"),
+    group(from: "l1", to: "l2", label: "encoder"),
+    group(from: "l3", to: "l4", label: "decoder"),
   ),
 )
 
@@ -36,9 +35,9 @@
 #draw-network(
   (layer(1, 3), layer(2, 3), layer(3, 3), layer(4, 2), layer(5, 2)),
   groups: (
-    (from: "l1", to: "l1", label: "stem"),
-    (from: "l2", to: "l3", label: "middle"),
-    (from: "l4", to: "l5", label: "head"),
-    (from: "l1", to: "l5", label: "whole network", offset: 2.3),
+    group(from: "l1", to: "l1", label: "stem"),
+    group(from: "l2", to: "l3", label: "middle"),
+    group(from: "l4", to: "l5", label: "head"),
+    group(from: "l1", to: "l5", label: "whole network", offset: 2.3),
   ),
 )

@@ -1,73 +1,58 @@
-#import "../../src/lib.typ": draw-network // FOR YOUR OWN FILES, IMPORT FROM THE VINNT PACKAGE INSTEAD
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 
 #let layers = (
-  (
-    type: "input",
+  input(
     label: "input"
-  ),(
-    type: "conv",
+  ),conv(
     widths: (0.3, 0.3),
     label: "conv"
-  ),(
-    type: "pool",
+  ),pool(
     label: "pool",
     offset: 1
-  ),(
-    type: "convres",
+  ),convres(
     widths: (0.3, 0.3),
     label: "convres",
     offset: 1
-  ),(
-    type: "unpool",
+  ),unpool(
     label: "unpool",
     offset: 1
-  ),(
-    type: "deconv",
+  ),deconv(
     label: "deconv",
     offset: 1
-  ),(
-    type: "concat",
+  ),concat(
     label: "concat",
     offset: 1.4
-  ),(
-    type: "gap",
+  ),gap(
     label: "gap"
-  ),(
-    type: "fc",
+  ),fc(
     label: "fc",
     offset: 0.7
-  ),(
-    type: "convsoftmax",
+  ),convsoftmax(
     label: "convsoftmax",
     offset: 0.6
-  ),(
-    type: "sum",
+  ),sum(
     symbol: "+",
     channels: (""),
     offset: 0.7
-  ),(
-    type: "softmax",
+  ),softmax(
     label: "softmax",
     offset: 0.6
-  ),(
-    type: "output",
+  ),output(
     label: "output",
     offset: 1
-  ),(
-    type: "custom",
+  ),custom(
     widths: (0.3, 0.3),
     height: 3,
     depth: 3,
     label: "custom",
     legend: "Custom Layer",
     offset: 0.6
-  ),(
+  ),custom(
     // A custom layer shows an activation band only when it asks for one, either
     // by declaring a bandfill or by opting in with show-relu. Without that it
     // stays flat, even when the network sets show-relu globally.
-    type: "custom",
     widths: (0.3, 0.3),
     height: 3,
     depth: 3,

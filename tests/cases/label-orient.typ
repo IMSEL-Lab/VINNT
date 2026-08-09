@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 
@@ -13,10 +13,10 @@
 // both label-orient and label-angle is an error.
 
 #let row(o) = (
-  (type: "conv", widths: (0.3,), height: 3, depth: 3, label: "convolution", ..o),
-  (type: "conv", widths: (0.3,), height: 3, depth: 3, label: "downsample", offset: 0.4, ..o),
-  (type: "conv", widths: (0.3,), height: 3, depth: 3, label: "projection", offset: 0.4, ..o),
-  (type: "conv", widths: (0.3,), height: 3, depth: 3, label: "bottleneck", offset: 0.4, ..o),
+  conv(widths: (0.3,), height: 3, depth: 3, label: "convolution", ..o),
+  conv(widths: (0.3,), height: 3, depth: 3, label: "downsample", offset: 0.4, ..o),
+  conv(widths: (0.3,), height: 3, depth: 3, label: "projection", offset: 0.4, ..o),
+  conv(widths: (0.3,), height: 3, depth: 3, label: "bottleneck", offset: 0.4, ..o),
 )
 
 // horizontal (the default): unreadable at this spacing, shown for comparison.

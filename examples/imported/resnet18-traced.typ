@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network, from-shapes, groups-from-shapes
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 
@@ -31,7 +31,7 @@
 
 // Each residual add, as (input of the block, output of the block). The first
 // block of a stage projects its shortcut; the second passes it through.
-#let residual(from, to, projected) = (
+#let residual(from, to, projected) = connection(
   from: from, to: to, type: "skip", mode: "air", pos: auto,
   color: if projected { shortcut-color } else { identity-color },
   legend: if projected { "projected shortcut (1×1)" } else { "identity shortcut" },

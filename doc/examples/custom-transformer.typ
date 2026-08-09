@@ -15,9 +15,9 @@
     sum(name: "s2"),
   ),
   connections: (
-    (from: "in", to: "s1", legend: "residual"),
-    (from: "s1", to: "s2"),
+    connection(from: "in", to: "s1", legend: "residual"),
+    connection(from: "s1", to: "s2"),
   ),
-  groups: ((from: "a", to: "s2", label: "encoder block"),),
+  groups: (group(from: "a", to: "s2", label: "encoder block"),),
   show-legend: true,
 )

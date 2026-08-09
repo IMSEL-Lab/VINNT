@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 
@@ -33,78 +33,78 @@
 
 // One full YOLO26-n, names prefixed so the two copies stay distinct.
 #let pipeline(p, img, input-label) = (
-  (type: "input", image: img, shape: (3, 640, 640), label: input-label, channels: (3, 640), name: p + "in", label-orient: "horizontal"),
+  input(image: img, shape: (3, 640, 640), label: input-label, channels: (3, 640), name: p + "in", label-orient: "horizontal"),
 
-  (type: "conv", shape: (16, 320, 320), label: "P1/2", channels: (16, 320), name: p + "p1", offset: auto, ..lbl),
-  (type: "conv", shape: (32, 160, 160), label: "P2/4", channels: (32, 160), name: p + "p2", offset: auto, ..lbl),
-  (type: "convres", shape: (64, 160, 160), label: "C3k2", channels: (64, 160), name: p + "c2", offset: auto, ..lbl),
+  conv(shape: (16, 320, 320), label: "P1/2", channels: (16, 320), name: p + "p1", offset: auto, ..lbl),
+  conv(shape: (32, 160, 160), label: "P2/4", channels: (32, 160), name: p + "p2", offset: auto, ..lbl),
+  convres(shape: (64, 160, 160), label: "C3k2", channels: (64, 160), name: p + "c2", offset: auto, ..lbl),
 
-  (type: "conv", shape: (64, 80, 80), label: "P3/8", channels: (64, 80), name: p + "p3d", offset: auto, ..lbl),
-  (type: "convres", shape: (128, 80, 80), label: "C3k2", channels: (128, 80), name: p + "p3", offset: auto, ..lbl),
+  conv(shape: (64, 80, 80), label: "P3/8", channels: (64, 80), name: p + "p3d", offset: auto, ..lbl),
+  convres(shape: (128, 80, 80), label: "C3k2", channels: (128, 80), name: p + "p3", offset: auto, ..lbl),
 
-  (type: "conv", shape: (128, 40, 40), label: "P4/16", channels: (128, 40), name: p + "p4d", offset: auto, ..lbl),
-  (type: "convres", shape: (256, 40, 40), label: "C3k2", channels: (256, 40), name: p + "p4", offset: auto, ..lbl),
+  conv(shape: (128, 40, 40), label: "P4/16", channels: (128, 40), name: p + "p4d", offset: auto, ..lbl),
+  convres(shape: (256, 40, 40), label: "C3k2", channels: (256, 40), name: p + "p4", offset: auto, ..lbl),
 
-  (type: "conv", shape: (256, 20, 20), label: "P5/32", channels: (256, 20), name: p + "p5d", offset: auto, ..lbl),
-  (type: "convres", shape: (256, 20, 20), label: "C3k2", channels: (256, 20), name: p + "c5", offset: auto, ..lbl),
+  conv(shape: (256, 20, 20), label: "P5/32", channels: (256, 20), name: p + "p5d", offset: auto, ..lbl),
+  convres(shape: (256, 20, 20), label: "C3k2", channels: (256, 20), name: p + "c5", offset: auto, ..lbl),
 
-  (type: "custom", shape: (256, 20, 20), label: "SPPF", channels: (256, 20),
+  custom(shape: (256, 20, 20), label: "SPPF", channels: (256, 20),
     fill: sppf-color, opacity: 0.9, legend: "SPPF", name: p + "sppf", offset: auto, ..lbl),
-  (type: "custom", shape: (256, 20, 20), label: "C2PSA", channels: (256, 20),
+  custom(shape: (256, 20, 20), label: "C2PSA", channels: (256, 20),
     fill: attn-color, opacity: 0.9, legend: "C2PSA (attention)", name: p + "p5", offset: auto, ..lbl),
 
-  (type: "unpool", shape: (256, 40, 40), label: "upsample", name: p + "u4", offset: auto, label-orient: "horizontal", label-dx: 0.55),
-  (type: "concat", shape: (384, 40, 40), name: p + "cat4", label: "concat", offset: auto, ..lbl),
-  (type: "convres", shape: (128, 40, 40), label: "C3k2", channels: (128, 40), name: p + "n4", offset: auto, ..lbl),
+  unpool(shape: (256, 40, 40), label: "upsample", name: p + "u4", offset: auto, label-orient: "horizontal", label-dx: 0.55),
+  concat(shape: (384, 40, 40), name: p + "cat4", label: "concat", offset: auto, ..lbl),
+  convres(shape: (128, 40, 40), label: "C3k2", channels: (128, 40), name: p + "n4", offset: auto, ..lbl),
 
-  (type: "unpool", shape: (128, 80, 80), label: "upsample", name: p + "u3", offset: auto, label-orient: "horizontal", label-dx: 0.55),
-  (type: "concat", shape: (192, 80, 80), name: p + "cat3", label: "concat", offset: auto, ..lbl),
-  (type: "convres", shape: (64, 80, 80), label: "C3k2", channels: (64, 80), name: p + "n3", offset: auto, ..lbl),
+  unpool(shape: (128, 80, 80), label: "upsample", name: p + "u3", offset: auto, label-orient: "horizontal", label-dx: 0.55),
+  concat(shape: (192, 80, 80), name: p + "cat3", label: "concat", offset: auto, ..lbl),
+  convres(shape: (64, 80, 80), label: "C3k2", channels: (64, 80), name: p + "n3", offset: auto, ..lbl),
 
-  (type: "conv", shape: (64, 40, 40), label: "down", channels: (64, 40), name: p + "d4", offset: auto, ..lbl),
-  (type: "concat", shape: (192, 40, 40), name: p + "cat4b", label: "concat", offset: auto, label-dx: 0.5, ..lbl),
-  (type: "convres", shape: (128, 40, 40), label: "C3k2", channels: (128, 40), name: p + "n4b", offset: auto, ..lbl),
+  conv(shape: (64, 40, 40), label: "down", channels: (64, 40), name: p + "d4", offset: auto, ..lbl),
+  concat(shape: (192, 40, 40), name: p + "cat4b", label: "concat", offset: auto, label-dx: 0.5, ..lbl),
+  convres(shape: (128, 40, 40), label: "C3k2", channels: (128, 40), name: p + "n4b", offset: auto, ..lbl),
 
-  (type: "conv", shape: (128, 20, 20), label: "down", channels: (128, 20), name: p + "d5", offset: auto, ..lbl),
-  (type: "concat", shape: (384, 20, 20), name: p + "cat5", label: "concat", offset: auto, label-dx: 0.45, ..lbl),
-  (type: "convres", shape: (256, 20, 20), label: "C3k2", channels: (256, 20), name: p + "n5", offset: auto, ..lbl),
+  conv(shape: (128, 20, 20), label: "down", channels: (128, 20), name: p + "d5", offset: auto, ..lbl),
+  concat(shape: (384, 20, 20), name: p + "cat5", label: "concat", offset: auto, label-dx: 0.45, ..lbl),
+  convres(shape: (256, 20, 20), label: "C3k2", channels: (256, 20), name: p + "n5", offset: auto, ..lbl),
 
-  (type: "branch", spread: 7, lead: 3.0, rejoin-lead: 4.6, spread-mode: "depth", branches: (
-    ((type: "custom", width: 0.5, height: 2.6, depth: 1.4, label: "Detect P3", channels: (256, 80),
+  branch(spread: 7, lead: 3.0, rejoin-lead: 4.6, spread-mode: "depth", branches: (
+    (custom(width: 0.5, height: 2.6, depth: 1.4, label: "Detect P3", channels: (256, 80),
       fill: head-color, opacity: 0.9, show-relu: false, legend: "Detect (NMS-free)", name: p + "hp3", label-orient: "horizontal"),),
-    ((type: "custom", width: 0.5, height: 2.6, depth: 1.4, label: "Detect P4", channels: (256, 40),
+    (custom(width: 0.5, height: 2.6, depth: 1.4, label: "Detect P4", channels: (256, 40),
       fill: head-color, opacity: 0.9, show-relu: false, name: p + "hp4", label-orient: "horizontal"),),
-    ((type: "custom", width: 0.5, height: 2.6, depth: 1.4, label: "Detect P5", channels: (256, 20),
+    (custom(width: 0.5, height: 2.6, depth: 1.4, label: "Detect P5", channels: (256, 20),
       fill: head-color, opacity: 0.9, show-relu: false, name: p + "hp5", label-orient: "horizontal"),),
   )),
-  (type: "output", label: "boxes + cls", height: 4, depth: 0.3, name: p + "out", offset: auto, ..lbl),
+  output(label: "boxes + cls", height: 4, depth: 0.3, name: p + "out", offset: auto, ..lbl),
 )
 
 // The six skips of one pipeline. Flat lanes are measured from their departure
 // block, so they need no adjustment; air lanes are measured from the trunk
 // axis, so the branch offset is added.
 #let skips(p, top) = (
-  (from: p + "p4", to: p + "cat4", type: "skip", mode: "air", pos: 2.6 + dy(top), color: lateral-color, legend: "backbone feed"),
-  (from: p + "p3", to: p + "cat3", type: "skip", mode: "air", pos: 4.0 + dy(top), color: lateral-color),
-  (from: p + "n4", to: p + "cat4b", type: "skip", mode: "flat", pos: 4.6, color: pan-color, legend: "bottom-up feed"),
-  (from: p + "p5", to: p + "cat5", type: "skip", mode: "flat", pos: 6.2, color: pan-color),
-  (from: p + "n3", to: p + "hp3", type: "skip", mode: "air", pos: 4.2 + dy(top), color: head-feed-color, legend: "head feed"),
-  (from: p + "n4b", to: p + "hp4", type: "skip", mode: "air", pos: 3.0 + dy(top), color: head-feed-color),
+  connection(from: p + "p4", to: p + "cat4", type: "skip", mode: "air", pos: 2.6 + dy(top), color: lateral-color, legend: "backbone feed"),
+  connection(from: p + "p3", to: p + "cat3", type: "skip", mode: "air", pos: 4.0 + dy(top), color: lateral-color),
+  connection(from: p + "n4", to: p + "cat4b", type: "skip", mode: "flat", pos: 4.6, color: pan-color, legend: "bottom-up feed"),
+  connection(from: p + "p5", to: p + "cat5", type: "skip", mode: "flat", pos: 6.2, color: pan-color),
+  connection(from: p + "n3", to: p + "hp3", type: "skip", mode: "air", pos: 4.2 + dy(top), color: head-feed-color, legend: "head feed"),
+  connection(from: p + "n4b", to: p + "hp4", type: "skip", mode: "air", pos: 3.0 + dy(top), color: head-feed-color),
 )
 
 #draw-network((
-  (type: "branch", spread: sep, branches: (
+  branch(spread: sep, branches: (
     pipeline("r-", "default", "RGB"),
     pipeline("i-", image("bird-ir.jpg"), "IR ×3"),
   )),
 
   // ---- Late fusion: only the detections meet ----
-  (type: "custom", width: 0.8, height: 5, depth: 1.6, label: "WBF", channels: ("boxes",),
+  custom(width: 0.8, height: 5, depth: 1.6, label: "WBF", channels: ("boxes",),
     fill: fusion-color, opacity: 0.9, legend: "Weighted Box Fusion", name: "wbf", offset: 2.0, label-orient: "horizontal"),
-  (type: "output", label: "fused boxes + cls", height: 4, depth: 0.3, name: "fout", offset: auto, ..lbl),
+  output(label: "fused boxes + cls", height: 4, depth: 0.3, name: "fout", offset: auto, ..lbl),
 ), groups: (
-  (from: "r-in", to: "i-out", label: "YOLO26-n ×2 — one detector per modality"),
-  (from: "wbf", to: "fout", label: "late fusion (decision level)"),
+  group(from: "r-in", to: "i-out", label: "YOLO26-n ×2 — one detector per modality"),
+  group(from: "wbf", to: "fout", label: "late fusion (decision level)"),
 ), connections: (
   ..skips("r-", true),
   ..skips("i-", false),

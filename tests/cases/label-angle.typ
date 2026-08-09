@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 
@@ -13,10 +13,10 @@
 // differs.
 
 #let row(a) = (
-  (type: "conv", widths: (0.3,), height: 3, depth: 3, label: "convolution", ..a),
-  (type: "conv", widths: (0.3,), height: 3, depth: 3, label: "downsample", offset: 0.4, ..a),
-  (type: "conv", widths: (0.3,), height: 3, depth: 3, label: "projection", offset: 0.4, ..a),
-  (type: "conv", widths: (0.3,), height: 3, depth: 3, label: "bottleneck", offset: 0.4, ..a),
+  conv(widths: (0.3,), height: 3, depth: 3, label: "convolution", ..a),
+  conv(widths: (0.3,), height: 3, depth: 3, label: "downsample", offset: 0.4, ..a),
+  conv(widths: (0.3,), height: 3, depth: 3, label: "projection", offset: 0.4, ..a),
+  conv(widths: (0.3,), height: 3, depth: 3, label: "bottleneck", offset: 0.4, ..a),
 )
 
 // Horizontal: unreadable at this spacing.

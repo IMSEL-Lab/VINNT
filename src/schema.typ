@@ -78,8 +78,13 @@
   } else { "" }
 }
 
+// The marker every constructor stamps on its result. Its presence is how
+// validation tells a constructed value from a hand-written dictionary.
+#let ctor-marker = "vinnt-ctor"
+
 #let check-keys(what, where, dict, allowed) = {
   for k in dict.keys() {
+    if k == ctor-marker { continue }
     if k not in allowed {
       panic(
         "vinnt: unknown " + what + " option \"" + k + "\" " + where + "."
@@ -93,14 +98,27 @@
 #let check-layer(l, where) = {
   if type(l) != dictionary {
     panic(
-      "vinnt: " + where + " must be a dictionary such as (type: \"conv\", ...) "
-        + "or a constructor call such as conv(...); got " + repr(l) + "."
+      "vinnt: " + where + " must be a constructor call such as conv(...); got "
+        + repr(l) + "."
+    )
+  }
+  if ctor-marker not in l {
+    let ty = l.at("type", default: none)
+    let hint = if type(ty) == str and ty in layer-keys {
+      " Write it as " + ty + "(...) instead."
+    } else {
+      " Write it with one of the constructors: "
+        + layer-keys.keys().sorted().join(", ") + "."
+    }
+    panic(
+      "vinnt: " + where + " is a plain dictionary. Every layer comes from "
+        + "a constructor." + hint
     )
   }
   if "type" not in l {
     panic(
-      "vinnt: " + where + " has no `type`. Every layer states one, "
-        + "for example (type: \"conv\", ...). Known types: "
+      "vinnt: " + where + " has no `type`. Every layer states one; the "
+        + "constructors fill it in. Known types: "
         + layer-keys.keys().sorted().join(", ") + "."
     )
   }
@@ -159,7 +177,13 @@
   }
   for (i, c) in connections.enumerate() {
     if type(c) != dictionary {
-      panic("vinnt: connection " + str(i) + " must be a dictionary; got " + repr(c) + ".")
+      panic("vinnt: connection " + str(i) + " must be a connection(..) call; got " + repr(c) + ".")
+    }
+    if ctor-marker not in c {
+      panic(
+        "vinnt: connection " + str(i) + " is a plain dictionary. "
+          + "Write it as connection(from: .., to: .., ..)."
+      )
     }
     for k in ("from", "to") {
       if k not in c {
@@ -171,6 +195,12 @@
     }
     let where = "on connection " + str(i) + " (" + repr(c.at("from")) + " -> " + repr(c.at("to")) + ")"
     check-keys("connection", where, c, connection-keys)
+    let inline = c.at("layers", default: none)
+    if inline != none {
+      for (j, l) in inline.enumerate() {
+        check-layer(l, "connection " + str(i) + " inline layer " + str(j))
+      }
+    }
     for k in ("from", "to") {
       if c.at(k) not in names {
         panic(
@@ -188,7 +218,13 @@
   }
   for (i, g) in groups.enumerate() {
     if type(g) != dictionary {
-      panic("vinnt: group " + str(i) + " must be a dictionary; got " + repr(g) + ".")
+      panic("vinnt: group " + str(i) + " must be a group(..) call; got " + repr(g) + ".")
+    }
+    if ctor-marker not in g {
+      panic(
+        "vinnt: group " + str(i) + " is a plain dictionary. "
+          + "Write it as group(from: .., to: .., ..)."
+      )
     }
     for k in ("from", "to") {
       if k not in g {
@@ -214,7 +250,7 @@
 #let unset = (vinnt-unset: true)
 
 #let mk(ty, args) = {
-  let l = (type: ty)
+  let l = (type: ty, vinnt-ctor: true)
   for (k, v) in args { if v != unset { l.insert(k, v) } }
   check-layer(l, "this " + ty + " layer")
   l
@@ -451,7 +487,7 @@
   label: unset, legend: unset, color: unset, dash: unset, thickness: unset,
   opacity: unset, touch-layer: unset, arrive-offset: unset, layers: unset,
 ) = {
-  let c = (:)
+  let c = (vinnt-ctor: true)
   for (k, v) in (
     from: from, to: to, type: type, mode: mode, pos: pos, clearance: clearance,
     label: label, legend: legend, color: color, dash: dash, thickness: thickness,
@@ -464,7 +500,7 @@
 }
 
 #let group(from: unset, to: unset, label: unset, offset: unset, color: unset) = {
-  let g = (:)
+  let g = (vinnt-ctor: true)
   for (k, v) in (from: from, to: to, label: label, offset: offset, color: color) {
     if v != unset { g.insert(k, v) }
   }

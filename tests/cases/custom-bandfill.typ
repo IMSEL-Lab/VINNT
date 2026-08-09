@@ -1,4 +1,4 @@
-#import "../../src/lib.typ": draw-network
+#import "../../src/lib.typ": *
 
 #set page(width: auto, height: auto, margin: 5mm)
 
@@ -15,20 +15,17 @@
 // an explicit per-layer opt-in must still work.
 
 #draw-network((
-  (
-    type: "custom",
+  custom(
     widths: (0.3, 0.3), height: 4, depth: 4,
     fill: rgb("#4ECDC4"), opacity: 0.9,
     label: "inherited",
-  ),(
-    type: "custom",
+  ),custom(
     widths: (0.3, 0.3), height: 4, depth: 4,
     fill: rgb("#4ECDC4"), opacity: 0.9,
     bandfill: rgb("#FFE66D"),
     label: "bandfill",
     offset: 1.5,
-  ),(
-    type: "custom",
+  ),custom(
     widths: (0.3, 0.3), height: 4, depth: 4,
     fill: rgb("#4ECDC4"), opacity: 0.9,
     show-relu: true,
