@@ -2,22 +2,8 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// arrive-offset.
-//
-// touch-layer lands a route on the target layer itself rather than on the axis
-// in front of it, choosing a side from the routing mode: air arrives on the top
-// edge, flat on the bottom, depth on the left. Without an offset, two routes in
-// the same mode land on the identical point with their arrowheads stacked.
-//
-// arrive-offset spreads along whichever edge the mode already chose. It runs
-// along the edge rather than in x, since the top and bottom edges of the west
-// side follow the isometric depth direction: offsetting horizontally would walk
-// the arrival off the block.
-//
-// arrive-offset: auto spaces a whole fan evenly without picking numbers. Routes
-// are grouped by the edge they land on, then spread across it: k routes divide
-// the edge into k + 1 intervals and sit at the interior boundaries, ordered by
-// where each route starts so the fan does not cross itself.
+// arrive-offset spreads touch-layer arrivals along the landing edge chosen by
+// the routing mode; `auto` spaces each fan evenly, ordered by route start.
 
 #let src(n) = conv(widths: (0.3,), height: 2.5, depth: 2.5,
   name: "s" + str(n), label: "s" + str(n), offset: 1.1,
@@ -25,9 +11,7 @@
 
 #let cat = concat(height: 3.2, depth: 3.2, name: "cat", label: "concat", offset: 2.6)
 
-// Three routes fanning onto the top edge, spaced by hand. flat and depth
-// arrivals use the same offset-along-the-edge code with a different edge chosen
-// by touch-layer, so they are not drawn again here.
+// Three routes fanning onto the top edge, spaced by hand.
 #draw-network(
   (src(1), src(2), src(3), cat),
   connections: (
@@ -39,8 +23,7 @@
 
 #v(9mm)
 
-// The same three, spaced automatically. The hand-picked values above were chosen
-// by eye and land within a hundredth of what auto computes.
+// The same three, spaced automatically.
 #draw-network(
   (src(1), src(2), src(3), cat),
   connections: (
@@ -52,8 +35,7 @@
 
 #v(9mm)
 
-// Five routes, nothing else changed. Adding to a fan respaces it rather than
-// needing every offset re-picked.
+// Five routes; auto respaces the fan.
 #draw-network(
   (src(1), src(2), src(3), src(4), src(5), cat),
   connections: (

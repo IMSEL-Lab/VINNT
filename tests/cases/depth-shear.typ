@@ -2,14 +2,9 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// depth-shear and min-clear-offset.
-//
-// Layers are drawn in isometric projection, so a layer's far face leans right
-// by depth * depth-multiplier. The visual gap between two adjacent layers is
-// therefore smaller than the offset between them, and a connection routed into
-// what looks like empty space can cross the previous layer's top face.
-//
-// Both figures below are identical except for the offset before the last layer.
+// depth-shear and min-clear-offset. A layer's far face leans right by
+// depth * depth-multiplier. Both figures below are identical except for the
+// offset before the last layer.
 
 // Compared with a tolerance, not for equality: the default multiplier of 0.3
 // has no exact binary representation, so depth-shear(4.5) is 1.3499999999999999

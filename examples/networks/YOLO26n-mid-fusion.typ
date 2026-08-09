@@ -2,17 +2,10 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// YOLO26-n with mid (feature-level) RGB-IR fusion.
-//
-// Each modality keeps its own stem and P3 stage, so the early filters can
-// specialise: edge and colour statistics differ enough between visible and
-// thermal frames that shared shallow filters serve both badly. The two P3
-// maps are then concatenated and a pointwise convolution folds them back to
-// the stock channel count, and everything from P4 onward is shared, which is
-// the halfway-fusion recipe from the RGB-T detection literature.
-//
-// The neck's P3 lateral now taps the fused map rather than a single-modality
-// one; the P4 lateral is downstream of the fusion and needs no change.
+// YOLO26-n with mid (feature-level) RGB-IR fusion. Each modality keeps its
+// own stem and P3 stage; the two P3 maps are concatenated, folded back to the
+// stock channel count by a pointwise convolution, and everything from P4
+// onward is shared. The neck's P3 lateral taps the fused map.
 
 #let fusion-color = rgb("#73000A")
 #let sppf-color = rgb("#466A9F")

@@ -2,22 +2,9 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Branch spread modes.
-//
-// A branch lays its sub-runs out in one of two ways.
-//
-//   vertical (default)  branches stack straight above and below the trunk, and
-//                       the fan-out and rejoin are right-angled: out, across,
-//                       in. Reads as alternatives side by side.
-//
-//   depth               branches stack along the projection's own 45-degree
-//                       axis, away and near, and the fan-out and rejoin are two
-//                       parallel spines with horizontal teeth: a parallelogram.
-//                       Reads as parallel copies sitting behind one another.
-//
-// Both are centred on the trunk. An odd count puts one branch on the trunk line
-// itself; an even count leaves the trunk line empty, so no block sits directly
-// on the main path.
+// Branch spread modes. vertical (default) stacks branches above and below the
+// trunk with right-angled fan-out and rejoin; depth stacks them along the
+// projection axis with parallel spines. Both centre on the trunk.
 
 #let blk(lbl, h: 2.4, d: 1.4) = conv(widths: (0.4,), height: h, depth: d, label: lbl, offset: 1.3,
 )

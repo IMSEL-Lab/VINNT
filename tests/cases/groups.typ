@@ -2,15 +2,8 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Group brackets.
-//
-// Backbone, neck and head are the phrases anyone uses out loud to explain one of
-// these figures, and there was no way to draw them.
-//
-// A square bracket rather than a brace, since everything else in the package is
-// drawn with flat edges. The span covers the drawn footprint, which leans right
-// of the front face by the isometric shear, so a bracket sits under the whole
-// block rather than under its front face only.
+// Group brackets: square, spanning the drawn footprint including the
+// isometric shear.
 
 #let layer(n, h) = conv(widths: (0.4,), height: h, depth: h,
   name: "l" + str(n), label: "l" + str(n), offset: 1.2,

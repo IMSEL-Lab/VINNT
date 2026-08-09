@@ -7,22 +7,8 @@
 //   uv run tools/import_model.py --torchvision vit_b_16 --weights DEFAULT \
 //       --group-depth 3 -o vit_b_16.json
 //
-// A transformer is what forced the importer to hook containers rather than only
-// leaves. MultiheadAttention called with need_weights=False dispatches to a
-// fused kernel that reads out_proj.weight directly instead of calling out_proj,
-// so none of its children ever fire a hook, and hooking leaves alone imports a
-// ViT as twelve pairs of MLP layers with the attention silently missing. The
-// importer treats a handful of such modules as atomic and hooks them whole.
-//
-// Every block after the patch embedding carries the same 197 tokens, so the
-// figure is a run of equal-height slabs whose only variation is the MLP's
-// four-fold expansion. That is a fair picture of a transformer, and a much
-// duller one than a convolutional pyramid.
-//
-// Attention and the MLP projections both import as the same layer type, since
-// the library has one vocabulary for "block with learned weights". `by-op`
-// separates them by the module class they came from, without naming any of the
-// twenty-four blocks involved.
+// `by-op` separates attention from the MLP projections by the module class
+// they came from.
 
 #let data = json("vit_b_16.json")
 

@@ -2,14 +2,8 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// label-anchor and label-dx.
-//
-// label-anchor chooses which edge of the text box is pinned to the label
-// position, so a label can be hung off to one side instead of centred. Combined
-// with label-dx it fans crowded labels sideways rather than vertically.
-//
-// Both rows have identical geometry. The second pins the outer labels by their
-// facing edges and pushes them clear of the middle one.
+// label-anchor pins an edge of the text box to the label position; with
+// label-dx it fans crowded labels sideways. Both rows have identical geometry.
 
 #let row(a, b, c) = (
   conv(widths: (0.3,), height: 3, depth: 3, label: "convolution", ..a),

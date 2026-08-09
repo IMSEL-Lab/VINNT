@@ -2,23 +2,9 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// YOLO26-n with multi-scale (per-level) RGB-IR fusion.
-//
-// Halfway fusion picks one depth and commits to it. Per-level fusion refuses
-// the choice: both modalities keep a complete backbone, and the two streams are
-// combined once at every pyramid level the neck consumes. Fine thermal detail
-// survives at P3, where a single P3 fusion would have thrown the RGB stream's
-// deeper context away, and the coarse levels still get both views.
-//
-// The cost is a second backbone rather than half of one, so this is the
-// expensive end of feature-level fusion and the reason halfway fusion stays
-// popular.
-//
-// Every fusion point is a concat the neck was already going to perform; the
-// only structural change from the stock model is that each lateral arrives
-// twice, once per modality. The two lateral families are coloured apart so the
-// doubling is legible: Atlantic for the visible stream, Rose for the thermal
-// one.
+// YOLO26-n with multi-scale (per-level) RGB-IR fusion. Both modalities keep a
+// complete backbone and the streams are concatenated at every pyramid level
+// the neck consumes. Atlantic marks the visible laterals, Rose the thermal.
 
 #let fusion-color = rgb("#73000A")
 #let sppf-color = rgb("#466A9F")
@@ -35,13 +21,11 @@
 #let sep = 15
 #let dy(top) = if top { sep / 2 } else { -sep / 2 }
 
-// How a fusion lateral arrives: on the block's own edge rather than on the
-// shared arrowhead in front of it, spaced evenly with whatever else lands there.
+// Fusion laterals arrive on the block's own edge, spaced evenly.
 #let land = (touch-layer: true, arrive-offset: auto)
 
-// One modality's complete backbone, through the P5 stage.
-// `shift` nudges the two stage labels that a downward departure riser would
-// otherwise cross. Only the thermal stream routes downward, so only it needs it.
+// One modality's complete backbone, through the P5 stage. `shift` nudges the
+// two stage labels a downward departure riser would otherwise cross.
 #let backbone(p, img, label, shift: 0) = (
   input(image: img, shape: (3, 640, 640), label: label, channels: (3, 640), name: p + "in", label-orient: "horizontal"),
   conv(shape: (16, 320, 320), label: "P1/2", channels: (16, 320), name: p + "p1", offset: auto, ..lbl),
@@ -115,16 +99,10 @@
   group(from: "f5cat", to: "n5", label: "Neck (PAN-FPN) — fusion at P5, P4, P3", offset: 2.5),
   group(from: "hp5", to: "out", label: "Head", offset: 2.5),
 ), connections: (
-  // Three things arrive at each fusion concat: the upsampled trunk and one
-  // lateral per modality. Stacking three arrowheads on one anchor is what makes
-  // a fan-in unreadable, so the laterals touch the block instead. The visible
-  // stream routes above and lands on the top edge of the arrival face, the
-  // thermal stream routes below and lands on the bottom edge, and the trunk
-  // arrow keeps the middle.
-  //
-  // Air lanes are measured from the trunk axis, so the visible backbone's own
-  // offset is folded into its lane. Flat lanes are measured from the departing
-  // block, so the thermal ones need no adjustment.
+  // The visible laterals route above and land on the top edge, the thermal
+  // ones route below and land on the bottom edge; the trunk arrow keeps the
+  // middle. Air lanes are measured from the trunk axis, so the visible
+  // backbone's offset is folded into its lane.
   connection(from: "r-p4", to: "cat4", type: "skip", mode: "air", pos: 2.6 + dy(true), color: rgb-color, legend: "RGB lateral", ..land),
   connection(from: "r-p3", to: "cat3", type: "skip", mode: "air", pos: 4.4 + dy(true), color: rgb-color, ..land),
   connection(from: "i-p4", to: "cat4", type: "skip", mode: "flat", pos: 4.6, color: ir-color, legend: "IR lateral", ..land),

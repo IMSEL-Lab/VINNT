@@ -2,15 +2,9 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// label-orient.
-//
-// The three orientations anyone actually reaches for, each paired with the
-// anchor that places it correctly against its layer. Nothing here sets
-// label-anchor or label-dx: the point of this option is that the common cases
-// need no manual adjustment.
-//
-// For any other angle, use label-angle and choose label-anchor yourself. Setting
-// both label-orient and label-angle is an error.
+// label-orient: the three common orientations, each with its matching anchor
+// set automatically. For any other angle use label-angle with your own
+// label-anchor; setting both is an error.
 
 #let row(o) = (
   conv(widths: (0.3,), height: 3, depth: 3, label: "convolution", ..o),

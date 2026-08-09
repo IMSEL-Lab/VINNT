@@ -2,24 +2,13 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// shape.
-//
-// A layer may state its tensor shape as (channels, height, width) and have its
-// geometry derived, rather than being sized by eye.
-//
-// Both axes are logarithmic:
+// shape: geometry derived from (channels, height, width), both axes
+// logarithmic:
 //   height, depth = 1.2 * log2(spatial) - 3.2
 //   width         = 0.075 * log2(channels)
-//
-// Linear spatial extent is unusable. Against the pyramid below a 20-square block
-// would be a quarter of a unit tall against 8 for the 640-square input. The log
-// mapping reproduces the same pyramid tuned by hand elsewhere in this repo to
-// within 0.4 units, and the channel mapping its widths to within 0.05.
 
-// Derived and hand-written, side by side. The second block spells out the
-// mapping rather than rounding it, so the two are pixel-identical: rounding the
-// height to 3.186 instead of 3.18631... is already enough to shift the edges by
-// a fraction of a pixel and show up in a diff.
+// Derived and hand-written, side by side; the second spells out the mapping
+// exactly, so the two are pixel-identical.
 #let hd = 1.2 * calc.log(40, base: 2) - 3.2
 #let wd = 0.075 * calc.log(256, base: 2)
 #draw-network((

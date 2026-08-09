@@ -2,15 +2,8 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// label-angle.
-//
-// Shifting labels apart only buys so much room; past a certain density the
-// labels simply do not fit side by side at any vertical offset. Rotating them
-// trades horizontal space, which is what is scarce, for vertical space, which
-// is usually free below the figure.
-//
-// All three rows have identical geometry and identical labels. Only the angle
-// differs.
+// label-angle rotates a label. All three rows have identical geometry and
+// labels; only the angle differs.
 
 #let row(a) = (
   conv(widths: (0.3,), height: 3, depth: 3, label: "convolution", ..a),

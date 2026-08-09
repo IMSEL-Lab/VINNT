@@ -2,8 +2,8 @@
 
 #set page(width: auto, height: auto, margin: 4mm)
 
-// Sum node overrides -- `fill`, `stroke` and `symbol` are each independently
-// settable, so a figure that wants the old filled look can still have it.
+// Sum node overrides: `fill`, `stroke` and `symbol` are each independently
+// settable.
 //
 // Expected, left to right:
 //   1. default          white disc, black ring, "+"

@@ -2,15 +2,8 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// label-dy.
-//
-// Layer labels are placed at a fixed spot beneath each block with no awareness
-// of their neighbours, so long labels on tightly spaced layers overlap. Before
-// this feature the only remedy was to push the layers themselves further apart,
-// which distorts the figure to solve a typesetting problem.
-//
-// Both rows below have identical geometry. The only difference is label-dy on
-// the middle layer of the second row.
+// label-dy shifts a single label vertically. Both rows have identical
+// geometry; only the middle layer of the second row sets label-dy.
 
 #let row(mid) = (
   conv(widths: (0.3,), height: 3, depth: 3, label: "convolution"),

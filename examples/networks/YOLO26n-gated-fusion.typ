@@ -2,25 +2,10 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// YOLO26-n with illumination-gated RGB-IR fusion.
-//
-// Concatenation fuses the two modalities with a fixed, learned-once recipe. But
-// which modality deserves the weight is a property of the frame, not of the
-// dataset: at noon the visible stream carries almost everything and the thermal
-// one is washed out, and at night the ordering reverses. A gate makes the
-// mixture a function of the input.
-//
-// A small illumination subnetwork reads a downsampled copy of the visible frame
-// and emits a two-way softmax. The fusion is then a weighted sum rather than a
-// concatenation, which is why no pointwise convolution follows it: a weighted
-// sum preserves the channel count, so the shared backbone resumes at the stock
-// width with no fold-back layer. That is the practical argument for gating over
-// concatenation, and the argument against is equally plain, since a sum can only
-// reweight the two streams and never combine their channels.
-//
-// This is the shape of the illumination-aware family in RGB-T detection, of
-// which IAF R-CNN is the usual reference. The subnetwork is drawn on the trunk
-// line, between the two modalities it arbitrates.
+// YOLO26-n with illumination-gated RGB-IR fusion. An illumination subnetwork
+// reads a downsampled visible frame and emits a two-way softmax; the fusion is
+// a weighted sum, which preserves the channel count, so the shared backbone
+// resumes at stock width. The subnetwork is drawn on the trunk line.
 
 #let sppf-color = rgb("#466A9F")
 #let lateral-color = rgb("#466A9F")
@@ -33,8 +18,8 @@
 
 #let lbl = (label-orient: "diagonal")
 
-// One modality's private half-backbone: stem plus P3 stage. Both end at
-// 128 channels at stride 8, which is what lets the fusion be a sum.
+// One modality's private half-backbone: stem plus P3 stage, ending at
+// 128 channels at stride 8.
 #let stream(p, img, label) = (
   input(image: img, shape: (3, 640, 640), label: label, channels: (3, 640), name: p + "in", label-orient: "horizontal"),
   conv(shape: (16, 320, 320), label: "P1/2", channels: (16, 320), name: p + "p1", offset: auto, ..lbl),
@@ -44,8 +29,7 @@
   convres(shape: (128, 80, 80), label: "C3k2", channels: (128, 80), name: p + "p3", offset: auto, ..lbl),
 )
 
-// The gate. Deliberately tiny: it costs a rounding error next to either stem,
-// which is the whole reason the trick is affordable.
+// The gate.
 #let gate = (
   input(image: "default", shape: (3, 56, 56), label: "RGB ↓56", channels: (3, 56), name: "g-in", label-orient: "horizontal"),
   conv(shape: (16, 28, 28), label: "conv", channels: (16, 28), name: "g-c1", offset: 2.2, label-orient: "horizontal", label-dy: -0.3),
@@ -59,11 +43,7 @@
 #draw-network((
   // ---- Two modality-specific half-backbones, with the gate between them ----
   //
-  // The spread is set by the labels, not by the blocks. Three streams whose
-  // outer two open on a full-resolution input image leave the middle one very
-  // little room, and the first thing to collide is not a block but the text
-  // under one: the RGB stem's own label lands on the gate's input image, and the
-  // gate's first label lands on the thermal one.
+  // The spread is set by the labels, not by the blocks.
   branch(spread: 18, lead: 2.5, rejoin-lead: 3.4, branches: (
     stream("r-", "default", "RGB"),
     gate,

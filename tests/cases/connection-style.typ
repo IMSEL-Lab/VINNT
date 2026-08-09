@@ -2,26 +2,10 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Per-connection stroke styling.
-//
-// All four skips below have identical geometry: same span, same mode, same pos,
-// shifted along the axis. Matching the routing is what isolates styling from
-// layout, so any difference you see is the style and nothing else.
-//
-// Mode is left at the default, which routes over the top. pos is fixed rather
-// than auto here, precisely so the geometry stays identical.
-// Automatic lanes are exercised in connection-auto-lane.typ.
-//
-//   color      paint for the line and its arrowheads
-//   dash       any Typst dash pattern
-//   thickness  multiplies the palette width, so a figure passing
-//              stroke-thickness to draw-network still scales its connections
-//   legend     names the style, adding a legend entry drawn as a line sample
-//              rather than a colour swatch, since what distinguishes a
-//              connection is its stroke and not a fill
-//
-// Arrowheads take the line colour. A red line with black arrowheads reads as a
-// bug rather than as a choice.
+// Per-connection stroke styling: color, dash, thickness (multiplies the
+// palette width) and legend (drawn as a line sample). All four skips have
+// identical geometry, so any difference is the style. Arrowheads take the
+// line colour.
 
 #let garnet = rgb("#73000A")
 #let atlantic = rgb("#466A9F")

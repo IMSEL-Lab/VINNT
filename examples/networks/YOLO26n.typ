@@ -4,22 +4,8 @@
 
 // YOLO26-n : depth 0.50, width 0.25, max_channels 1024
 //
-// Nothing in this figure is sized or spaced by hand. Each layer states its
-// tensor shape and takes its geometry from that, and every offset is auto, which
-// covers the previous block's isometric lean and widens where a connection
-// descends into the gap.
-//
-// So the architecture is the only thing written down. Change a channel count or
-// a resolution and the drawing follows, with no second copy of the pyramid in
-// the offsets to drift out of step.
-//
-// Labels are diagonal, which is what lets the gaps stay this tight: with
-// horizontal labels the spacing ends up dictated by how wide the words are
-// rather than by the drawing.
-//
-// Groups are drawn in two rows, one naming each stage and one naming the three
-// parts anyone says out loud. Both are below the figure, clear of the skips that
-// route underneath it.
+// Each layer states its tensor shape and takes its geometry from it; every
+// offset is auto. Labels are diagonal; groups are drawn in two rows.
 
 #let sppf-color = rgb("#466A9F")
 #let lateral-color = rgb("#466A9F")
@@ -71,10 +57,8 @@
   convres(shape: (256, 20, 20), label: "C3k2", channels: (256, 20), name: "n5", offset: auto, ..lbl),
 
   // ---- Head ----
-  // Three heads drawn as three heads, stacked along the depth axis: P4 on the
-  // trunk line, P3 away, P5 near. Sized alike rather than from shape, since a
-  // head is a module reading a level, not a feature map, and letting each take
-  // its level's resolution makes the P3 one tower over the figure.
+  // Three heads stacked along the depth axis: P4 on the trunk line, P3 away,
+  // P5 near. Sized alike rather than from shape.
   branch(spread: 7, lead: 3.0, rejoin-lead: 4.6, spread-mode: "depth", branches: (
     (custom(width: 0.5, height: 2.6, depth: 1.4, label: "Detect P3", channels: (256, 80),
       fill: head-color, opacity: 0.9, show-relu: false, legend: "Detect (NMS-free)", name: "hp3", label-orient: "horizontal"),),
@@ -85,9 +69,8 @@
   )),
   output(label: "boxes + cls", height: 4, depth: 0.3, name: "out", offset: auto, ..lbl),
 ), groups: (
-  // Two levels. The inner row names each stage, the outer row the three parts
-  // anyone says out loud when explaining the architecture. Nesting works because
-  // offset is per group, so an enclosing bracket simply takes its own row.
+  // Two levels: the inner row names each stage, the outer row the three
+  // parts; offset is per group, so the enclosing brackets take their own row.
   group(from: "p1", to: "c2", label: "stem"),
   group(from: "p3d", to: "p3", label: "P3 stage"),
   group(from: "p4d", to: "p4", label: "P4 stage"),

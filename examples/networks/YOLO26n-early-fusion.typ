@@ -2,14 +2,10 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// YOLO26-n with early (pixel-level) RGB-IR fusion.
-//
-// The two modalities merge before the network proper. The IR frame is a single
-// channel replicated across three, so both inputs arrive as (3, 640, 640); a
-// concat stacks them to six channels and a pointwise convolution mixes them
-// back down to three. From P1 onward the figure is the stock YOLO26-n, and the
-// fused tensor is shaped exactly like an RGB frame, which is the point of
-// fusing this early: nothing downstream knows there were two sensors.
+// YOLO26-n with early (pixel-level) RGB-IR fusion. Both inputs arrive as
+// (3, 640, 640); a concat stacks them to six channels and a pointwise
+// convolution mixes them back down to three. From P1 onward the figure is the
+// stock YOLO26-n.
 
 #let fusion-color = rgb("#73000A")
 #let sppf-color = rgb("#466A9F")

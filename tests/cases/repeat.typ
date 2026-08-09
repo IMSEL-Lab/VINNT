@@ -2,19 +2,9 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// repeat: N.
-//
-// repeat: N means N identical copies of the block in series, each feeding the
-// next. It describes one layer entry, not a run of them: (conv, pool) repeated
-// as a unit is a different thing and is not expressible here.
-//
-// Depth-scaled models fake block repetition by stuffing extra entries into
-// `widths`. That is a visual coincidence rather than semantics: the package has
-// no idea the block is repeated, so it cannot label the repeat or bracket it,
-// and the figure claims a wider block rather than a repeated one.
-//
-// Both rows below are the same architecture. The first fakes it, the second
-// declares it. The comparison is the design decision.
+// repeat: N draws N identical copies of one block in series. It describes one
+// layer entry, not a run of them. Both rows below are the same architecture:
+// the first widens one block via `widths`, the second declares the repeat.
 
 // Faked: three entries in widths. Reads as one wide block.
 #draw-network((
@@ -46,14 +36,9 @@
 
 #v(9mm)
 
-// pool and unpool attach to the block before them rather than being blocks in
-// their own right, so repeat is ignored on them.
-//
-// That makes "three convs then a pool" awkward to say directly: bracketing a
-// repeated conv that has a pool attached reads as though the pool repeats too.
-// Split it instead. Two plain convs carry the repeat, and the third is drawn on
-// its own with the pool attached to it. The bracket then sits over a block with
-// nothing attached, so what it covers is unambiguous.
+// pool and unpool attach to the block before them, so repeat is ignored on
+// them. For a repeated conv followed by a pool, two plain convs carry the
+// repeat and the third is drawn on its own with the pool attached.
 #draw-network((
   conv(widths: (0.4,), height: 3, depth: 3, label: "conv x2", repeat: 2),
   conv(widths: (0.4,), height: 3, depth: 3, label: "conv + pool", offset: 2.0),

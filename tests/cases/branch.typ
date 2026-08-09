@@ -2,15 +2,8 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// Parallel branches.
-//
-// draw-network advances one cursor along one axis, so anything genuinely
-// parallel had to be collapsed into a single block with arrows pointed at it.
-// A branch is a layer list of its own, walked at its own height and rejoined
-// afterwards. Walking one is the same operation as walking the trunk, only
-// starting somewhere else.
-//
-// The call is recursive, so a branch may contain branches.
+// Parallel branches. A branch is a layer list walked at its own height and
+// rejoined; the call is recursive, so a branch may contain branches.
 
 #let c(lbl) = conv(widths: (0.4,), height: 2.4, depth: 2.4, label: lbl, offset: 1.3)
 #let inp = input(height: 3, depth: 3, label: "in", show-connection: true)
@@ -21,8 +14,7 @@
 
 #v(9mm)
 
-// Unequal lengths. The rejoin waits for the longest branch rather than cutting
-// the others short, so the short branch's arrow runs on to meet it.
+// Unequal lengths: the rejoin waits for the longest branch.
 #draw-network((
   inp,
   branch(spread: 6, branches: (

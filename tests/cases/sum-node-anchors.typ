@@ -2,19 +2,8 @@
 
 #set page(width: auto, height: auto, margin: 4mm)
 
-// A sum node as a connection endpoint.
-//
-// Every other layer is a prism, and `get-layer-anchors` puts its true east and
-// west at the centre of the sheared side face: half the depth-lean above the
-// block's own middle. A sum node is a flat circle sitting on the axis with no
-// lean, and it was being anchored as though it had one, half a radius up and
-// half a radius across from where it was drawn.
-//
-// Nothing showed until a connection used it as an endpoint, because the anchors
-// are only read to place routes and group brackets. Then a route departing the
-// node left from a point that was not on the arrow it was supposed to leave, and
-// the arrowhead redrawn at that anchor floated above the trunk beside the real
-// one, so the route read as joining nothing.
+// A sum node as a connection endpoint: its anchors sit on the flat circle,
+// with no depth-lean.
 //
 // Expected in both rows: one arrowhead per gap, the coloured route leaving from
 // the trunk line just behind the head, and the bracket ending at the circle.
@@ -35,9 +24,7 @@
 
 #v(8mm)
 
-// The same, with the sum immediately after a branch rejoin: the node is placed
-// with the previous depth offset folded in, which is what the recorded box has
-// to be built from rather than worked back from the cursor.
+// The same, with the sum immediately after a branch rejoin.
 #draw-network((
   branch(spread: 6, branches: (
     (input(height: 3, depth: 2, label: "a", show-connection: true),),

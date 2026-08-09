@@ -6,20 +6,9 @@
 //
 //   uv run tools/import_model.py --torchvision resnet18 -o resnet18.json
 //
-// Nothing below states the architecture. The layer list, every block's size and
-// every gap come from the traced shapes, and the stage brackets come from the
-// module paths. Change the model and rerun the importer; the figure follows.
-//
-// What is written here is the part a trace cannot observe. Hooks see modules,
-// and a residual add is written `out += identity` inside BasicBlock.forward, so
-// it is an operation on a tensor and owns no module to hook. The eight adds are
-// therefore named by hand below, from the same layer names the importer emits.
-//
-// The shortcut convolutions are the other half of that. They are real modules,
-// so the trace does see them, but it sees them in sequence: a leaf trace has no
-// way to know `downsample.0` sits beside its block rather than after it. They
-// are dropped from the trunk and drawn as the projection on the skip that they
-// actually are.
+// The residual adds own no module to hook, so they are named by hand from the
+// layer names the importer emits. The shortcut convolutions are dropped from
+// the trunk and drawn as projections on the skips.
 
 #let data = json("resnet18.json")
 
