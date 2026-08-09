@@ -1,0 +1,13 @@
+[package]
+name = "vinnt"
+version = "0.1.0"
+compiler = "0.15.0"
+entrypoint = "src/lib.typ"
+repository = "https://github.com/j-vaught/VINNT"
+authors = ["J.C. Vaught <@j-vaught>"]
+license = "MIT-0"
+description = "Isometric block diagrams of layered neural network architectures"
+keywords = ["neural network", "deep learning", "computer vision", "machine learning", "architecture diagram", "CNN", "figure", "visualization"]
+categories = ["visualization", "components"]
+disciplines = ["computer-science", "engineering"]
+exclude = ["/examples/*", "/gallery/*", "/doc/*", "/tests/*", "/tools/*"]

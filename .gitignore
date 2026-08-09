@@ -1,0 +1,14 @@
+# Regression harness working output (goldens are tracked)
+tests/current/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.ruff_cache/
+
+# OS
+.DS_Store
+
+# Universe submission staging (assembled by tools/bundle.sh)
+dist/
