@@ -58,7 +58,7 @@
   concat(shape: (384, 20, 20), name: "cat5", offset: g(20)),
   convres(shape: (256, 20, 20), name: "n5", offset: g(20)),
 
-  branch(spread: 7, lead: 3.0, rejoin-lead: 4.6, spread-mode: "depth", branches: (
+  branch(spread: 7, lead: 3.0, rejoin-lead: 4.6, entry-gap: -1.8, exit-gap: -0.5, spread-mode: "depth", branches: (
     (custom(width: 0.5, height: 2.6, depth: 1.4,
       fill: head-color, opacity: 0.9, show-relu: false, legend: "Detect (NMS-free)", name: "hp3"),),
     (custom(width: 0.5, height: 2.6, depth: 1.4,
