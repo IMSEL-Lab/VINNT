@@ -9,56 +9,63 @@
 #let attn-color = rgb("#65780B")
 #let head-color = rgb("#CC2E40")
 
-#let lbl = (label-orient: "diagonal")
-#let gap = 1.3
+// Gaps are sized to the depth of the layer being left: layers with more
+// isometric shear (depth 5 convs) need more clearance than shallow ones
+// (depth 3 concats, depth ~1.4 detect heads), so shrinking every gap to one
+// constant either overlaps the deep layers or leaves the shallow ones too
+// loose. Each gap below is named for the layer type it follows.
+#let gap-conv = 1.3    // after a depth-5 conv/convres/custom block
+#let gap-unpool = 1.0  // after a depth-4 unpool block
+#let gap-concat = 0.8  // after a depth-3 concat block
+#let gap-detect = 0.5  // after a depth-1.4 detect block
 #let input-gap = 1.8
 
 #draw-network((
-  input(image: "default", shape: (3, 640, 640), label: "input", channels: (3, 640), name: "input", ..lbl),
+  input(image: "default", shape: (3, 640, 640), name: "input"),
 
-  conv(shape: (16, 320, 320), label: "P1/2", channels: (16, 320), name: "p1", offset: input-gap, ..lbl),
-  conv(shape: (32, 160, 160), label: "P2/4", channels: (32, 160), name: "p2", offset: gap, ..lbl),
-  convres(shape: (64, 160, 160), label: "C3k2", channels: (64, 160), name: "c2", offset: gap, ..lbl),
+  conv(shape: (16, 320, 320), name: "p1", offset: input-gap),
+  conv(shape: (32, 160, 160), name: "p2", offset: gap-conv),
+  convres(shape: (64, 160, 160), name: "c2", offset: gap-conv),
 
-  conv(shape: (64, 80, 80), label: "P3/8", channels: (64, 80), name: "p3d", offset: gap, ..lbl),
-  convres(shape: (128, 80, 80), label: "C3k2", channels: (128, 80), name: "p3", offset: gap, ..lbl),
+  conv(shape: (64, 80, 80), name: "p3d", offset: gap-conv),
+  convres(shape: (128, 80, 80), name: "p3", offset: gap-conv),
 
-  conv(shape: (128, 40, 40), label: "P4/16", channels: (128, 40), name: "p4d", offset: gap, ..lbl),
-  convres(shape: (256, 40, 40), label: "C3k2", channels: (256, 40), name: "p4", offset: gap, ..lbl),
+  conv(shape: (128, 40, 40), name: "p4d", offset: gap-conv),
+  convres(shape: (256, 40, 40), name: "p4", offset: gap-conv),
 
-  conv(shape: (256, 20, 20), label: "P5/32", channels: (256, 20), name: "p5d", offset: gap, ..lbl),
-  convres(shape: (256, 20, 20), label: "C3k2", channels: (256, 20), name: "c5", offset: gap, ..lbl),
+  conv(shape: (256, 20, 20), name: "p5d", offset: gap-conv),
+  convres(shape: (256, 20, 20), name: "c5", offset: gap-conv),
 
-  custom(shape: (256, 20, 20), label: "SPPF", channels: (256, 20),
-    fill: sppf-color, opacity: 0.9, legend: "SPPF", name: "sppf", offset: gap, ..lbl),
-  custom(shape: (256, 20, 20), label: "C2PSA", channels: (256, 20),
-    fill: attn-color, opacity: 0.9, legend: "C2PSA (attention)", name: "p5", offset: gap, ..lbl),
+  custom(shape: (256, 20, 20),
+    fill: sppf-color, opacity: 0.9, legend: "SPPF", name: "sppf", offset: gap-conv),
+  custom(shape: (256, 20, 20),
+    fill: attn-color, opacity: 0.9, legend: "C2PSA (attention)", name: "p5", offset: gap-conv),
 
-  unpool(shape: (256, 40, 40), label: "upsample", name: "u4", offset: gap, label-orient: "horizontal", label-dx: 0.55),
-  concat(shape: (384, 40, 40), name: "cat4", label: "concat", offset: gap, ..lbl),
-  convres(shape: (128, 40, 40), label: "C3k2", channels: (128, 40), name: "n4", offset: gap, ..lbl),
+  unpool(shape: (256, 40, 40), name: "u4", offset: gap-conv),
+  concat(shape: (384, 40, 40), name: "cat4", offset: gap-unpool),
+  convres(shape: (128, 40, 40), name: "n4", offset: gap-concat),
 
-  unpool(shape: (128, 80, 80), label: "upsample", name: "u3", offset: gap, label-orient: "horizontal", label-dx: 0.55),
-  concat(shape: (192, 80, 80), name: "cat3", label: "concat", offset: gap, ..lbl),
-  convres(shape: (64, 80, 80), label: "C3k2", channels: (64, 80), name: "n3", offset: gap, ..lbl),
+  unpool(shape: (128, 80, 80), name: "u3", offset: gap-conv),
+  concat(shape: (192, 80, 80), name: "cat3", offset: gap-unpool),
+  convres(shape: (64, 80, 80), name: "n3", offset: gap-concat),
 
-  conv(shape: (64, 40, 40), label: "down", channels: (64, 40), name: "d4", offset: gap, ..lbl),
-  concat(shape: (192, 40, 40), name: "cat4b", label: "concat", offset: gap, label-dx: 0.5, ..lbl),
-  convres(shape: (128, 40, 40), label: "C3k2", channels: (128, 40), name: "n4b", offset: gap, ..lbl),
+  conv(shape: (64, 40, 40), name: "d4", offset: gap-conv),
+  concat(shape: (192, 40, 40), name: "cat4b", offset: gap-conv),
+  convres(shape: (128, 40, 40), name: "n4b", offset: gap-concat),
 
-  conv(shape: (128, 20, 20), label: "down", channels: (128, 20), name: "d5", offset: gap, ..lbl),
-  concat(shape: (384, 20, 20), name: "cat5", label: "concat", offset: gap, label-dx: 0.45, ..lbl),
-  convres(shape: (256, 20, 20), label: "C3k2", channels: (256, 20), name: "n5", offset: gap, ..lbl),
+  conv(shape: (128, 20, 20), name: "d5", offset: gap-conv),
+  concat(shape: (384, 20, 20), name: "cat5", offset: gap-conv),
+  convres(shape: (256, 20, 20), name: "n5", offset: gap-concat),
 
   branch(spread: 7, lead: 3.0, rejoin-lead: 4.6, spread-mode: "depth", branches: (
-    (custom(width: 0.5, height: 2.6, depth: 1.4, label: "Detect P3", channels: (256, 80),
-      fill: head-color, opacity: 0.9, show-relu: false, legend: "Detect (NMS-free)", name: "hp3", label-orient: "horizontal"),),
-    (custom(width: 0.5, height: 2.6, depth: 1.4, label: "Detect P4", channels: (256, 40),
-      fill: head-color, opacity: 0.9, show-relu: false, name: "hp4", label-orient: "horizontal"),),
-    (custom(width: 0.5, height: 2.6, depth: 1.4, label: "Detect P5", channels: (256, 20),
-      fill: head-color, opacity: 0.9, show-relu: false, name: "hp5", label-orient: "horizontal"),),
+    (custom(width: 0.5, height: 2.6, depth: 1.4,
+      fill: head-color, opacity: 0.9, show-relu: false, legend: "Detect (NMS-free)", name: "hp3"),),
+    (custom(width: 0.5, height: 2.6, depth: 1.4,
+      fill: head-color, opacity: 0.9, show-relu: false, name: "hp4"),),
+    (custom(width: 0.5, height: 2.6, depth: 1.4,
+      fill: head-color, opacity: 0.9, show-relu: false, name: "hp5"),),
   )),
-  output(label: "boxes + cls", height: 4, depth: 0.3, name: "out", offset: gap, ..lbl),
+  output(height: 4, depth: 0.3, name: "out", offset: gap-detect),
 ), groups: (
   group(from: "p1", to: "c2", label: "stem"),
   group(from: "p3d", to: "p3", label: "P3 stage"),
