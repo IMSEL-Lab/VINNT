@@ -95,6 +95,8 @@ canvas(length: 1cm * scale-factor, {
           let spread = l.at("spread", default: 6)
           let lead = l.at("lead", default: 2.0)
           let rejoin-lead = l.at("rejoin-lead", default: lead)
+          let entry-gap = l.at("entry-gap", default: 0)
+          let exit-gap = l.at("exit-gap", default: 0)
           let open-mode = l.at("open", default: none)
           if open-mode not in (none, "start", "end") {
             panic("branch open must be \"start\" or \"end\"; got " + repr(open-mode))
@@ -103,7 +105,7 @@ canvas(length: 1cm * scale-factor, {
           let n = subs.len()
           // "depth" stacks branches along the projection axis, "vertical" straight up.
           let depth-spread = l.at("spread-mode", default: "vertical") == "depth"
-          let turn-out = calc.max(x + lead / 2, prev-x + prev-depth-offset + 0.15)
+          let turn-out = calc.max(x + lead / 2 + entry-gap, prev-x + prev-depth-offset + 0.15)
           let branch-from-x = prev-x + prev-pool-width + prev-depth-offset / 2
           let branch-from-y = prev-center-y
           let branch-start = if open-mode == "start" { x } else { turn-out + lead / 2 }
@@ -224,7 +226,8 @@ canvas(length: 1cm * scale-factor, {
           }
 
           let dot-x = if n <= 1 { resume } else if depth-spread { rcross } else { resume - rejoin-lead / 2 }
-          x = if depth-spread and n > 1 { rturn0 + spread } else { dot-x }
+          let raw-x = if depth-spread and n > 1 { rturn0 + spread } else { dot-x }
+          x = calc.max(raw-x + exit-gap, dot-x)
           prev-x = if open-mode == "end" { x } else { dot-x }
           branch-extents.push((x0: turn-out, x1: x, members: branch-members))
           prev-depth-offset = 0

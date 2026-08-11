@@ -39,6 +39,7 @@
   // A container: it draws no block of its own, so no block options apply.
   m.insert("branch", (
     "type", "name", "branches", "spread", "spread-mode", "lead", "rejoin-lead", "open",
+    "entry-gap", "exit-gap",
   ))
   m
 }

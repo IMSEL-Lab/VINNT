@@ -229,13 +229,18 @@
 ))
 
 // `branches` is an array of layer arrays, one per parallel path.
+// `entry-gap`/`exit-gap` add (or, negative, remove) flat run before the fan
+// splits and after it rejoins, without changing `lead`/`rejoin-lead`, which
+// set the length of the diagonal fan arms themselves.
 #let branch(
   branches: (),
   name: unset, spread: unset, spread-mode: unset,
   lead: unset, rejoin-lead: unset, open: unset,
+  entry-gap: unset, exit-gap: unset,
 ) = mk("branch", (
   branches: branches, name: name, spread: spread, spread-mode: spread-mode,
   lead: lead, rejoin-lead: rejoin-lead, open: open,
+  entry-gap: entry-gap, exit-gap: exit-gap,
 ))
 
 #let connection(
