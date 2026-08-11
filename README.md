@@ -164,7 +164,16 @@ actual source: plain text throughout, and every example a standalone file that
 compiles on its own.
 
 **[Gallery](gallery/)** — AlexNet, LeNet-5, VGG16/19, ResNet18, U-Net, FCN-8,
-YOLO26-n and five RGB-IR fusion variants. Sources in [`examples/`](examples/).
+SynthMorph, YOLO26-n and five RGB-IR fusion variants. Sources in
+[`examples/`](examples/).
+
+- [YOLO26-n](gallery/networks/YOLO26n.png)
+- [YOLO26-n — early fusion](gallery/networks/YOLO26n-early-fusion.png)
+- [YOLO26-n — mid fusion](gallery/networks/YOLO26n-mid-fusion.png)
+- [YOLO26-n — late fusion](gallery/networks/YOLO26n-late-fusion.png)
+- [YOLO26-n — gated fusion](gallery/networks/YOLO26n-gated-fusion.png)
+- [YOLO26-n — multiscale fusion](gallery/networks/YOLO26n-multiscale-fusion.png)
+- [SynthMorph](gallery/networks/SynthMorph.png)
 
 ## Licence
 
