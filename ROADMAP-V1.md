@@ -7,8 +7,44 @@ Sources for these items: open issues on
 [neural-netz](https://github.com/edgaremy/neural-netz/issues) (the package VINNT
 forks), open issues on
 [PlotNeuralNet](https://github.com/HarisIqbal88/PlotNeuralNet/issues) (76 open,
-the visual language VINNT inherits), a survey of Typst Universe, and a read of
-the current source.
+the visual language VINNT inherits), a survey of Typst Universe, a survey of the
+LaTeX and standalone prior art (see the appendix), and a read of the current
+source.
+
+---
+
+## Release plan
+
+| Version | Content |
+| --- | --- |
+| **0.2** | `draw-mlp()` — node-and-edge diagrams. Plus all Tier 0 blockers. |
+| **0.2.x** | Harden and document the torch importer. It already works; this is a docs and hardening pass, not new construction. |
+| **0.3** | Box-and-arrow block renderer. |
+| **0.4** | Transformers, built on the 0.3 renderer. |
+| **1.0** | Public feedback absorbed, API frozen. |
+
+Two notes on the ordering.
+
+The **torch importer is not future work**. `tools/import_model.py` is 503 lines,
+supports `--torchvision`, `--onnx` and `--checkpoint`, traces a real forward pass
+through hooks rather than reading the module tree, and has already produced the
+ResNet18, VGG16 and ViT-B/16 traces in `examples/imported/`. Nothing else on
+Typst Universe does this, and PlotNeuralNet has been asked for it since 2021
+(#124, #63) without ever shipping it. It belongs early, not at the end. The known
+limitation is already stated in the script's docstring: leaf-module tracing
+cannot observe a residual `out += identity`, because that is a tensor operation
+and not a module, so such models import as their trunk and the skips are added by
+hand. That is a shippable caveat as long as it is said plainly.
+
+The **0.3 box renderer is a prerequisite, not a detour**. Attention blocks, layer
+norms, residual streams and encoder/decoder stacks are drawn as labelled boxes
+with arrows, not as isometric tensor prisms. The current vocabulary cannot
+express them. Building the box renderer first is what makes 0.4 possible at all.
+
+- [ ] **Decide the renderer boundary at 0.3, not at 0.4.** Three renderers under
+      one roof — isometric prisms, neuron graphs, labelled boxes — is coherent
+      only if they share connection routing, naming, theming and the legend.
+      If each grows its own, the package fractures. Settle this before 0.4.
 
 ---
 
@@ -196,3 +232,95 @@ in Typst.
   the full thing waits.
 - Graph neural networks.
 - Animation or interactivity.
+
+---
+
+## Appendix — prior art worth studying
+
+Nothing here is a Typst competitor. These are the tools people currently use, and
+they are where the design vocabulary and the good defaults already exist. The
+LaTeX ones matter most, because their users are exactly the people VINNT is
+trying to win.
+
+### For `draw-mlp()` (0.2)
+
+**[neuralnetwork.sty](https://ctan.org/pkg/neuralnetwork)** (Mark K Cowan, on
+CTAN, source at [battlesnake/neural](https://github.com/battlesnake/neural)) —
+the closest thing to a reference API for MLP drawing. Worth borrowing the shape
+of almost wholesale.
+
+- `\inputlayer[count=N]`, `\hiddenlayer[count=N]`, `\outputlayer[count=N]` for
+  the common case, with a general `\layer` underneath for everything else. This
+  is the right two-tier design: trivial things trivial, hard things possible.
+- `\linklayers` as a separate step, so connections are not implied by adjacency.
+- Environment-level `nodespacing`, `layerspacing`, `nodesize`, and `height` (the
+  max node count in any layer, used to set the canvas).
+- `toprow` reserves space for bias nodes; `biaspos` places them. Bias handling is
+  a first-class concern, not an afterthought.
+- `exclude` skips node indices within a layer.
+- `\link` addresses a single connection by `from layer`/`from node`/`to layer`/
+  `to node` with its own `style` and `labelpos`.
+- `\setdefaultnodetext{}` / `\setdefaultlinklabel{}` — label content is a
+  user-supplied macro over indices rather than a fixed string. Good idea.
+
+**[nndiagram](https://github.com/ccfang2/nndiagram)** (R, generates TikZ) — has
+solved several problems already on the 0.2 list, and the naming is worth copying:
+
+- `nndiagram_oversize(input=3, hidden=c(6,4,6), size.cutoff=5)` — the ellipsis
+  feature, driven by a **cutoff threshold** rather than a per-layer boolean. Any
+  layer above the cutoff collapses automatically. Better default than
+  `ellipsis: true`.
+- `omit` and `keep` for connection subsets, e.g. `omit="->4"` — a small selector
+  language over an O(n²) edge set. Much better than enumerating edges.
+- `node.coverup` — deemphasise specific neurons with lighter colouring, for
+  dropout figures and for highlighting a path through the network.
+- `activation_curve()` — draws ReLU/sigmoid/step or a custom expression as a
+  small inset plot. A neat companion figure; Lilaq would handle this in Typst.
+- Consistent top-to-bottom, left-to-right neuron indexing, stated up front.
+
+**[NN-SVG](https://github.com/daidedou/NN-SVG)** — the web tool most people reach
+for. Study it for **defaults and proportions** rather than API: it produces
+publication-quality FCNN and CNN figures with no configuration at all, which is
+the bar for what `draw-mlp` should look like before any options are passed.
+
+**[drawnn](https://github.com/xavigonzalvo/drawnn)** and
+**[tikz-nef](https://ctan.org/pkg/tikz-nef)** — smaller, worth a skim.
+[tikz.net/neural_networks](https://tikz.net/neural_networks/) and
+[texample.net/neural-network](https://texample.net/neural-network/) are galleries
+of hand-rolled TikZ MLPs; useful as a survey of what people actually draw when
+nothing constrains them.
+
+- [ ] Review `neuralnetwork.sty`'s layer/link split before fixing the
+      `draw-mlp` API
+- [ ] Adopt cutoff-driven ellipsis rather than a per-layer flag
+- [ ] Design a connection selector (`omit`/`keep`) rather than edge enumeration
+- [ ] Decide whether bias nodes are first-class, as in `neuralnetwork.sty`
+- [ ] Compare default proportions against NN-SVG output side by side
+
+### For the importer (0.2.x)
+
+**[pytorch2tikz](https://github.com/fraunhoferhhi/pytorch2tikz)** (Fraunhofer HHI)
+— the direct precedent: traces a running PyTorch model and emits PlotNeuralNet
+TikZ. Same approach as `tools/import_model.py`, same fundamental limitations.
+Worth reading for how they handle what tracing cannot see, and for how they
+present those limits to users.
+
+**[Netron](https://github.com/lutzroeder/netron)** — the standard model viewer,
+reads ONNX, TorchScript, TF, CoreML, Keras and many more. Not a competitor;
+its output is explicitly not publication-ready. But its **format coverage** is
+the reference list for what `--onnx` should eventually accept, and its graph
+extraction is battle-tested prior art.
+
+- [ ] Read how pytorch2tikz communicates trace limitations
+- [ ] Compare the ONNX path against Netron's format handling
+
+### For the box renderer and transformers (0.3, 0.4)
+
+- [ ] Survey how transformer figures are actually drawn in the literature
+      (the *Attention Is All You Need* figure and its many descendants) before
+      designing the block vocabulary
+- [ ] **[TensorSpace](https://github.com/tensorspace-team/tensorspace)** — 3D
+      layered visualisation in the browser; worth a look for how it handles
+      depth and stacking, though the medium is very different
+- [ ] Check [ashishpatel26/Tools-to-Design-or-Visualize-Architecture-of-Neural-Network](https://github.com/ashishpatel26/Tools-to-Design-or-Visualize-Architecture-of-Neural-Network)
+      — a curated list of this whole tool space, for anything missed above
