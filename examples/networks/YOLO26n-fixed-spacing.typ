@@ -18,6 +18,7 @@
 #let gap-unpool = 0.75 // after a depth-4 unpool block
 #let gap-concat = 0.5  // after a depth-3 concat block
 #let gap-detect = 0.3  // after a depth-1.4 detect block
+#let gap-p5 = 0.45      // after a 20-spatial conv/custom block (P5 stage, context)
 #let input-gap = 1.8
 
 #draw-network((
@@ -34,12 +35,12 @@
   convres(shape: (256, 40, 40), name: "p4", offset: gap-conv),
 
   conv(shape: (256, 20, 20), name: "p5d", offset: gap-conv),
-  convres(shape: (256, 20, 20), name: "c5", offset: gap-conv),
+  convres(shape: (256, 20, 20), name: "c5", offset: gap-p5),
 
   custom(shape: (256, 20, 20),
-    fill: sppf-color, opacity: 0.9, legend: "SPPF", name: "sppf", offset: gap-conv),
+    fill: sppf-color, opacity: 0.9, legend: "SPPF", name: "sppf", offset: gap-p5),
   custom(shape: (256, 20, 20),
-    fill: attn-color, opacity: 0.9, legend: "C2PSA (attention)", name: "p5", offset: gap-conv),
+    fill: attn-color, opacity: 0.9, legend: "C2PSA (attention)", name: "p5", offset: gap-p5),
 
   unpool(shape: (256, 40, 40), name: "u4", offset: gap-conv),
   concat(shape: (384, 40, 40), name: "cat4", offset: gap-unpool),
