@@ -1,5 +1,5 @@
 <h1 align="center">VINNT</h1>
-<p align="center"><b>V</b>ision <b>I</b>llustration of <b>N</b>eural <b>N</b>etworks in <b>T</b>ypst</p>
+<p align="center"><b>V</b>isual <b>I</b>llustration of <b>N</b>eural <b>N</b>etworks in <b>T</b>ypst</p>
 
 <p align="center">
 <img src="gallery/networks/YOLO26n.png" width="850" alt="YOLO26-n drawn with VINNT"/>
