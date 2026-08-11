@@ -1,17 +1,26 @@
 // FIGURE 6 — the figure this project actually needs: dual-branch RGB/IR fusion,
 // shown flat, with the fusion module expanded.
 //
+// Second draft, with the shape vocabulary from fig2 and fig3. The two backbones
+// are narrowing trapezoids because they reduce resolution, the inputs and
+// outputs are stacked planes, and the gate is an elementwise circle rather than
+// a labelled box. Only the head stays a rectangle, because it preserves
+// structure.
+//
 // TARGET API:
 //
 //   #draw-network(
 //     (
-//       source(name: "rgb", label: "RGB",  lane: 1),
-//       source(name: "ir",  label: "IR",   lane: -1),
-//       block(name: "bb-rgb", label: "Backbone", lane: 1),
-//       block(name: "bb-ir",  label: "Backbone", lane: -1, weights: "shared"),
+//       source(name: "rgb", label: "RGB", sub: "640x640x3", lane: 1),
+//       source(name: "ir",  label: "IR",  sub: "640x640x1", lane: -1),
+//       block(name: "bb-rgb", label: "Backbone", role: "downsample", lane: 1),
+//       block(name: "bb-ir",  label: "Backbone", role: "downsample", lane: -1),
 //       block(name: "fuse",   label: "Gated fusion", detail: (...)),
 //       block(name: "head",   label: "Head"),
-//       sink(name: "out",     label: "Detections"),
+//       sink(name: "out",     label: "Detections", sub: "N x 6"),
+//     ),
+//     connections: (
+//       connection(from: "bb-rgb", to: "bb-ir", type: "tied", label: "shared"),
 //     ),
 //     view: "flat",
 //     detail: "fuse",
@@ -21,13 +30,14 @@
 //   - PARALLEL LANES in the flat view. The isometric renderer already has lane
 //     machinery (`lane-unit`, branch()); the flat renderer must reuse it rather
 //     than invent its own, or the two views will disagree about geometry.
-//   - A block annotated as sharing weights with another block. That is a
-//     relationship between two named blocks, which is what `connections:`
-//     already expresses — so it should probably be a connection with a style,
-//     not a block property.
-//   - Merge semantics: two lanes entering one block. The isometric side has
-//     concat()/sum() for this. Flat blocks need the same, or the description
-//     stops being renderer-independent.
+//   - Weight sharing expressed as a CONNECTION between two named blocks, not as
+//     a property on one of them. Same mechanism will carry weight tying, EMA
+//     teachers and stop-gradient annotations.
+//   - MERGE SEMANTICS: two lanes entering one block. The isometric side has
+//     concat()/sum() for this. The flat renderer needs the same or the
+//     description stops being renderer-independent.
+//   - A detail panel whose contents are NOT a slice of a linear trunk. This is
+//     the case that argues against a pure `collapse:` design — see FINDINGS.
 
 #import "@preview/cetz:0.5.2": canvas
 #import "mock.typ": *
@@ -35,56 +45,76 @@
 #set page(width: auto, height: auto, margin: 6mm)
 
 #canvas(length: 1cm, {
-  let up = 1.05
-  let dn = -1.05
+  let up = 1.35
+  let dn = -1.35
 
-  fbox((0, up), "RGB", sub: "640x640x3", fill: c-sand, w: 1.7, h: 0.95)
-  fbox((0, dn), "IR", sub: "640x640x1", fill: c-sand, w: 1.7, h: 0.95)
+  fstack((0, up), "RGB", sub: "640x640x3", w: 1.0, h: 1.1, fill: c-sand)
+  fstack((0, dn), "IR", sub: "640x640x1", w: 1.0, h: 1.1, fill: c-sand)
 
-  fbox((2.7, up), "Backbone", sub: "CSPDarknet", fill: c-10black, h: 0.95)
-  fbox((2.7, dn), "Backbone", sub: "CSPDarknet", fill: c-10black, h: 0.95)
+  ftrap((2.9, up), "Backbone", sub: "CSPDarknet", w: 2.1, h: 1.5, h-out: 0.85, fill: c-10black)
+  ftrap((2.9, dn), "Backbone", sub: "CSPDarknet", w: 2.1, h: 1.5, h-out: 0.85, fill: c-10black)
 
-  fbox((5.9, 0), "Gated fusion", fill: c-garnet, text-color: white, stroke-color: c-garnet, w: 2.4, h: 1.2)
-  fbox((8.9, 0), "Head", sub: "decoupled", fill: c-10black)
-  fbox((11.6, 0), "Detections", fill: c-atlantic.lighten(70%), w: 1.9)
+  fbox(
+    (6.2, 0),
+    "Gated fusion",
+    w: 2.2,
+    h: 1.3,
+    fill: c-garnet,
+    stroke-color: c-garnet,
+    text-color: white,
+  )
 
-  farrow((0.85, up), (1.6, up))
-  farrow((0.85, dn), (1.6, dn))
-  farrow((3.8, up), (4.7, 0.28))
-  farrow((3.8, dn), (4.7, -0.28))
-  farrow((7.1, 0), (7.8, 0))
-  farrow((10.0, 0), (10.65, 0))
+  fbox((9.1, 0), "Head", sub: "decoupled", w: 1.8, h: 1.0, fill: c-30black)
+  fstack((11.7, 0), "Detections", sub: "N x 6", w: 1.0, h: 1.1, fill: c-congaree-l)
 
-  // shared-weights relation, drawn as a styled connection between two blocks
+  farrow((0.75, up), (1.75, up))
+  farrow((0.75, dn), (1.75, dn))
+  farrow((4.0, up - 0.02), (5.05, 0.42))
+  farrow((4.0, dn + 0.02), (5.05, -0.42))
+  farrow((7.35, 0), (8.15, 0))
+  farrow((10.05, 0), (11.1, 0))
+
+  // Weight sharing, drawn as a styled connection between two named blocks.
   line(
-    (2.7, up - 0.48),
-    (2.7, dn + 0.48),
+    (2.9, up - 0.78),
+    (2.9, dn + 0.78),
     stroke: (paint: c-atlantic, thickness: 0.9pt, dash: (2pt, 2pt)),
     mark: stealth2(c-atlantic),
   )
-  content((2.7, 0), box(fill: white, inset: 2pt, text(size: 6pt, fill: c-atlantic)[shared]))
+  content((2.9, 0), box(fill: white, inset: 2.5pt, text(size: 6.5pt, fill: c-atlantic)[shared]))
 
   // ---- detail panel for the fusion module ----
-  let py = -3.5
-  let ptl = (2.6, py + 1.25)
-  let pbr = (9.2, py - 1.25)
+  let py = -4.3
+  let ptl = (2.4, py + 1.6)
+  let pbr = (10.8, py - 1.6)
   rect(ptl, pbr, fill: white, stroke: (paint: c-garnet, thickness: 1pt))
-  callout((5.9 - 1.2, -0.6), (5.9 + 1.2, -0.6), ptl, (pbr.at(0), ptl.at(1)))
+  callout((6.2 - 1.1, -0.65), (6.2 + 1.1, -0.65), ptl, (pbr.at(0), ptl.at(1)))
 
-  prism(3.2, py + 0.45, w: 0.35, h: 0.85, d: 0.3, fill: rgb("#CDEDFE"), sub: "F_rgb")
-  prism(3.2, py - 0.55, w: 0.35, h: 0.85, d: 0.3, fill: rgb("#CDEDFE"), sub: "F_ir")
+  // Feature maps arriving from the two branches.
+  prism(3.0, py + 0.62, w: 0.32, h: 0.9, d: 0.34, fill: rgb("#CDEDFE"))
+  content((3.0, py + 1.28), text(size: 6.5pt, fill: c-70black)[$F_"rgb"$])
+  prism(3.0, py - 0.78, w: 0.32, h: 0.9, d: 0.34, fill: rgb("#8edbd5"))
+  content((3.0, py - 1.32), text(size: 6.5pt, fill: c-70black)[$F_"ir"$])
 
-  fbox((5.0, py), "1x1 conv", w: 1.3, h: 0.65, fill: c-10black)
-  fbox((6.6, py), "sigmoid", w: 1.2, h: 0.65, fill: c-10black)
+  // concat -> gate -> weighted sum
+  fop((4.6, py), $⊕$)
+  content((4.6, py - 0.6), text(size: 6.5pt, fill: c-70black)[concat])
 
-  circle((7.9, py), radius: 0.24, fill: white, stroke: (paint: black, thickness: 0.9pt))
-  content((7.9, py), text(size: 8pt)[$times$])
+  fbox((6.2, py), "1x1 conv", w: 1.25, h: 0.6, fill: c-10black)
+  fbar((7.6, py), "sigmoid", w: 0.34, h: 0.85, above: true)
 
-  farrow((3.75, py + 0.45), (4.3, py + 0.12))
-  farrow((3.75, py - 0.55), (4.3, py - 0.12))
-  farrow((5.7, py), (5.95, py))
-  farrow((7.25, py), (7.6, py))
-  farrow((8.2, py), (8.8, py))
+  fop((8.9, py), $times$)
+  content((8.9, py - 0.6), text(size: 6.5pt, fill: c-70black)[gate])
 
-  content((5.9, py - 1.75), text(size: 7.5pt, fill: c-garnet)[*Gated fusion*, expanded])
+  farrow((3.55, py + 0.62), (4.25, py + 0.16))
+  farrow((3.55, py - 0.78), (4.25, py - 0.16))
+  farrow((4.9, py), (5.55, py))
+  farrow((6.85, py), (7.38, py))
+  farrow((7.82, py), (8.6, py))
+  farrow((9.2, py), (9.85, py))
+
+  prism(9.95, py, w: 0.32, h: 0.9, d: 0.34, fill: rgb("#e681a8"))
+  content((10.1, py - 0.72), text(size: 6.5pt, fill: c-70black)[$F_"fused"$])
+
+  content((6.4, py - 2.15), text(size: 7.5pt, fill: c-garnet)[*Gated fusion*, expanded])
 })
