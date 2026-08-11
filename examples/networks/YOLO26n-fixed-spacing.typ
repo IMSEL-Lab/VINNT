@@ -10,8 +10,8 @@
 #let head-color = rgb("#CC2E40")
 
 #let lbl = (label-orient: "diagonal")
-#let gap = 1.5
-#let input-gap = 2.0
+#let gap = 1.3
+#let input-gap = 1.8
 
 #draw-network((
   input(image: "default", shape: (3, 640, 640), label: "input", channels: (3, 640), name: "input", ..lbl),
