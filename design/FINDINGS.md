@@ -108,6 +108,56 @@ least-solved part of the sketches.
 
 - [ ] Anchor model for magnification callouts
 
+## 10. A downsample layer should infer its size from the block it feeds
+
+The first draft of figure 1 wrote `pool(name: "p1")` with no shape, so the pool
+fell back to a fixed default size and was drawn visibly taller than the conv it
+fed. Verified in isolation: passing `pool(shape: (64, 64, 64))` next to
+`conv(shape: (128, 64, 64))` renders them at identical height and depth, so the
+library is correct and the example was wrong.
+
+But requiring the restatement is the bug. A pool's output spatial size IS the
+next block's input spatial size, always. Making the author write it twice
+invites exactly the drift the shape system exists to prevent, and the silent
+fallback to a default means getting it wrong looks plausible rather than
+obviously broken.
+
+- [ ] `pool`/`unpool` with no shape infer spatial size from the adjacent block
+- [ ] Consider warning rather than silently defaulting when a downsample sits
+      between two blocks whose shapes disagree with it
+
+## 11. Shape must carry meaning in the flat view
+
+The first draft of figure 2 drew every block as an identical rectangle, so the
+figure said nothing until each label was read. Rendering neural-viz for
+comparison (`ref-neural-viz.typ`) made the contrast obvious: its palette is
+poor and its arrowheads are open barbs, but its glyphs are semantic — a
+trapezoid reads as "downsamples" before you read a word.
+
+The vocabulary the second draft settled on:
+
+| glyph | meaning | typical blocks |
+| --- | --- | --- |
+| narrowing trapezoid | reduces resolution | backbone, encoder, downsample |
+| widening trapezoid | raises resolution | decoder, upsample |
+| thin vertical bar | bottleneck | latent, neck, embedding |
+| stacked planes | batched data | dataset, image input, output set |
+| rectangle | structure-preserving | head, generic op |
+| circle | elementwise | sum, product, gate |
+
+Two consequences. The glyph should DEFAULT from the layer type wherever the type
+implies one — pool and strided conv are downsamples, deconv and unpool are
+upsamples, gap is a bottleneck — so `role:` is only reached for on a generic
+`block()`. And under option B below, the glyph can be **derived**: if the
+library can see the collapsed run goes 320 to 80, it knows to draw a narrowing
+trapezoid without being told.
+
+That last point is a real argument for B over A.
+
+- [ ] Implement the glyph set above
+- [ ] Default `role:` from layer type
+- [ ] Derive the glyph from collapsed shape change where possible
+
 ---
 
 ## The open decision: where does detail come from?

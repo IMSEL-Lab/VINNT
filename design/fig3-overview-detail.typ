@@ -1,21 +1,27 @@
 // FIGURE 3 — flat overview with one box expanded isometrically below it.
 //
-// This is the figure that justifies the whole package. Nothing else on Universe
-// can produce it, because no other tool knows the two views describe the same
-// object.
+// Second draft, with the shape vocabulary from fig2. This is the figure that
+// justifies the whole package: nothing else on Universe can produce it, because
+// no other tool knows the two views describe the same object.
+//
+// The shape vocabulary earns its keep here specifically. The overview block is
+// a NARROWING TRAPEZOID because it reduces resolution, and the expansion below
+// shows exactly how — a descending staircase of prisms. The two views now make
+// the same claim at two levels of detail, instead of merely sitting near each
+// other. A rectangle in the overview would have thrown that away.
 //
 // TARGET API, option A — expansion carried inline on the block:
 //
 //   #draw-network(
 //     (
 //       source(name: "in", label: "RGB frame"),
-//       block(name: "bb", label: "Backbone", detail: (
+//       block(name: "bb", label: "Backbone", role: "downsample", detail: (
 //         conv(shape: (64, 320, 320), name: "d1"),
-//         pool(name: "d2"),
+//         pool(shape: (64, 160, 160), name: "d2"),
 //         conv(shape: (128, 160, 160), name: "d3"),
 //         convres(shape: (256, 80, 80), name: "d4"),
 //       )),
-//       block(name: "neck", label: "Neck"),
+//       block(name: "neck", label: "Neck", role: "bottleneck"),
 //       block(name: "head", label: "Head"),
 //     ),
 //     view: "flat",
@@ -27,7 +33,7 @@
 //   #let net = (
 //     input(name: "in"),
 //     conv(shape: (64, 320, 320), name: "d1"),
-//     pool(name: "d2"),
+//     pool(shape: (64, 160, 160), name: "d2"),
 //     conv(shape: (128, 160, 160), name: "d3"),
 //     convres(shape: (256, 80, 80), name: "d4"),
 //     conv(shape: (512, 40, 40), name: "n1"),
@@ -45,9 +51,11 @@
 //   )
 //
 // B has one source of truth and reuses the `groups:` mechanism that already
-// exists. A is easier to type for a figure whose overview boxes are not really
-// one contiguous run of layers. THIS IS THE DECISION TO MAKE. Look at the
-// picture below and decide which source you would rather maintain.
+// exists — and note that under B the trapezoid could be DERIVED, since the
+// library can see that the collapsed run goes 320 -> 80. A is easier to type
+// for a figure whose overview boxes are not one contiguous run of layers.
+// THIS IS THE DECISION TO MAKE. Look at the picture and decide which source you
+// would rather maintain.
 
 #import "@preview/cetz:0.5.2": canvas
 #import "mock.typ": *
@@ -57,36 +65,50 @@
 #canvas(length: 1cm, {
   // ---- overview row ----
   let y = 0
-  fbox((0, y), "RGB frame", sub: "640x640x3", fill: c-sand, w: 2.0)
-  fbox((3.0, y), "Backbone", sub: "CSPDarknet", fill: c-garnet, text-color: white, stroke-color: c-garnet)
-  fbox((6.0, y), "Neck", sub: "PAN-FPN", fill: c-10black)
-  fbox((9.0, y), "Head", sub: "decoupled", fill: c-10black)
-  fbox((11.9, y), "Detections", sub: "N x 6", fill: c-atlantic.lighten(70%), w: 2.0)
+  fstack((0, y), "RGB frame", sub: "640x640x3", fill: c-sand)
 
-  farrow((1.0, y), (1.9, y))
-  farrow((4.1, y), (4.9, y), label: "P3-P5")
-  farrow((7.1, y), (7.9, y))
-  farrow((10.1, y), (10.9, y))
+  ftrap(
+    (3.1, y),
+    "Backbone",
+    sub: "CSPDarknet",
+    w: 2.3,
+    h: 1.75,
+    h-out: 0.95,
+    fill: c-garnet,
+    stroke-color: c-garnet,
+    text-color: white,
+  )
+
+  fbar((5.7, y), "Neck", sub: "PAN-FPN", h: 1.0, above: true)
+  fbox((8.0, y), "Head", sub: "decoupled", w: 1.9, h: 1.0, fill: c-30black)
+  fstack((10.8, y), "Detections", sub: "N x 6", fill: c-congaree-l)
+
+  farrow((0.75, y), (1.85, y))
+  farrow((4.35, y), (5.4, y), label: "P3-P5")
+  farrow((6.0, y), (6.95, y))
+  farrow((9.0, y), (10.15, y))
 
   // ---- detail panel ----
-  let py = -3.6
-  let ptl = (1.1, py + 1.5)
-  let pbr = (10.9, py - 1.5)
+  let py = -3.9
+  let ptl = (1.5, py + 1.55)
+  let pbr = (10.4, py - 1.55)
   rect(ptl, pbr, fill: white, stroke: (paint: c-garnet, thickness: 1pt))
 
-  // magnification lines from the highlighted box to the panel corners
-  callout((3.0 - 1.1, y - 0.55), (3.0 + 1.1, y - 0.55), ptl, (pbr.at(0), ptl.at(1)))
+  // Magnification lines run from the trapezoid's lower corners to the panel's
+  // upper corners. Hand-placed here; see FINDINGS item 9.
+  callout((3.1 - 1.15, y - 0.875), (3.1 + 1.15, y - 0.475), ptl, (pbr.at(0), ptl.at(1)))
 
-  prism(1.8, py, w: 0.35, h: 2.2, d: 0.8, fill: rgb("#CDEDFE"), label: "conv", sub: "64")
-  prism(3.0, py, w: 0.3, h: 1.8, d: 0.65, fill: rgb("#af78e6"), label: "pool")
-  prism(4.2, py, w: 0.5, h: 1.6, d: 0.55, fill: rgb("#CDEDFE"), label: "conv", sub: "128")
-  prism(5.6, py, w: 0.3, h: 1.3, d: 0.45, fill: rgb("#af78e6"), label: "pool")
-  prism(6.8, py, w: 0.7, h: 1.1, d: 0.38, fill: rgb("#8edbd5"), label: "convres", sub: "256")
-  prism(8.6, py, w: 0.9, h: 0.85, d: 0.3, fill: rgb("#8edbd5"), label: "convres", sub: "512")
+  // A descending staircase: the same claim the trapezoid makes, in detail.
+  prism(2.1, py, w: 0.35, h: 2.3, d: 0.85, fill: rgb("#CDEDFE"), label: "conv", sub: "64")
+  prism(3.3, py, w: 0.28, h: 1.9, d: 0.7, fill: rgb("#af78e6"), label: "pool")
+  prism(4.5, py, w: 0.5, h: 1.7, d: 0.6, fill: rgb("#CDEDFE"), label: "conv", sub: "128")
+  prism(5.9, py, w: 0.28, h: 1.35, d: 0.48, fill: rgb("#af78e6"), label: "pool")
+  prism(7.1, py, w: 0.7, h: 1.15, d: 0.4, fill: rgb("#8edbd5"), label: "convres", sub: "256")
+  prism(8.9, py, w: 0.9, h: 0.85, d: 0.3, fill: rgb("#8edbd5"), label: "convres", sub: "512")
 
-  for (a, b) in ((2.6, 2.95), (3.75, 4.15), (5.15, 5.55), (6.3, 6.75), (8.0, 8.55)) {
+  for (a, b) in ((2.85, 3.25), (4.05, 4.45), (5.45, 5.85), (6.6, 7.05), (8.3, 8.85)) {
     line((a, py), (b, py), stroke: (paint: black, thickness: 0.8pt), mark: stealth(black))
   }
 
-  content((6.0, py - 2.05), text(size: 7.5pt, fill: c-garnet)[*Backbone*, expanded])
+  content((5.95, py - 2.1), text(size: 7.5pt, fill: c-garnet)[*Backbone*, expanded])
 })
