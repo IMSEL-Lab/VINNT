@@ -15,9 +15,9 @@
 // constant either overlaps the deep layers or leaves the shallow ones too
 // loose. Each gap below is named for the layer type it follows.
 #let gap-conv = 1.3    // after a depth-5 conv/convres/custom block
-#let gap-unpool = 1.0  // after a depth-4 unpool block
-#let gap-concat = 0.8  // after a depth-3 concat block
-#let gap-detect = 0.5  // after a depth-1.4 detect block
+#let gap-unpool = 0.75 // after a depth-4 unpool block
+#let gap-concat = 0.5  // after a depth-3 concat block
+#let gap-detect = 0.3  // after a depth-1.4 detect block
 #let input-gap = 1.8
 
 #draw-network((
