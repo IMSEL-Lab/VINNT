@@ -3,7 +3,7 @@
 #set page(width: auto, height: auto, margin: 6mm)
 
 // TensorFlow-Playground look. Deterministic random weights encoded in edge
-// color (blue positive, rose negative) and thickness, stub arrows carrying
+// color (blue positive, red negative) and thickness, stub arrows carrying
 // the inputs in and the prediction out, and role-based node labels.
 #draw-mlp((4, 6, 6, 2),
   weights: "random",
