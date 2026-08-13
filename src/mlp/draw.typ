@@ -344,7 +344,8 @@
   let layer-cols = cols.filter(c => c.kind == "layer")
   let maxslottop = calc.max(..layer-cols.map(c => c.slots.top))
   let any-bias = bias-nodes.len() > 0
-  let bias-top = calc.max(0, ..bias-nodes.map(b => b.y + b.nsize))
+  let bias-label-room = if o.bias-label != none and o.bias-label-pos == "above" { 0.30 } else { 0 }
+  let bias-top = calc.max(0, ..bias-nodes.map(b => b.y + b.nsize)) + bias-label-room
 
   let has-label = cols.any(c => c.label != none)
   let has-sub = cols.any(c => c.sub != none)
@@ -618,10 +619,19 @@
     }
   }
 
-  // bias nodes over their edges
+  // bias nodes over their edges. The label sits above the node by default,
+  // where a word like "bias" has room; "inside" suits short content like $1$.
   for b in bias-nodes {
     draw.circle(P((b.x, b.y)), radius: b.nsize, fill: pal.bias, stroke: o.node-stroke)
-    draw.content(P((b.x, b.y)), text(size: calc.max(6.5pt, (b.nsize * 34) * 1pt))[#o.bias-label])
+    if o.bias-label != none {
+      if o.bias-label-pos == "inside" {
+        draw.content(P((b.x, b.y)), text(size: calc.max(6.5pt, (b.nsize * 34) * 1pt))[#o.bias-label])
+      } else {
+        let anch = if up { "west" } else { "south" }
+        draw.content(P((b.x, b.y + b.nsize + 0.07)), anchor: anch,
+          text(size: mlp-fonts.stub, fill: mlp-grey)[#o.bias-label])
+      }
+    }
   }
 
   // activation display: captions, blocks, brackets
