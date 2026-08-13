@@ -171,7 +171,7 @@ two drawn neurons with their true indices (…, n−1, n).
 
 | option | type | default | meaning |
 | --- | --- | --- | --- |
-| `palette` | `"classic"` \| `"brand"` \| `"warm"` \| `"cold"` \| dict | `"classic"` | role→color map with keys ⊆ `(input, hidden, output, bias, accent)`; a partial dict overlays the brand palette; an unknown name is an **error** (no silent fallback) |
+| `palette` | `"classic"` \| `"brand"` \| `"warm"` \| `"cold"` \| dict | `"classic"` | role→color map with keys ⊆ `(input, hidden, output, bias, accent)`; a partial dict overlays the classic (default) palette; an unknown name is an **error** (no silent fallback) |
 | `node-shape` | `"circle"` \| `"square"` \| `"split"` | `"circle"` | figure default; per-layer `shape` wins |
 | `node-stroke` | stroke | `(paint: black, thickness: 0.8pt)` | |
 | `node-label` | `none` \| `auto` \| fn(l, i) → content | `none` | figure default; per-layer `node-label` (fn(i)) wins |
