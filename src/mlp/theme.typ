@@ -72,7 +72,13 @@
 )
 
 // The role keys a palette dict may carry; a partial dict overlays blues.
-#let palette-roles = ("input", "hidden", "output", "bias", "accent")
+// The optional <role>-text keys pin the in-node ink for nodes whose fill is
+// still the palette's own role color; any overridden fill (per-layer fill,
+// node-style, values ramp) falls back to the automatic contrast flip.
+#let palette-roles = (
+  "input", "hidden", "output", "bias", "accent",
+  "input-text", "hidden-text", "output-text", "bias-text",
+)
 
 // 70% black, the caption grey used across the package.
 #let mlp-grey = rgb("#5C5C5C")
