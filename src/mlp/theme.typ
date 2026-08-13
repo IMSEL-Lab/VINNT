@@ -37,7 +37,7 @@
   ),
 )
 
-// The role keys a palette dict may carry; a partial dict overlays brand.
+// The role keys a palette dict may carry; a partial dict overlays classic.
 #let palette-roles = ("input", "hidden", "output", "bias", "accent")
 
 // 70% black, the caption grey used across the package.
