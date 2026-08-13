@@ -32,7 +32,7 @@
   // edge and matrix labels
   "edge-labels", "matrix-labels",
   // bias
-  "bias", "bias-label",
+  "bias", "bias-label", "bias-label-pos",
   // captions
   "layer-labels", "label-pos", "activation", "activation-style",
 )
@@ -70,7 +70,8 @@
   edge-labels: (),
   matrix-labels: false,
   bias: false,
-  bias-label: $1$,
+  bias-label: [bias],
+  bias-label-pos: "above",
   layer-labels: none,
   label-pos: "below",
   activation: none,
