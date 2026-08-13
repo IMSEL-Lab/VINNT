@@ -1,12 +1,21 @@
-// MLP palettes, strokes and font constants. The classic palette is the
-// tikz.net/texample convention most published MLP figures copy and the
-// default; brand is the fig5 look; warm and cold derive from the isometric
-// block palettes in ../theme.typ so a document using warm isometric figures
-// can match its MLPs.
+// MLP palettes, strokes and font constants. The blues palette is the default:
+// a single-hue luminance ladder (ColorBrewer Blues), so the three roles stay
+// distinguishable on a black-and-white printer or photocopy. classic is the
+// tikz.net/texample green/blue/red convention most published MLP figures
+// copy; brand is the fig5 look; warm and cold derive from the isometric block
+// palettes in ../theme.typ so a document using warm isometric figures can
+// match its MLPs.
 
 #import "../theme.typ": colors-warm, colors-cold
 
 #let mlp-palettes = (
+  blues: (
+    input: rgb("#DEEBF7"),
+    hidden: rgb("#9ECAE1"),
+    output: rgb("#3182BD"),
+    bias: rgb("#FFFFFF"),
+    accent: rgb("#B2182B"),
+  ),
   classic: (
     input: rgb("#80FF80"),
     hidden: rgb("#8080FF"),
@@ -37,7 +46,7 @@
   ),
 )
 
-// The role keys a palette dict may carry; a partial dict overlays classic.
+// The role keys a palette dict may carry; a partial dict overlays blues.
 #let palette-roles = ("input", "hidden", "output", "bias", "accent")
 
 // 70% black, the caption grey used across the package.
