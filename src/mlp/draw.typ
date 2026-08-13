@@ -106,7 +106,7 @@
     let nsize = src.at("node-size", default: o.node-size)
     let trim = if shape == "split" { nsize * 1.35 } else { nsize }
     let stroke = src.at("stroke", default: o.node-stroke)
-    if type(stroke) == color { stroke = (paint: stroke, thickness: 0.8pt) }
+    if type(stroke) == color { stroke = (paint: stroke, thickness: 0.6pt) }
     let cutoff = if src.at("show-all", default: false) { none } else { o.cutoff }
     let slots = mgeom.layer-slots(count, cutoff, o.collapse-to, o.node-pitch)
     let dropped = src.at("dropped", default: ())
@@ -554,7 +554,7 @@
             panic("vinnt: `node-style` on layer " + str(c.pos) + " must return a dict (fill, stroke, size, shape) or none; got " + repr(ov) + ".")
           }
           for (k, v) in ov {
-            if k == "fill" { fill = v; styled-fill = true } else if k == "stroke" { stroke = v; if type(stroke) == color { stroke = (paint: stroke, thickness: 0.8pt) } } else if k == "size" { size = v } else if k == "shape" { shape = v } else {
+            if k == "fill" { fill = v; styled-fill = true } else if k == "stroke" { stroke = v; if type(stroke) == color { stroke = (paint: stroke, thickness: 0.6pt) } } else if k == "size" { size = v } else if k == "shape" { shape = v } else {
               panic("vinnt: unknown node-style key \"" + k + "\" on layer " + str(c.pos) + ". Options accepted here: fill, shape, size, stroke.")
             }
           }
@@ -604,7 +604,7 @@
         // dropout X
         if a.dropped {
           let d = r * 0.78
-          let xst = (paint: ink, thickness: 0.8pt)
+          let xst = (paint: ink, thickness: 0.6pt)
           draw.line(P((c.x - d, a.y - d)), P((c.x + d, a.y + d)), stroke: xst)
           draw.line(P((c.x - d, a.y + d)), P((c.x + d, a.y - d)), stroke: xst)
         }
