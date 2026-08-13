@@ -110,15 +110,15 @@ No package on Typst Universe draws neuron-circle MLPs. The general graph tools
 hand-placing every node and edge. This is the single strongest argument for
 VINNT existing as its own package rather than a patch to neural-netz.
 
-- [ ] Core: `draw-mlp((layer(4), layer(6), layer(3)))` — automatic column pitch,
+- [x] Core: `draw-mlp((layer(4), layer(6), layer(3)))` — automatic column pitch,
       vertical centering across unequal layer sizes
-- [ ] `ellipsis: true` — collapse a wide layer to a few nodes plus a vertical
+- [x] `ellipsis: true` — collapse a wide layer to a few nodes plus a vertical
       ellipsis, correctly spaced
-- [ ] Per-layer and per-node fill, label, and annotation
-- [ ] Edge styling, including opacity or thickness driven by weight magnitude
+- [x] Per-layer and per-node fill, label, and annotation
+- [x] Edge styling, including opacity or thickness driven by weight magnitude
       (PlotNeuralNet #59, edge thickness)
-- [ ] Bias nodes
-- [ ] Skip and recurrent edges — this is what gets RNN / sequence-model coverage
+- [x] Bias nodes
+- [x] Skip and recurrent edges — this is what gets RNN / sequence-model coverage
       almost for free (PlotNeuralNet #12 and #121, both long open)
 - [ ] Decide and document how `draw-mlp` and `draw-network` compose in one figure
 
@@ -290,11 +290,11 @@ the bar for what `draw-mlp` should look like before any options are passed.
 of hand-rolled TikZ MLPs; useful as a survey of what people actually draw when
 nothing constrains them.
 
-- [ ] Review `neuralnetwork.sty`'s layer/link split before fixing the
+- [x] Review `neuralnetwork.sty`'s layer/link split before fixing the
       `draw-mlp` API
-- [ ] Adopt cutoff-driven ellipsis rather than a per-layer flag
-- [ ] Design a connection selector (`omit`/`keep`) rather than edge enumeration
-- [ ] Decide whether bias nodes are first-class, as in `neuralnetwork.sty`
+- [x] Adopt cutoff-driven ellipsis rather than a per-layer flag
+- [x] Design a connection selector (`omit`/`keep`) rather than edge enumeration
+- [x] Decide whether bias nodes are first-class, as in `neuralnetwork.sty`
 - [ ] Compare default proportions against NN-SVG output side by side
 
 ### For the importer (0.2.x)
