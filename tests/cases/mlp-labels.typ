@@ -22,3 +22,9 @@
   mlp-layer(3),
   mlp-layer(2, node-label: i => $z_#i$, node-label-pos: "right"),
 ))
+
+#v(8mm)
+
+// in-node ink: an explicit hidden-text on the untouched dark hidden fill,
+// while the dark blues outputs take the automatic white flip
+#draw-mlp((3, 4, 2), palette: (hidden: rgb("#1F414D"), hidden-text: rgb("#CED318")), node-label: auto)
