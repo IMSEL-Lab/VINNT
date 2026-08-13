@@ -12,7 +12,9 @@
   your own. The default palette is `blues` — a print-safe single-hue
   luminance ladder, so the input, hidden and output roles survive grayscale
   reproduction — with `classic` (the green-input, blue-hidden, red-output
-  convention of published MLP figures), `brand`, `warm` and `cold` as named
+  convention of published MLP figures), `brand`, `greys` (pure grayscale),
+  `teal` (the grey ladder with a teal output, one hue pops), `lilaq` (the
+  first colors of lilaq's default plot cycle), `warm` and `cold` as named
   alternatives, all exported as `mlp-palettes`.
 - Wide layers collapse past a `cutoff` into a vertical ellipsis with the true
   count badged beneath; `mlp-gap` elides depth the same way horizontally.
