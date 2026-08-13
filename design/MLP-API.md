@@ -363,8 +363,10 @@ honest about the true scale.
 
 Reuse `edit-distance` / `did-you-mean` / `check-keys` from `src/validate.typ`
 (pure helpers; importing them is not "connecting the renderers"). Error voice
-matches the package: `vinnt: unknown mlp-layer option "colour" on layer 2.
-Did you mean "fill"? Options accepted here: …`.
+matches the package: `vinnt: unknown mlp-layer option "shpae" on layer 2.
+Did you mean "shape"? Options accepted here: …`. (The suggestion only fires
+within the shared `did-you-mean` edit-distance threshold; a distant key like
+"colour" lists the accepted options without a guess.)
 
 Checks, at minimum: unknown options on every constructor and on `draw-mlp`
 itself; non-constructor dictionaries; counts ≥ 1; gap placement; name
