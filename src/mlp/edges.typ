@@ -127,7 +127,7 @@
       s.opacity = 15% + 85% * t
     }
   }
-  if edge.dimmed { s.opacity = s.opacity * 0.3 }
+  if edge.dimmed { s.opacity = s.opacity * 0.45 }
   if edge.highlighted { s.opacity = 100% }
   for (ov, where) in overrides {
     s = apply-override(s, ov, where)
