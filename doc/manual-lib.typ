@@ -1,4 +1,7 @@
 #import "../src/keys.typ": layer-keys, connection-keys, group-keys
+#import "../src/mlp/keys.typ": (
+  mlp-layer-keys, mlp-gap-keys, mlp-edge-keys, mlp-figure-keys,
+)
 
 #let garnet = rgb("#73000A")
 #let rose = rgb("#CC2E40")
@@ -138,6 +141,43 @@
         layer-keys.at(t).filter(k => k != "type").sorted().join(", ")),
     )).flatten()
   )
+}
+
+#let mlp-key-table() = {
+  let rows = (
+    ("mlp-layer", mlp-layer-keys),
+    ("mlp-gap", mlp-gap-keys),
+    ("mlp-edge", mlp-edge-keys),
+    ("draw-mlp", mlp-figure-keys),
+  )
+  table(
+    columns: (auto, 1fr),
+    stroke: 0.4pt + grey-50,
+    inset: (x: 5pt, y: 4pt),
+    align: (left + top, left + top),
+    table.header(
+      text(weight: "bold", size: 9pt)[Constructor],
+      text(weight: "bold", size: 9pt)[Options],
+    ),
+    ..rows.map(((t, ks)) => (
+      text(font: "DejaVu Sans Mono", size: 8.5pt, weight: "bold", fill: garnet, t),
+      text(font: "DejaVu Sans Mono", size: 7.5pt,
+        ks.filter(k => k != "type").sorted().join(", ")),
+    )).flatten()
+  )
+}
+
+#let mlp-undocumented(documented) = {
+  let all = mlp-layer-keys + mlp-gap-keys + mlp-edge-keys + mlp-figure-keys
+  let missing = all.dedup().filter(k => k != "type" and k not in documented).sorted()
+  if missing.len() == 0 {
+    note[Every option of the MLP renderer is described somewhere above.]
+  } else {
+    warn[
+      Not described anywhere in this manual:
+      #text(font: "DejaVu Sans Mono", size: 8.5pt, missing.join(", ")).
+    ]
+  }
 }
 
 #let undocumented(documented) = {
