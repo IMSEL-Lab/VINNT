@@ -1425,9 +1425,17 @@ dense fan where the dashes read as noise:
   every drawn neuron of the next layer. Also an `mlp-layer` option, so one
   layer can opt out (or in).
 ]
-#opt("bias-label", default: "$1$")[The text inside every bias node.]
+#opt("bias-label", default: "[bias]")[
+  The label on every bias node. `none` suppresses it.
+]
+#opt("bias-label-pos", default: "\"above\"")[
+  Where the label sits. `"above"`, the default, renders it over the node in
+  small grey text, where a word fits; `"inside"` is the classic in-node
+  placement for short content like `$1$`.
+]
 
-#ex("mlp-bias", fig-width: 76%)
+#ex("mlp-bias", fig-width: 76%,
+  caption: [`bias-label-pos: "inside"` restores the classic in-node $1$.])
 #ex("mlp-bias-off", fig-width: 76%,
   caption: [`bias: true` on the figure, `bias: false` on layer 2.])
 
@@ -1593,7 +1601,7 @@ drawn edge. The voice is the same, `did-you-mean` included:
 #snippet(```
 error: unknown draw-mlp option "cutof" on the figure.
 Did you mean "cutoff"? Options accepted here: activation,
-activation-style, arrows, bias, bias-label, collapse-to, ...
+activation-style, arrows, bias, bias-label, bias-label-pos, ...
 ```)
 
 #ex("mlp-cutoff-fix", fig-width: 72%,
@@ -1747,8 +1755,8 @@ Plus a constructor per layer type, and `connection(..)` and `group(..)`.
   "node-stroke", "input-style", "edge-stroke", "edge-opacity", "arrows",
   "io-stubs", "stub-labels", "edge-filter", "edges", "edge-style", "weights",
   "weight-encode", "weight-colors", "weight-range", "weight-thickness",
-  "seed", "edge-labels", "matrix-labels", "bias-label", "layer-labels",
-  "label-pos", "activation-style",
+  "seed", "edge-labels", "matrix-labels", "bias-label", "bias-label-pos",
+  "layer-labels", "label-pos", "activation-style",
 ))
 
 = Errors
