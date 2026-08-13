@@ -19,3 +19,4 @@
 #import "geom.typ": depth-shear, min-clear-offset
 #import "import.typ": layer-ctors, from-shapes, groups-from-shapes
 #import "draw.typ": draw-network
+#import "mlp/lib.typ": draw-mlp, mlp-content, mlp-layer, mlp-gap, mlp-edge, mlp-palettes
