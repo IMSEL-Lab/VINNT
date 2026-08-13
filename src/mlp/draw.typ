@@ -545,9 +545,9 @@
       }
       let r = if shape == "split" { size * 1.35 } else { size }
       if a.dimmed {
-        fill = fill.transparentize(70%)
+        fill = fill.transparentize(55%)
         if type(stroke) == dictionary and "paint" in stroke {
-          stroke.paint = stroke.paint.transparentize(70%)
+          stroke.paint = stroke.paint.transparentize(55%)
         }
       }
       let pos = (c.x, a.y)
