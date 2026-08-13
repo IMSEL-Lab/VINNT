@@ -760,7 +760,11 @@
     let t = text(size: mlp-fonts.title, weight: "semibold")[#o.title]
     if up {
       let top = xs.last() + (if o.io-stubs == true or o.io-stubs == "out" { 0.95 } else { calc.max(..layer-cols.map(c => c.trim)) + 0.25 })
-      draw.content((0, top + 0.35), anchor: "south", t)
+      // Center over the true horizontal extents: the caption columns extend
+      // left (logical +y maps to canvas -x) and the badges right.
+      let lx = if cap-left.act != none { cap-left.act } else if has-label { cap-left.label } else { ext-above }
+      let rx = if has-badge { badge-x } else { ext-below }
+      draw.content(((rx - lx) / 2, top + 0.35), anchor: "south", t)
     } else {
       draw.content(((xs.first() + xs.last()) / 2, ext-above + 0.5), anchor: "south", t)
     }
