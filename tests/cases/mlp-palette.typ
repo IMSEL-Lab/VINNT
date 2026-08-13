@@ -2,7 +2,7 @@
 
 #set page(width: auto, height: auto, margin: 5mm)
 
-// a partial dict overlays the brand palette
+// a partial dict overlays the default palette
 #draw-mlp((3, 4, 2), palette: (hidden: rgb("#CED318"), output: rgb("#A49137")))
 
 #v(8mm)
@@ -13,3 +13,16 @@
 #v(8mm)
 
 #draw-mlp((3, 4, 2), palette: "warm")
+
+#v(8mm)
+
+// the monochrome ladder, its teal-accented variant, and the lilaq cycle
+#draw-mlp((3, 4, 2), palette: "greys")
+
+#v(8mm)
+
+#draw-mlp((3, 4, 2), palette: "teal")
+
+#v(8mm)
+
+#draw-mlp((3, 4, 2), palette: "lilaq")
