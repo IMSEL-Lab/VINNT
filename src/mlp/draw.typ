@@ -21,10 +21,21 @@
   str(wh) + "." + (if fr < 10 { "0" + str(fr) } else { str(fr) })
 }
 
-// Perceived luminance test for value-text contrast; `c` is an rgb color.
+// Perceived luminance test for in-node ink contrast; any color space.
 #let is-dark(c) = {
-  let comp = c.components()
+  let comp = rgb(c).components()
   comp.at(0) * 0.299 + comp.at(1) * 0.587 + comp.at(2) * 0.114 < 55%
+}
+
+// The ink for anything drawn inside a node - inside labels, the split Sigma
+// and glyph, in-node activation glyphs, value text, the inside bias label,
+// the dropout X - decided from the node's effective fill: white on a dark
+// fill, black otherwise. `override` carries a palette's explicit <role>-text
+// color; callers pass it only when the fill is the palette's untouched role
+// color, since a text color tuned to a role fill cannot be trusted against
+// an arbitrary user fill.
+#let node-ink(fill, override: none) = {
+  if override != none { override } else if type(fill) == color and is-dark(fill) { white } else { black }
 }
 
 // The role-based auto node label (1-based true indices).
@@ -121,6 +132,7 @@
       count: count, role: role, act: act, is-bracket: is-bracket,
       shape: shape, nsize: nsize, trim: trim,
       fill: src.at("fill", default: pal.at(role)), stroke: stroke,
+      has-own-fill: "fill" in src,
       slots: slots, active: active,
       dropped: dropped, dimmed: dimmed, highlighted: highlighted, excluded: excluded,
       values: src.at("values", default: none),
@@ -534,6 +546,7 @@
         let v = float(c.values.at(a.neuron - 1))
         fill = color.mix((white, (1 - v) * 100%), (c.fill, v * 100%), space: rgb)
       }
+      let styled-fill = false
       if c.node-style != none {
         let ov = (c.node-style)(a.neuron)
         if ov != none {
@@ -541,12 +554,20 @@
             panic("vinnt: `node-style` on layer " + str(c.pos) + " must return a dict (fill, stroke, size, shape) or none; got " + repr(ov) + ".")
           }
           for (k, v) in ov {
-            if k == "fill" { fill = v } else if k == "stroke" { stroke = v; if type(stroke) == color { stroke = (paint: stroke, thickness: 0.8pt) } } else if k == "size" { size = v } else if k == "shape" { shape = v } else {
+            if k == "fill" { fill = v; styled-fill = true } else if k == "stroke" { stroke = v; if type(stroke) == color { stroke = (paint: stroke, thickness: 0.8pt) } } else if k == "size" { size = v } else if k == "shape" { shape = v } else {
               panic("vinnt: unknown node-style key \"" + k + "\" on layer " + str(c.pos) + ". Options accepted here: fill, shape, size, stroke.")
             }
           }
         }
       }
+      // The ink for everything drawn inside this node. A palette's explicit
+      // <role>-text applies only while the fill is the palette's own role
+      // color; any override (per-layer fill, node-style, values ramp) falls
+      // back to the automatic contrast flip.
+      let role-text = if not c.has-own-fill and c.values == none and not styled-fill {
+        pal.at(c.role + "-text", default: none)
+      } else { none }
+      let ink = node-ink(fill, override: role-text)
       let r = if shape == "split" { size * 1.35 } else { size }
       if a.dimmed {
         fill = fill.transparentize(55%)
@@ -564,28 +585,26 @@
         if shape == "split" {
           let spaint = if type(stroke) == dictionary { stroke.at("paint", default: black) } else { black }
           draw.line(P((c.x, a.y - r)), P((c.x, a.y + r)), stroke: (paint: spaint, thickness: 0.5pt))
-          draw.content(P((c.x - r * 0.45, a.y)), text(size: calc.max(6.5pt, (r * 26) * 1pt))[$Sigma$])
+          draw.content(P((c.x - r * 0.45, a.y)), text(size: calc.max(6.5pt, (r * 26) * 1pt), fill: ink)[$Sigma$])
           if type(c.act) == str and glyph-names.contains(c.act) {
-            mglyphs.glyph(c.act, P((c.x + r * 0.48, a.y)), r * 0.78, spaint, thickness: 0.6pt)
+            mglyphs.glyph(c.act, P((c.x + r * 0.48, a.y)), r * 0.78, ink, thickness: 0.6pt)
           } else {
-            draw.content(P((c.x + r * 0.48, a.y)), text(size: calc.max(6.5pt, (r * 24) * 1pt))[$f$])
+            draw.content(P((c.x + r * 0.48, a.y)), text(size: calc.max(6.5pt, (r * 24) * 1pt), fill: ink)[$f$])
           }
         }
         // in-node activation glyph
         if o.activation-style == "glyph" and c.act != none and not c.is-bracket and shape != "split" and not a.dropped {
-          let gpaint = if type(stroke) == dictionary { stroke.at("paint", default: black) } else { black }
-          mglyphs.glyph(c.act, P(pos), 1.2 * size, gpaint, thickness: 0.6pt)
+          mglyphs.glyph(c.act, P(pos), 1.2 * size, ink, thickness: 0.6pt)
         }
         // value text
         if c.values != none and c.show-value-text {
           let v = float(c.values.at(a.neuron - 1))
-          let tcol = if is-dark(color.mix((white, (1 - v) * 100%), (c.fill, v * 100%), space: rgb)) { white } else { black }
-          draw.content(P(pos), text(size: calc.max(6.5pt, (size * 30) * 1pt), fill: tcol)[#fmt2(v)])
+          draw.content(P(pos), text(size: calc.max(6.5pt, (size * 30) * 1pt), fill: ink)[#fmt2(v)])
         }
         // dropout X
         if a.dropped {
           let d = r * 0.78
-          let xst = (paint: if type(stroke) == dictionary { stroke.at("paint", default: black) } else { black }, thickness: 0.8pt)
+          let xst = (paint: ink, thickness: 0.8pt)
           draw.line(P((c.x - d, a.y - d)), P((c.x + d, a.y + d)), stroke: xst)
           draw.line(P((c.x - d, a.y + d)), P((c.x + d, a.y - d)), stroke: xst)
         }
@@ -598,7 +617,7 @@
         if lab != none and not (c.show-value-text and c.node-label-pos == "inside") {
           if c.node-label-pos == "inside" {
             if o.activation-style != "glyph" and shape != "split" {
-              draw.content(P(pos), text(size: calc.max(6.5pt, (size * 27) * 1pt))[#lab])
+              draw.content(P(pos), text(size: calc.max(6.5pt, (size * 27) * 1pt), fill: ink)[#lab])
             }
           } else {
             let dxx = if c.node-label-pos == "left" { -(c.trim + 0.09) } else { c.trim + 0.09 }
@@ -621,11 +640,12 @@
 
   // bias nodes over their edges. The label sits above the node by default,
   // where a word like "bias" has room; "inside" suits short content like $1$.
+  let bias-ink = node-ink(pal.bias, override: pal.at("bias-text", default: none))
   for b in bias-nodes {
     draw.circle(P((b.x, b.y)), radius: b.nsize, fill: pal.bias, stroke: o.node-stroke)
     if o.bias-label != none {
       if o.bias-label-pos == "inside" {
-        draw.content(P((b.x, b.y)), text(size: calc.max(6.5pt, (b.nsize * 34) * 1pt))[#o.bias-label])
+        draw.content(P((b.x, b.y)), text(size: calc.max(6.5pt, (b.nsize * 34) * 1pt), fill: bias-ink)[#o.bias-label])
       } else {
         let anch = if up { "west" } else { "south" }
         draw.content(P((b.x, b.y + b.nsize + 0.07)), anchor: anch,
