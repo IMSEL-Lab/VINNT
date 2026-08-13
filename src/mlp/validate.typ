@@ -110,6 +110,7 @@
     )
   }
   check-enum("count-badges", "on the figure", o.count-badges, (auto, true, false))
+  check-enum("bias-label-pos", "on the figure", o.bias-label-pos, ("above", "inside"))
 
   check-enum("node-shape", "on the figure", o.node-shape, ("circle", "square", "split"))
   check-enum("input-style", "on the figure", o.input-style, ("nodes", "square", "arrows"))
