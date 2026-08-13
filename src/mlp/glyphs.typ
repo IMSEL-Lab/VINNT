@@ -31,9 +31,14 @@
   if n == "identity" {
     g-poly(center, size, st, ((-1, -0.85), (1, 0.85)))
   } else if n == "step" {
-    g-poly(center, size, st, ((-1, -0.1), (0, -0.1), (0, 0.75), (1, 0.75)))
+    // One-sided: baseline at zero, jump to 0.85 at x = 0.
+    g-poly(center, size, st, ((-1, 0), (0, 0), (0, 0.85), (1, 0.85)))
   } else if n == "sign" {
-    g-poly(center, size, st, ((-1, -0.8), (0, -0.8), (0, 0.8), (1, 0.8)))
+    // Symmetric discontinuity: two flat rails joined by a thin jump stroke,
+    // so it cannot read as an S at small sizes.
+    g-poly(center, size, st, ((-1, -0.8), (0, -0.8)))
+    g-poly(center, size, st, ((0, 0.8), (1, 0.8)))
+    g-poly(center, size, (paint: paint, thickness: thickness * 0.55), ((0, -0.8), (0, 0.8)))
   } else if n == "sigmoid" {
     g-bezier(center, size, st, (-1, -0.5), (1, 0.5), (0.35, -0.5), (-0.35, 0.5))
   } else if n == "tanh" {
