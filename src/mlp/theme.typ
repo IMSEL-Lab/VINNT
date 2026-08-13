@@ -55,6 +55,15 @@
     bias: rgb("#FFFFFF"),
     accent: rgb("#832DB6"),
   ),
+  // Every role white, so the figure is line art; roles are told apart by
+  // position and labels only.
+  white: (
+    input: rgb("#FFFFFF"),
+    hidden: rgb("#FFFFFF"),
+    output: rgb("#FFFFFF"),
+    bias: rgb("#FFFFFF"),
+    accent: rgb("#000000"),
+  ),
   warm: (
     input: colors-warm.input,
     hidden: colors-warm.conv.lighten(35%),
