@@ -35,14 +35,18 @@
 // 70% black, the caption grey used across the package.
 #let mlp-grey = rgb("#5C5C5C")
 
+// 90% black, the darker ink for print-size caption text (activation
+// captions and subs); badges stay in mlp-grey one tier lighter.
+#let mlp-caption-ink = rgb("#363636")
+
 #let mlp-fonts = (
   label: 8pt,
-  sub: 6.5pt,
-  activation: 6.5pt,
-  badge: 6pt,
+  sub: 7pt,
+  activation: 7pt,
+  badge: 6.5pt,
   title: 10pt,
   stub: 7pt,
-  edge-label: 6.5pt,
+  edge-label: 7pt,
   matrix-label: 8.5pt,
 )
 
