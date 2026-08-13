@@ -39,7 +39,7 @@
   #v(1.4cm)
   #block(width: 80%, image("build/types-overview.pdf", width: 100%))
   #v(1.4cm)
-  #text(size: 10pt)[Version 0.1.1 · J.C. Vaught]
+  #text(size: 10pt)[Version 0.2.0 · J.C. Vaught]
   #v(4pt)
   #text(size: 9pt, fill: grey-70)[Every figure in this manual is compiled from the code printed beside it.]
 ]
@@ -60,6 +60,10 @@ You describe the network as an array of layers. The package works out the
 geometry, the spacing, the arrows between blocks, the routing of any skip
 connection you add, and the legend.
 
+It also draws the other canonical figure --- the neuron-and-edge diagram, a
+circle per unit --- with `draw-mlp`, which has a chapter of its own
+(chapter 14).
+
 #ex("basics-minimal", fig-width: 78%,
   caption: [Three convolutions, no options at all. Sizes, spacing and arrows are defaults.])
 
@@ -79,7 +83,7 @@ files than quoted as fragments.
 == Installing
 
 #snippet(```typ
-#import "@preview/vinnt:0.1.1": draw-network, conv, pool, input
+#import "@preview/vinnt:0.2.0": draw-network, conv, pool, input
 ```)
 
 Every example in this manual assumes an import like that one. Import
@@ -865,6 +869,13 @@ it. A `branch` entry draws it as it is.
   the trunk line; an even count leaves it empty.
 ]
 #opt("lead", default: "2.0")[How far the fan-out and rejoin arrows run.]
+#opt("entry-gap", default: "0")[
+  Extra flat run before the fan splits, without changing `lead` --- more
+  approach space, same fan shape. Negative removes run.
+]
+#opt("exit-gap", default: "0")[
+  The same after the rejoin, before the next block.
+]
 
 #ex-wide("branch-three", fig-width: 74%)
 #ex-wide("branch-spread", fig-width: 74%)
@@ -991,6 +1002,604 @@ start dropping out at print resolution:
 #ex("depth-flat", fig-width: 76%)
 #ex("depth-strong", fig-width: 76%)
 
+= Neuron diagrams
+
+Everything so far has drawn a network as blocks. The other canonical figure
+draws it as neurons --- a circle per unit, an edge per weight, the picture every
+introduction to the subject opens with. `draw-mlp` draws that figure. It is a
+second renderer, not a new mode: it shares the package's constructors,
+validation and palettes and nothing else, it opens its own canvas, and how it
+composes with `draw-network` in a single figure is deliberately not yet
+decided.
+
+#ex("mlp-tier0", fig-width: 80%,
+  caption: [Four counts, no other options. This is the whole program.])
+
+The zero-configuration output is the textbook look: circles, plain grey edges
+drawn behind the nodes, no arrowheads, no bias nodes, and the input, hidden and
+output roles told apart by fill. Every default follows a documented convention,
+and everything past the defaults is an option below.
+
+#note[
+  Indexing is 1-based everywhere. Layers count left to right and neurons top to
+  bottom within a layer; under `direction: "up"` layers run bottom to top and
+  neurons left to right. Every index an option takes --- `dropped`, `exclude`,
+  `edge-labels`, weight matrices, `mlp-edge` endpoints --- means the *true*
+  index of that neuron, whether or not its column is collapsed.
+]
+
+== Four tiers
+
+The layer list is an array whose entries are integers, `mlp-layer(..)` values
+or `mlp-gap(..)` values, mixed freely. An integer `n` is shorthand for
+`mlp-layer(n)`, and a plain dictionary is an error, exactly as in
+`draw-network`. The first tier past bare counts is figure-wide options:
+
+#ex("mlp-tier1", fig-width: 88%,
+  caption: [Collapsed columns state their true width; bias nodes appear above
+    each feeding layer.])
+
+The second is per-layer constructors:
+
+#ex-wide("mlp-tier2", fig-width: 76%, fig-height: 5cm)
+
+And the third is functions over indices. Weights come from a file, labels from
+a formula, styles from a predicate --- the escape hatches are callbacks, not
+enumerations:
+
+#ex-wide("mlp-tier3", fig-width: 56%, fig-height: 6.5cm,
+  caption: [`w.json` holds one matrix per inter-layer gap. Positive weights are
+    blue, negative rose, and magnitude is thickness.])
+
+Everything below is one of those tiers in detail.
+
+== Writing a column
+
+#opt("count", default: "required", applies: [`mlp-layer`])[
+  The layer's true width, as a positional integer of at least 1. Everything
+  else about a column is named.
+]
+#opt("name", default: "auto", applies: [`mlp-layer`])[
+  A reference for `mlp-edge`, never printed. Layers auto-name themselves
+  `"l1"`, `"l2"`, ... by position and gaps `"g1"`, `"g2"`, ...; a user name
+  replaces the auto name, shares its namespace, and collides loudly.
+]
+
+A gap column stands for elided depth --- the "six more of these" of a network
+too deep to draw in full:
+
+#ex-wide("mlp-gap", fig-width: 82%)
+
+#opt("label", default: "none", applies: [`mlp-gap`])[
+  Caption in the label row, where the count usually goes.
+]
+#opt("pitch", default: "0.6 × layer-pitch", applies: [`mlp-gap`])[
+  The width the gap column occupies.
+]
+
+A gap has no neurons. It cannot start or end an edge, it cannot sit first or
+last, and it breaks adjacency: the edge stubs entering and leaving it fade out
+rather than faking a connection across the elision. For the same reason a layer
+followed by a gap draws no bias node.
+
+== Layout
+
+#opt("node-size", default: "0.17")[
+  Node radius, in canvas units. Half the side length for squares. Also an
+  `mlp-layer` option, so one layer can be drawn larger.
+]
+#opt("node-pitch", default: "0.52")[Spacing between neuron centers within a layer.]
+#opt("layer-pitch", default: "2.2")[Spacing between layer columns.]
+
+#ex("mlp-pitch", fig-width: 76%)
+
+Unequal layers are always centered on the flow axis. That is not a knob:
+every published version of this figure does it, and a version that does not
+reads as a mistake.
+
+#opt("unit", default: "1cm", applies: [`draw-mlp`])[
+  The canvas unit. It scales the geometry; text sizes are absolute, so a
+  smaller unit buys a denser figure with the same size labels.
+]
+#opt("title", default: "none")[Centered above the figure.]
+#opt("debug", default: "false")[
+  Draws the slot grid and the caption baseline rows in faint garnet. Useful
+  for exactly one thing, which is seeing why something landed where it did.
+]
+
+#ex("mlp-debug", fig-width: 76%)
+
+The dashed rows under the columns are shared, figure-wide baselines: one row
+for labels (with `sub` lines directly beneath), one for activation captions,
+one for count badges, in that order. Captions of a short column and a tall one
+sit level because the rows belong to the figure, not to the column, and a row
+that is empty for the whole figure takes no space.
+
+== Wide layers collapse
+
+A 4--1024--10 classifier is a real network and an impossible figure. Drawing
+every neuron of a wide layer is the failure mode:
+
+#ex-wide("mlp-wide-bad", fig-width: 40%, fig-height: 7cm,
+  caption: [24 neurons drawn honestly, with `cutoff: none`. The figure is all
+    layer and no network.])
+
+#opt("cutoff", default: "10")[
+  A layer with `count > cutoff` collapses: its first and last neurons drawn, a
+  vertical ellipsis between them, and a badge stating the true count. `none`
+  disables collapsing for the figure.
+]
+
+#ex("mlp-wide-good", fig-width: 72%,
+  caption: [The same network with the default cutoff.])
+
+#opt("collapse-to", default: "5")[
+  How many slots a collapsed column occupies --- odd and at least 3, since the
+  middle slot holds the ellipsis. At `5`, the drawn neurons are 1, 2,
+  count−1 and count. `cutoff` must exceed `collapse-to`, since collapsing a
+  layer below that would not shorten it, and violating the pair is an error.
+]
+
+#ex("mlp-collapse-to", fig-width: 72%)
+
+#opt("show-all", default: "false", applies: [`mlp-layer`])[
+  Exempts one layer from the figure `cutoff`.
+]
+
+#ex("mlp-show-all", fig-width: 66%)
+
+#opt("count-badges", default: "auto")[
+  `auto` badges collapsed columns only; `true` badges every column; `false`
+  none. A collapsed column always states its true width unless you say
+  `false`, because a figure that hides forty neurons and does not say so is
+  lying about the model.
+]
+
+#ex("mlp-badges", fig-width: 72%)
+
+Edges attach only to drawn neurons. Naming an elided neuron --- in an
+`mlp-edge` endpoint, say --- is an error that lists the indices that *are*
+drawn.
+
+== Color
+
+#opt("palette", default: "\"brand\"")[
+  `"brand"`, `"warm"`, `"cold"`, or a dictionary with keys among `input`,
+  `hidden`, `output`, `bias` and `accent`. A partial dictionary overlays the
+  brand palette; an unknown palette name is an error rather than a silent
+  fallback. `warm` and `cold` are derived from the isometric block palettes,
+  so a document can keep its blocks and its neurons on one scheme.
+]
+
+#ex("mlp-palette-warm", fig-width: 76%)
+#ex("mlp-palette-cold", fig-width: 76%)
+
+#opt("fill", default: "role color", applies: [`mlp-layer`])[
+  Node fill for one layer. The role assignment is positional: first layer
+  input, last output, the rest hidden.
+]
+
+#ex-wide("mlp-palette-custom", fig-width: 62%)
+
+The named palettes are exported as `mlp-palettes`, so a scheme of your own can
+start from one instead of from nothing:
+
+#ex("mlp-palette-derive", fig-width: 76%)
+
+=== Values as fill
+
+#opt("values", default: "none", applies: [`mlp-layer`])[
+  An array of floats in 0..1, one per neuron. The fill becomes a ramp from
+  white to the layer's role color --- the activations-as-brightness view
+  3Blue1Brown made standard.
+]
+#opt("show-value-text", default: "false", applies: [`mlp-layer`])[
+  Prints the value, two decimals, inside the node. Requires `values`, and wins
+  over an inside node label. Text flips to white on dark fills.
+]
+
+#ex("mlp-values", fig-width: 66%)
+
+== Node shapes and the input
+
+#opt("node-shape", default: "\"circle\"")[
+  `"circle"`, `"square"` or `"split"`, for the whole figure. The per-layer
+  `shape` option takes the same values and wins.
+]
+#opt("shape", default: "figure node-shape", applies: [`mlp-layer`])[]
+
+`split` is the classic summation-then-squash view of a unit: a slightly larger
+circle with a vertical divider, $Sigma$ in the left half, the activation curve
+(or $f$ when the layer has none) in the right.
+
+#ex("mlp-shapes", fig-width: 66%)
+
+#opt("node-stroke", default: "(paint: black, thickness: 0.8pt)")[
+  The node outline, for the whole figure; per-layer `stroke` wins.
+]
+#opt("input-style", default: "\"nodes\"")[
+  `"square"` draws layer 1 as squares, the AIMA convention for
+  values-not-units. `"arrows"` replaces the layer-1 nodes with labelled stub
+  arrows into layer 2, perceptron style; the layer-1 `count` still says how
+  many.
+]
+
+#ex("mlp-input-square", fig-width: 66%)
+#ex("mlp-input-arrows", fig-width: 66%)
+
+== Node labels
+
+#opt("node-label", default: "none")[
+  `none`, `auto`, or a function. At the figure level the function takes
+  `(l, i)`; on a layer it takes `(i)` and wins. `auto` is role-based math over
+  true indices: $x_i$ on the input, $h_i^((k))$ on hidden layer $k$ (plain
+  $h_i$ when there is only one), $hat(y)_i$ on the output --- so a collapsed
+  layer labels its last two drawn neurons $n-1$ and $n$, not 4 and 5.
+]
+
+#ex("mlp-node-labels", fig-width: 76%)
+
+#opt("node-label-pos", default: "\"inside\"", applies: [`mlp-layer`])[
+  `"inside"` shrinks the label to fit the node; `"left"` and `"right"` set it
+  beside, which is where a label goes once nodes carry glyphs or values.
+]
+
+#ex("mlp-node-label-pos", fig-width: 72%)
+
+Inside labels yield gracefully: value text wins over an inside label, and the
+glyph activation style and the split shape suppress inside labels entirely
+rather than overprinting a curve.
+
+== Marking neurons
+
+Four per-layer index arrays mark neurons, and a neuron may appear in at most
+one of them --- overlap is an error, not a merge.
+
+#opt("dropped", default: "()", applies: [`mlp-layer`])[
+  An X through the node and its edges omitted --- the dropout figure as
+  Srivastava et al.\ drew it.
+]
+#opt("dimmed", default: "()", applies: [`mlp-layer`])[
+  The node and its edges at reduced opacity. De-emphasis without deletion.
+]
+#opt("highlighted", default: "()", applies: [`mlp-layer`])[
+  An accent ring around the node, its edges at full opacity. How you trace one
+  path through a network.
+]
+#opt("exclude", default: "()", applies: [`mlp-layer`])[
+  Not drawn at all, edges omitted. Referring to an excluded neuron from an
+  edge endpoint is an error.
+]
+
+#ex("mlp-states", fig-width: 66%,
+  caption: [In the hidden layer: neuron 2 dropped, 4 dimmed, 5 highlighted,
+    and 6 excluded --- the column is one node shorter than its count.])
+
+#opt("node-style", default: "none", applies: [`mlp-layer`])[
+  A function from neuron index to a dictionary of `fill`, `stroke`, `size`,
+  `shape` --- or `none` to leave the neuron alone. Applied last, after every
+  other node option.
+]
+
+#ex("mlp-node-style", fig-width: 72%)
+
+== Edges
+
+#opt("edge-stroke", default: "(paint: #5C5C5C, thickness: 0.4pt)")[
+  The base stroke of every adjacent-pair edge, before opacity.
+]
+#opt("edge-opacity", default: "45%")[
+  Applied to the stroke paint. Edges draw before nodes and the fan of a dense
+  layer overlaps itself; at partial opacity it reads as texture rather than
+  ink.
+]
+
+#ex("mlp-edge-stroke", fig-width: 76%)
+
+#opt("arrows", default: "\"none\"")[
+  `"all"` puts a small stealth head on every inter-layer edge. The textbook
+  default is none: flow is left to right and saying so ninety-six times adds
+  clutter, not information.
+]
+
+#ex("mlp-arrows", fig-width: 72%)
+
+#opt("io-stubs", default: "false")[
+  `true`, `"in"` or `"out"`: short stub arrows entering layer 1 and leaving
+  layer L, one per drawn neuron. The input side is suppressed under
+  `input-style: "arrows"`, which already draws them.
+]
+#opt("stub-labels", default: "auto")[
+  `auto` labels in-stubs $x_i$ and out-stubs $hat(y)_i$; `none` labels
+  nothing; a function `(side, i)` labels however you like, with `side` one of
+  `"in"` and `"out"`.
+]
+
+#ex("mlp-io-stubs", fig-width: 72%)
+#ex("mlp-stub-labels", fig-width: 72%)
+
+#opt("edge-filter", default: "none")[
+  A predicate `(l, i, j)` over the adjacent-pair edge set --- gap `l` sits
+  between layers `l` and `l+1`, `i` is the source neuron, `j` the target.
+  Returning `false` drops the edge. Sparse connectivity as a function rather
+  than an enumeration.
+]
+
+#ex("mlp-edge-filter", fig-width: 72%,
+  caption: [Full fan into the first gap, one-to-one in the second.])
+
+#opt("edge-labels", default: "()")[
+  An array of `(l: .., i: .., j: .., label: ..)` dictionaries naming edges to
+  label; omitting `label` (or passing `auto`) typesets $w_(j i)^((l))$. This
+  is deliberately per-edge: the convention is one representative label, not a
+  hundred unreadable ones.
+]
+
+#ex("mlp-edge-labels", fig-width: 72%)
+
+#opt("matrix-labels", default: "false")[
+  `true` centers $W^((l))$ in each inter-layer gap, above the fan --- the
+  Goodfellow compact annotation. A function `(l)` supplies your own; returning
+  `none` skips a gap.
+]
+
+#ex("mlp-matrix-labels", fig-width: 76%)
+
+== Weights
+
+#opt("weights", default: "none")[
+  An array of matrices, a function `(l, i, j)` returning a float, or
+  `"random"`. When set, edge appearance encodes the values.
+]
+
+Matrix orientation is the $W x$ convention and worth stating precisely.
+`weights.at(l - 1)` maps gap $l$, has `counts[l+1]` rows by `counts[l]`
+columns, and entry $[j][i]$ is the weight of the edge from neuron $i$ of layer
+$l$ into neuron $j$ of layer $l+1$. A mismatched matrix is an error stating
+both the expected and the received shape.
+
+#ex-wide("mlp-weights-explicit", fig-width: 56%, fig-height: 5.6cm)
+
+#opt("weight-encode", default: "(\"color\", \"thickness\")")[
+  Which channels carry the value: any subset of `"color"`, `"thickness"`,
+  `"opacity"`. With $t = min(|w| \/ "range", 1)$, color paints by sign,
+  thickness interpolates `weight-thickness` by $t$, and opacity runs 15% to
+  100% by $t$ in place of `edge-opacity`.
+]
+#opt("weight-colors", default: "(positive: #466A9F, negative: #CC2E40)")[
+  The sign colors --- the Playground and 3Blue1Brown convention, in brand
+  hues. A partial dictionary overlays the default.
+]
+#opt("weight-range", default: "auto")[
+  The $|w|$ that saturates the encoding. `auto` takes the maximum over the
+  data: full matrices for the array form, collapsed entries included, so the
+  visible encoding stays honest about the true scale; drawn edges only for
+  the function and `"random"` forms.
+]
+#opt("weight-thickness", default: "(0.2pt, 1.1pt)")[
+  Thickness at zero and at saturation.
+]
+#opt("seed", default: "42")[
+  For `weights: "random"`. Typst has no random source, so the values are a
+  deterministic hash of the seed and the edge indices --- the same seed always
+  draws the same figure.
+]
+
+#ex("mlp-weights-random", fig-width: 82%)
+#ex("mlp-weights-opacity", fig-width: 76%)
+
+#note[
+  Bias edges are not covered by `weights` --- those matrices describe $W$, not
+  $b$ --- and `edge-filter` and `edge-style` do not see them either. Letting a
+  weight matrix silently mis-size against `counts + 1` is the kind of trap
+  this package exists to reject.
+]
+
+== Bias nodes
+
+#opt("bias", default: "false")[
+  A bias node above each of layers 1 to $L-1$, one `node-pitch` above the
+  column's top slot, filled from the palette's `bias` role, with an edge to
+  every drawn neuron of the next layer. Also an `mlp-layer` option, so one
+  layer can opt out (or in).
+]
+#opt("bias-label", default: "$1$")[The text inside every bias node.]
+
+#ex("mlp-bias", fig-width: 76%)
+#ex("mlp-bias-off", fig-width: 76%,
+  caption: [`bias: true` on the figure, `bias: false` on layer 2.])
+
+`bias: true` on the last layer is an error --- there is no next layer to feed
+--- and a layer immediately followed by an `mlp-gap` draws none, since bias
+edges across an elision would fake adjacency.
+
+== Captions
+
+#opt("label", default: "none", applies: [`mlp-layer`, `mlp-gap`])[
+  The column's caption in the label row. Any content.
+]
+#opt("sub", default: "none", applies: [`mlp-layer`])[
+  A second caption line, smaller and lighter, directly beneath the label.
+]
+#opt("layer-labels", default: "none")[
+  `auto` captions the roles: "input", "hidden 1" ... "hidden k", "output"
+  (just "hidden" when there is one). An array gives one entry per layer,
+  `none` entries included. A per-layer `label` wins over both.
+]
+
+#ex("mlp-layer-labels", fig-width: 76%)
+#ex-wide("mlp-captions-sub", fig-width: 66%)
+
+#opt("label-pos", default: "\"below\"")[
+  Which side of the columns the caption rows sit on. A `sub` still reads
+  beneath its label either way.
+]
+
+#ex("mlp-label-pos", fig-width: 76%)
+
+== Activations
+
+#opt("activation", default: "none")[
+  The figure-wide activation, applied to layers 2 to $L$; layer 1 never
+  defaults to one. The per-layer `activation` wins, including `none` to
+  exempt a layer and including layer 1 if you insist.
+]
+#opt("activation-style", default: "\"caption\"")[
+  How activations are shown: `"caption"`, `"glyph"`, `"block"` or `"split"`.
+]
+
+`caption` typesets the name, small, in the activation baseline row. Any string
+or content is accepted --- nothing errors here, because anything renders as
+text:
+
+#ex("mlp-act-caption", fig-width: 72%)
+
+`glyph` draws the bare curve inside each neuron of the layer --- curve only, no
+axes:
+
+#ex("mlp-act-glyph", fig-width: 72%)
+
+`block` draws one small transfer-function icon in the activation row under the
+column --- the MATLAB/Hagan convention, placed where it cannot collide with
+edges:
+
+#ex("mlp-act-block", fig-width: 72%)
+
+`split` forces the split node shape for layers with an activation --- $Sigma$
+then the curve:
+
+#ex("mlp-act-split", fig-width: 72%)
+
+The full catalog, one silhouette per name:
+
+#ex-wide("mlp-glyph-catalog", fig-width: 100%, fig-height: 3.4cm,
+  caption: [`linear`, `heaviside`, `logistic` and `swish` are aliases of
+    `identity`, `step`, `sigmoid` and `silu`. The three smooth kinks differ
+    deliberately: `elu` saturates left, `softplus` is everywhere-smooth,
+    `gelu` and `silu` dip below zero before the rise.])
+
+`softmax` and `argmax` have no per-neuron curve --- the function couples the
+whole layer --- so in any glyph-bearing style they render as a right-side
+bracket spanning the layer, named beside it:
+
+#ex("mlp-softmax", fig-width: 72%)
+
+An activation name outside the catalog is an error under `"glyph"`, `"block"`
+and `"split"`, and the error lists the catalog. Under `"caption"` it is just
+text.
+
+== Extra edges
+
+Everything beyond the adjacent-pair fan --- a skip, a recurrent loop, one
+restyled edge --- is an `mlp-edge(..)` in the figure's `edges` array. An
+endpoint is `"name.index"` for one neuron, `"name"` for a whole layer, or the
+positional forms `(layer, index)` and `(layer,)`. What the edge *is* follows
+from its endpoints. An adjacent node pair restyles the existing edge rather
+than duplicating it (and re-adds the single link if `edge-filter` removed it).
+A non-adjacent node pair is a new arc routed above the network, or below with
+`style: "arc-below"`. A non-adjacent layer pair is one layer-level skip arc,
+column top to column top. An adjacent layer pair restyles every edge in that
+gap. And `from` equal to `to`, layer-level, is a recurrent self-loop.
+
+#ex-wide("mlp-skip", fig-width: 76%)
+
+#opt("sum", default: "false", applies: [`mlp-edge`])[
+  Terminates a layer-level skip in a small circled plus before the target
+  layer --- the ResNet merge. On any other kind of edge it is an error.
+]
+
+#ex("mlp-recurrent", fig-width: 66%)
+
+#ex-wide("mlp-edge-single", fig-width: 62%,
+  caption: [An adjacent pair restyled and labelled, and a node-level skip
+    routed underneath.])
+
+#opt("style", default: "auto", applies: [`mlp-edge`])[
+  `"straight"`, `"arc-above"`, `"arc-below"` or `"loop"`. `auto` picks
+  straight for adjacent endpoints, an arc above for skips, a loop when the
+  endpoints match.
+]
+#opt("paint", default: "edge default; accent for skips and loops", applies: [`mlp-edge`])[]
+#opt("thickness", default: "edge default", applies: [`mlp-edge`])[]
+#opt("dash", default: "none", applies: [`mlp-edge`])[]
+#opt("opacity", default: "edge default; 100% for skips and loops", applies: [`mlp-edge`])[]
+#opt("arrow", default: "true for skips and loops, false for adjacent", applies: [`mlp-edge`])[
+  A stealth head at `to`.
+]
+#opt("label", default: "none", applies: [`mlp-edge`])[
+  At the arc apex, or the midpoint of a straight edge.
+]
+
+#opt("edge-style", default: "none")[
+  The last word on adjacent-pair edges: a function `(l, i, j)` returning a
+  dictionary of `paint`, `thickness`, `dash`, `opacity` --- or `none` to leave
+  the edge alone. Style precedence over an edge is base stroke, then weight
+  encoding, then dimmed and highlighted states, then `mlp-edge` overrides,
+  then this hook.
+]
+
+== Growing upward
+
+#opt("direction", default: "\"right\"")[
+  `"up"` is the Goodfellow/AIMA orientation: input at the bottom, output at
+  the top. It is a coordinate swap after layout, so every option means what it
+  meant. Captions move to the left of their rows, badges to the right, and
+  `label-pos` is ignored.
+]
+
+#ex-wide("mlp-direction-up", fig-width: 34%, fig-height: 7.5cm)
+
+== Embedding in a canvas
+
+`draw-mlp` is exactly `canvas(length: unit, mlp-content(..))`, and
+`mlp-content` is exported. Inside your own CeTZ canvas the figure is draw
+content like any other, with the first column centered at the origin and the
+flow axis on $y = 0$:
+
+#ex-wide("mlp-embed", fig-width: 56%, fig-height: 5cm)
+
+== Typos are errors here too
+
+The MLP renderer keeps the package's validation contract: unknown options on
+every constructor and on the figure, plain dictionaries, bad counts, gap
+placement, name collisions, index ranges and the mutual exclusivity of the
+marking arrays, `values` length, `cutoff` against `collapse-to`, palette names
+and keys, glyph names when a glyph is required, weight shapes per gap,
+`weight-encode` members, endpoint resolution, and `edge-labels` that name no
+drawn edge. The voice is the same, `did-you-mean` included:
+
+#snippet(```
+error: unknown draw-mlp option "cutof" on the figure.
+Did you mean "cutoff"? Options accepted here: activation,
+activation-style, arrows, bias, bias-label, collapse-to, ...
+```)
+
+#ex("mlp-cutoff-fix", fig-width: 72%,
+  caption: [The fix. One letter, and the figure it was always meant to be.])
+
+#opt("`weights` matrix N (layers N -> N+1) must be R x C")[
+  The matrix facing a gap has the wrong shape. The message states the
+  expected and the received shape, and restates the target-major orientation
+  while it is at it.
+]
+#opt("activation \"X\" on layer N has no glyph")[
+  A glyph-bearing style needs a curve from the catalog; the message lists it,
+  suggests the nearest name, and notes that under `"caption"` anything is
+  text.
+]
+#opt("mlp-edge endpoint refers to \"X\", which is not the name of any layer")[
+  A dangling endpoint, with a `did-you-mean` over the names that exist. Gaps,
+  excluded neurons and elided neurons get their own messages, each saying why
+  the endpoint cannot take an edge.
+]
+
+== A composite
+
+Weights, bias, stubs, captions, a collapse and a title --- everything this
+chapter covered, in one figure that is still eleven lines:
+
+#ex-wide("mlp-composite", fig-width: 84%, fig-height: 8cm)
+
 = Patterns
 
 Everything here is built only from what the preceding chapters covered. These
@@ -1053,6 +1662,13 @@ here, so an option cannot exist without appearing in this chapter.
 
 #key-table(group-keys, exclude: ())
 
+== Options of the MLP renderer
+
+#mlp-key-table()
+
+Plus the exports themselves: `draw-mlp`, `mlp-content`, the `mlp-layer`,
+`mlp-gap` and `mlp-edge` constructors, and the `mlp-palettes` dictionary.
+
 == Arguments to draw-network
 
 #snippet(```typ
@@ -1092,8 +1708,25 @@ Plus a constructor per layer type, and `connection(..)` and `group(..)`.
   "width", "widths", "bandfill", "show-relu", "input-style",
   "xlabel", "ylabel", "zlabel", "classes", "radius", "symbol", "stroke",
   "branches", "spread", "spread-mode", "lead", "rejoin-lead", "open",
+  "entry-gap", "exit-gap",
   "from", "to", "mode", "pos", "clearance", "color", "dash", "thickness",
   "touch-layer", "arrive-offset", "layers",
+))
+
+#mlp-undocumented((
+  "count", "name", "label", "sub", "activation", "fill", "stroke", "shape",
+  "node-size", "node-label", "node-label-pos", "values", "show-value-text",
+  "dropped", "dimmed", "highlighted", "exclude", "show-all", "bias",
+  "node-style", "pitch",
+  "from", "to", "style", "paint", "thickness", "dash", "opacity", "arrow",
+  "sum",
+  "direction", "unit", "node-pitch", "layer-pitch", "title", "debug",
+  "cutoff", "collapse-to", "count-badges", "palette", "node-shape",
+  "node-stroke", "input-style", "edge-stroke", "edge-opacity", "arrows",
+  "io-stubs", "stub-labels", "edge-filter", "edges", "edge-style", "weights",
+  "weight-encode", "weight-colors", "weight-range", "weight-thickness",
+  "seed", "edge-labels", "matrix-labels", "bias-label", "layer-labels",
+  "label-pos", "activation-style",
 ))
 
 = Errors
@@ -1162,6 +1795,10 @@ copied:
     and YOLO26-n, plus five RGB-IR fusion variants of the last one.
   / `examples/features/`: every predefined layer type side by side in both
     palettes, and a figure exercising every feature at once.
+  / `examples/mlp/`: the neuron diagrams of chapter 14 --- the classic
+    three-layer figure, a Playground-style random-weight network, a Rosenblatt
+    perceptron, a Goodfellow-orientation textbook figure, a dropout figure,
+    and a deep network with a gap, a skip and a recurrent loop.
   / `examples/imported/`: figures generated from a traced PyTorch model rather
     than written by hand, using `tools/import_model.py`.
 ]
@@ -1171,7 +1808,7 @@ machinery carrying a whole figure. Every block states its tensor shape, every
 gap is automatic, every lane height is automatic, and the three detection heads
 are a depth-mode branch. Nothing in it is sized or positioned by hand.
 
-This manual is itself plain text. `doc/manual.typ` and the 125 files in
+This manual is itself plain text. `doc/manual.typ` and the 176 files in
 `doc/examples/` are the whole of it, each example a standalone figure that
 compiles on its own. That source, rather than this PDF, is what to point a
 language model at.
