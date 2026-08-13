@@ -171,7 +171,7 @@ two drawn neurons with their true indices (…, n−1, n).
 
 | option | type | default | meaning |
 | --- | --- | --- | --- |
-| `palette` | `"blues"` \| `"classic"` \| `"brand"` \| `"warm"` \| `"cold"` \| dict | `"blues"` | role→color map with keys ⊆ `(input, hidden, output, bias, accent)`; a partial dict overlays the blues (default) palette; an unknown name is an **error** (no silent fallback) |
+| `palette` | `"blues"` \| `"classic"` \| `"brand"` \| `"greys"` \| `"teal"` \| `"lilaq"` \| `"warm"` \| `"cold"` \| dict | `"blues"` | role→color map with keys ⊆ `(input, hidden, output, bias, accent)`; a partial dict overlays the blues (default) palette; an unknown name is an **error** (no silent fallback) |
 | `node-shape` | `"circle"` \| `"square"` \| `"split"` | `"circle"` | figure default; per-layer `shape` wins |
 | `node-stroke` | stroke | `(paint: black, thickness: 0.8pt)` | |
 | `node-label` | `none` \| `auto` \| fn(l, i) → content | `none` | figure default; per-layer `node-label` (fn(i)) wins |
@@ -190,6 +190,13 @@ Built-in palettes (`mlp-palettes`):
   in grayscale.
 - `brand` — input `#FFF2E3` (sand), hidden `#ECECEC`, output `#466A9F`
   lightened 65%, bias `#FFFFFF`, accent `#73000A` (garnet). The fig5 look.
+- `greys` — input `#F0F0F0`, hidden `#BDBDBD`, output `#636363` (ColorBrewer
+  Greys), bias `#FFFFFF`, accent `#000000`. Pure grayscale.
+- `teal` — the `greys` ladder with output `#35978F` and accent `#01665E`,
+  so exactly one hue pops.
+- `lilaq` — input `#3F90DA`, hidden `#FFA90E`, output `#BD1F01`, accent
+  `#832DB6`: the first colors of lilaq's default cycle (petroff10), for
+  documents whose plots are drawn with lilaq.
 - `warm` / `cold` — derived from the corresponding `theme.typ` block palettes
   so a document using warm isometric figures can match its MLPs.
 
