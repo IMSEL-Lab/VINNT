@@ -1846,7 +1846,7 @@ machinery carrying a whole figure. Every block states its tensor shape, every
 gap is automatic, every lane height is automatic, and the three detection heads
 are a depth-mode branch. Nothing in it is sized or positioned by hand.
 
-This manual is itself plain text. `doc/manual.typ` and the 176 files in
+This manual is itself plain text. `doc/manual.typ` and the 179 files in
 `doc/examples/` are the whole of it, each example a standalone figure that
 compiles on its own. That source, rather than this PDF, is what to point a
 language model at.
