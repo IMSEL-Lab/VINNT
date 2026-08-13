@@ -1165,10 +1165,11 @@ drawn.
 
 #opt("palette", default: "\"blues\"")[
   `"blues"`, `"classic"`, `"brand"`, `"greys"`, `"teal"`, `"lilaq"`,
-  `"warm"`, `"cold"`, or a dictionary with
-  keys among `input`, `hidden`, `output`, `bias` and `accent`. A partial
-  dictionary overlays the blues palette; an unknown palette name is an error
-  rather than a silent fallback.
+  `"white"`, `"warm"`, `"cold"`, or a dictionary with
+  keys among `input`, `hidden`, `output`, `bias` and `accent`, plus the
+  optional ink keys `input-text`, `hidden-text`, `output-text` and
+  `bias-text` described below. A partial dictionary overlays the blues
+  palette; an unknown palette name is an error rather than a silent fallback.
 ]
 
 The default is `blues` --- light input, mid hidden, dark output, a single-hue
@@ -1184,12 +1185,15 @@ Greys ladder, pure grayscale for a venue that prints nothing else. `teal`
 keeps that grey ladder but moves the output to teal, so exactly one hue
 pops. `lilaq` takes the first colors of the lilaq plotting package's default
 cycle, so an MLP can sit beside lilaq plots without a second color language.
-`warm` and `cold` are derived from the isometric block palettes, so a
+`white` keeps every fill white with a black accent --- the uncolored
+line-art figure textbooks print, its roles told apart by position and labels
+alone. `warm` and `cold` are derived from the isometric block palettes, so a
 document can keep its blocks and its neurons on one scheme.
 
 #ex("mlp-palette-greys", fig-width: 76%)
 #ex("mlp-palette-teal", fig-width: 76%)
 #ex("mlp-palette-lilaq", fig-width: 76%)
+#ex("mlp-palette-white", fig-width: 76%)
 #ex("mlp-palette-warm", fig-width: 76%)
 #ex("mlp-palette-cold", fig-width: 76%)
 
@@ -1204,6 +1208,22 @@ The named palettes are exported as `mlp-palettes`, so a scheme of your own can
 start from one instead of from nothing:
 
 #ex("mlp-palette-derive", fig-width: 76%)
+
+Whatever the palette, everything drawn inside a node --- an inside label, the
+$Sigma$ and $f$ of a split node, an in-node glyph, value text, the inside
+bias label, the dropout X --- picks black or white by the perceived luminance
+of the node's effective fill, so a dark scheme never buries its own ink. A
+palette dictionary can pin that ink per role instead, through the optional
+keys `input-text`, `hidden-text`, `output-text` and `bias-text`. A pinned
+color applies only while the node still wears the palette's own role fill; a
+per-layer `fill`, a `node-style` fill or a `values` ramp falls back to the
+automatic flip, since ink chosen against one fill cannot be trusted against
+another. No built-in palette sets these keys.
+
+#ex("mlp-palette-text", fig-width: 66%,
+  caption: [The hidden fill is dark, so its ink would flip to white; the
+    `hidden-text` key pins it instead. The input and output keep the
+    automatic black.])
 
 === Values as fill
 
