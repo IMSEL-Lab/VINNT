@@ -163,8 +163,8 @@
   if o.weight-range != auto and (not is-num(o.weight-range) or o.weight-range <= 0) {
     panic("vinnt: `weight-range` must be auto or a positive number; got " + repr(o.weight-range) + ".")
   }
-  if type(o.weight-thickness) != array or o.weight-thickness.len() != 2
-    or o.weight-thickness.any(t => type(t) != length) {
+  if (type(o.weight-thickness) != array or o.weight-thickness.len() != 2
+    or o.weight-thickness.any(t => type(t) != length)) {
     panic(
       "vinnt: `weight-thickness` must be a pair of lengths (at zero, at "
         + "saturation); got " + repr(o.weight-thickness) + "."
