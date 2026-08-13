@@ -143,8 +143,9 @@ Per-layer control is constructors, like everything else in the package:
 <img src="doc/readme/mlp-classic.png" width="640"/>
 
 Wide layers collapse to an ellipsis with the true count badged beneath. Also
-in the box: weight-driven edge color and thickness (explicit matrices, a
-function over indices, or seeded random), an activation glyph catalog with the
+in the box: weight-driven edge color and thickness with negatives dashed by
+default (explicit matrices, a function over indices, or seeded random), an
+activation glyph catalog with the
 softmax bracket, skip and recurrent edges with ⊕ merge nodes, bias nodes,
 square and split node shapes, dropout and highlight node states, and a
 bottom-to-top `direction: "up"`.
