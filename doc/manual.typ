@@ -1164,7 +1164,8 @@ drawn.
 == Color
 
 #opt("palette", default: "\"blues\"")[
-  `"blues"`, `"classic"`, `"brand"`, `"warm"`, `"cold"`, or a dictionary with
+  `"blues"`, `"classic"`, `"brand"`, `"greys"`, `"teal"`, `"lilaq"`,
+  `"warm"`, `"cold"`, or a dictionary with
   keys among `input`, `hidden`, `output`, `bias` and `accent`. A partial
   dictionary overlays the blues palette; an unknown palette name is an error
   rather than a silent fallback.
@@ -1178,10 +1179,17 @@ photocopied. `classic` is the green-input, blue-hidden, red-output TikZ
 convention most published MLP figures copy; its roles sit at near-equal
 luminance, which is exactly what a grayscale printer collapses, so it is a
 named option here rather than the default. `brand` is the package's house
-scheme in sand and grey with a garnet accent, and `warm` and `cold` are
-derived from the isometric block palettes, so a document can keep its blocks
-and its neurons on one scheme.
+scheme in sand and grey with a garnet accent. `greys` is the ColorBrewer
+Greys ladder, pure grayscale for a venue that prints nothing else. `teal`
+keeps that grey ladder but moves the output to teal, so exactly one hue
+pops. `lilaq` takes the first colors of the lilaq plotting package's default
+cycle, so an MLP can sit beside lilaq plots without a second color language.
+`warm` and `cold` are derived from the isometric block palettes, so a
+document can keep its blocks and its neurons on one scheme.
 
+#ex("mlp-palette-greys", fig-width: 76%)
+#ex("mlp-palette-teal", fig-width: 76%)
+#ex("mlp-palette-lilaq", fig-width: 76%)
 #ex("mlp-palette-warm", fig-width: 76%)
 #ex("mlp-palette-cold", fig-width: 76%)
 
