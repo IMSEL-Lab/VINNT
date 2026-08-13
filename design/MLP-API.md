@@ -171,7 +171,7 @@ two drawn neurons with their true indices (…, n−1, n).
 
 | option | type | default | meaning |
 | --- | --- | --- | --- |
-| `palette` | `"classic"` \| `"brand"` \| `"warm"` \| `"cold"` \| dict | `"classic"` | role→color map with keys ⊆ `(input, hidden, output, bias, accent)`; a partial dict overlays the classic (default) palette; an unknown name is an **error** (no silent fallback) |
+| `palette` | `"blues"` \| `"classic"` \| `"brand"` \| `"warm"` \| `"cold"` \| dict | `"blues"` | role→color map with keys ⊆ `(input, hidden, output, bias, accent)`; a partial dict overlays the blues (default) palette; an unknown name is an **error** (no silent fallback) |
 | `node-shape` | `"circle"` \| `"square"` \| `"split"` | `"circle"` | figure default; per-layer `shape` wins |
 | `node-stroke` | stroke | `(paint: black, thickness: 0.8pt)` | |
 | `node-label` | `none` \| `auto` \| fn(l, i) → content | `none` | figure default; per-layer `node-label` (fn(i)) wins |
@@ -179,10 +179,15 @@ two drawn neurons with their true indices (…, n−1, n).
 
 Built-in palettes (`mlp-palettes`):
 
+- `blues` — input `#DEEBF7`, hidden `#9ECAE1`, output `#3182BD` (ColorBrewer
+  Blues), bias `#FFFFFF`, accent `#B2182B`. A single-hue luminance ladder:
+  the roles stay distinguishable when printed black-and-white or photocopied.
+  The default.
 - `classic` — input `#80FF80` (TikZ `green!50`), hidden `#8080FF`
   (`blue!50`), output `#FF8080` (`red!50`), bias `#FFFFFF`, accent `#D62728`.
-  The Fauske/tikz.net convention that most published MLP figures copy, and
-  the default.
+  The Fauske/tikz.net convention most published MLP figures copy; near-equal
+  luminance across roles, so prefer `blues` when the figure may be printed
+  in grayscale.
 - `brand` — input `#FFF2E3` (sand), hidden `#ECECEC`, output `#466A9F`
   lightened 65%, bias `#FFFFFF`, accent `#73000A` (garnet). The fig5 look.
 - `warm` / `cold` — derived from the corresponding `theme.typ` block palettes
@@ -206,7 +211,7 @@ Built-in palettes (`mlp-palettes`):
 | option | type | default | meaning |
 | --- | --- | --- | --- |
 | `weights` | `none` \| array of matrices \| fn(l, i, j) → float \| `"random"` | `none` | matrix `l` has `counts[l+1]` rows × `counts[l]` columns (target-major, the $W x$ convention); `"random"` generates deterministic values from `seed` |
-| `weight-encode` | array ⊆ `("color", "thickness", "opacity", "dash")` | `("color", "thickness")` | which channels encode the weight; `"dash"` is the accessibility opt-in — negative edges render dashed `(2pt, 1.6pt)`, positive stay solid — and is **not** in the default set |
+| `weight-encode` | array ⊆ `("color", "thickness", "opacity", "dash")` | `("color", "thickness", "dash")` | which channels encode the weight; `"dash"` renders negative edges dashed `(2pt, 1.6pt)` while positive stay solid, so sign survives grayscale printing and color-vision deficiency — in the default set since the B/W-print pass |
 | `weight-colors` | dict `(positive, negative)` | `(positive: #0571B0, negative: #CA0020)` | sign colors (blue-positive/red-negative — the 3Blue1Brown / ColorBrewer RdBu endpoints) |
 | `weight-range` | `auto` \| float | `auto` | |w| that saturates the encoding; `auto` = max over the data |
 | `weight-thickness` | pair of lengths | `(0.2pt, 1.1pt)` | thickness at 0 and at saturation |
@@ -491,10 +496,15 @@ section is normative over §1–§16 where they conflict.
   jumping to 0.85, so the two stay distinct from each other and from
   `sigmoid` at 6pt sizes.
 - `"dash"` is a fourth accepted `weight-encode` member (negatives dashed
-  `(2pt, 1.6pt)`); it is an accessibility opt-in and not in the default set.
-- The default palette is `"classic"` (the tikz.net convention above), not
-  `"brand"`, and the default `weight-colors` are the ColorBrewer RdBu
-  endpoints `#0571B0`/`#CA0020`; the brand hues remain available by name.
+  `(2pt, 1.6pt)`). It entered the default set in the B/W-print pass, so
+  weight sign survives grayscale reproduction; pass an explicit
+  `weight-encode` without it for all-solid edges.
+- The default palette moved twice on user direction: brand → classic
+  (standard over house colors), then classic → `"blues"` (the ColorBrewer
+  luminance ladder above) because classic's near-equal-luminance roles
+  collapse under black-and-white printing. classic and brand remain available
+  by name. Default `weight-colors` are the ColorBrewer RdBu endpoints
+  `#0571B0`/`#CA0020`.
 
 ## 18. Out of scope (explicit)
 
