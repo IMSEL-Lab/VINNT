@@ -54,7 +54,7 @@
   node-label: none,
   input-style: "nodes",
   edge-stroke: (paint: rgb("#5C5C5C"), thickness: 0.4pt),
-  edge-opacity: 45%,
+  edge-opacity: 50%,
   arrows: "none",
   io-stubs: false,
   stub-labels: auto,
