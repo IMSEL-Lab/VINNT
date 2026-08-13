@@ -1,11 +1,19 @@
-// MLP palettes, strokes and font constants. The brand palette is the fig5
-// look and the default; warm and cold derive from the isometric block
-// palettes in ../theme.typ so a document using warm isometric figures can
-// match its MLPs.
+// MLP palettes, strokes and font constants. The classic palette is the
+// tikz.net/texample convention most published MLP figures copy and the
+// default; brand is the fig5 look; warm and cold derive from the isometric
+// block palettes in ../theme.typ so a document using warm isometric figures
+// can match its MLPs.
 
 #import "../theme.typ": colors-warm, colors-cold
 
 #let mlp-palettes = (
+  classic: (
+    input: rgb("#80FF80"),
+    hidden: rgb("#8080FF"),
+    output: rgb("#FF8080"),
+    bias: rgb("#FFFFFF"),
+    accent: rgb("#D62728"),
+  ),
   brand: (
     input: rgb("#FFF2E3"),
     hidden: rgb("#ECECEC"),
