@@ -1049,7 +1049,7 @@ enumerations:
 
 #ex-wide("mlp-tier3", fig-width: 56%, fig-height: 6.5cm,
   caption: [`w.json` holds one matrix per inter-layer gap. Positive weights are
-    blue, negative red, and magnitude is thickness.])
+    blue, negative red and dashed, and magnitude is thickness.])
 
 Everything below is one of those tiers in detail.
 
@@ -1163,19 +1163,24 @@ drawn.
 
 == Color
 
-#opt("palette", default: "\"classic\"")[
-  `"classic"`, `"brand"`, `"warm"`, `"cold"`, or a dictionary with keys among
-  `input`, `hidden`, `output`, `bias` and `accent`. A partial dictionary
-  overlays the classic palette; an unknown palette name is an error rather
-  than a silent fallback.
+#opt("palette", default: "\"blues\"")[
+  `"blues"`, `"classic"`, `"brand"`, `"warm"`, `"cold"`, or a dictionary with
+  keys among `input`, `hidden`, `output`, `bias` and `accent`. A partial
+  dictionary overlays the blues palette; an unknown palette name is an error
+  rather than a silent fallback.
 ]
 
-The default is `classic` --- green input, blue hidden, red output, the TikZ
-convention most published MLP figures copy, and the fills every figure in this
-chapter wears unless it says otherwise. `brand` is the package's house scheme
-in sand and grey with a garnet accent, and `warm` and `cold` are derived from
-the isometric block palettes, so a document can keep its blocks and its
-neurons on one scheme.
+The default is `blues` --- light input, mid hidden, dark output, a single-hue
+ColorBrewer ladder, and the fills every figure in this chapter wears unless it
+says otherwise. The three roles are steps in luminance rather than changes of
+hue, so they stay apart when the figure is printed black-and-white or
+photocopied. `classic` is the green-input, blue-hidden, red-output TikZ
+convention most published MLP figures copy; its roles sit at near-equal
+luminance, which is exactly what a grayscale printer collapses, so it is a
+named option here rather than the default. `brand` is the package's house
+scheme in sand and grey with a garnet accent, and `warm` and `cold` are
+derived from the isometric block palettes, so a document can keep its blocks
+and its neurons on one scheme.
 
 #ex("mlp-palette-warm", fig-width: 76%)
 #ex("mlp-palette-cold", fig-width: 76%)
@@ -1366,7 +1371,7 @@ both the expected and the received shape.
 
 #ex-wide("mlp-weights-explicit", fig-width: 56%, fig-height: 5.6cm)
 
-#opt("weight-encode", default: "(\"color\", \"thickness\")")[
+#opt("weight-encode", default: "(\"color\", \"thickness\", \"dash\")")[
   Which channels carry the value: any subset of `"color"`, `"thickness"`,
   `"opacity"`, `"dash"`. With $t = min(|w| \/ "range", 1)$, color paints by
   sign, thickness interpolates `weight-thickness` by $t$, opacity runs 15% to
@@ -1398,8 +1403,10 @@ both the expected and the received shape.
 
 Sign carried by color alone does not survive a grayscale printer or every
 reader's eyes. The `"dash"` member is the accessibility channel --- negative
-edges render dashed, positive stay solid --- and it is opt-in rather than a
-default because a dense fan of dashes reads as noise:
+edges render dashed, positive stay solid --- and it sits in the default set,
+so the sign survives the photocopier without being asked for. Passing
+`weight-encode` without the member draws every edge solid, for the occasional
+dense fan where the dashes read as noise:
 
 #ex("mlp-weights-dash", fig-width: 76%)
 
