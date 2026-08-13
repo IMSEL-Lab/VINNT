@@ -1049,7 +1049,7 @@ enumerations:
 
 #ex-wide("mlp-tier3", fig-width: 56%, fig-height: 6.5cm,
   caption: [`w.json` holds one matrix per inter-layer gap. Positive weights are
-    blue, negative rose, and magnitude is thickness.])
+    blue, negative red, and magnitude is thickness.])
 
 Everything below is one of those tiers in detail.
 
@@ -1163,13 +1163,19 @@ drawn.
 
 == Color
 
-#opt("palette", default: "\"brand\"")[
-  `"brand"`, `"warm"`, `"cold"`, or a dictionary with keys among `input`,
-  `hidden`, `output`, `bias` and `accent`. A partial dictionary overlays the
-  brand palette; an unknown palette name is an error rather than a silent
-  fallback. `warm` and `cold` are derived from the isometric block palettes,
-  so a document can keep its blocks and its neurons on one scheme.
+#opt("palette", default: "\"classic\"")[
+  `"classic"`, `"brand"`, `"warm"`, `"cold"`, or a dictionary with keys among
+  `input`, `hidden`, `output`, `bias` and `accent`. A partial dictionary
+  overlays the classic palette; an unknown palette name is an error rather
+  than a silent fallback.
 ]
+
+The default is `classic` --- green input, blue hidden, red output, the TikZ
+convention most published MLP figures copy, and the fills every figure in this
+chapter wears unless it says otherwise. `brand` is the package's house scheme
+in sand and grey with a garnet accent, and `warm` and `cold` are derived from
+the isometric block palettes, so a document can keep its blocks and its
+neurons on one scheme.
 
 #ex("mlp-palette-warm", fig-width: 76%)
 #ex("mlp-palette-cold", fig-width: 76%)
@@ -1288,7 +1294,7 @@ one of them --- overlap is an error, not a merge.
 #opt("edge-stroke", default: "(paint: #5C5C5C, thickness: 0.4pt)")[
   The base stroke of every adjacent-pair edge, before opacity.
 ]
-#opt("edge-opacity", default: "45%")[
+#opt("edge-opacity", default: "50%")[
   Applied to the stroke paint. Edges draw before nodes and the fan of a dense
   layer overlaps itself; at partial opacity it reads as texture rather than
   ink.
@@ -1362,13 +1368,15 @@ both the expected and the received shape.
 
 #opt("weight-encode", default: "(\"color\", \"thickness\")")[
   Which channels carry the value: any subset of `"color"`, `"thickness"`,
-  `"opacity"`. With $t = min(|w| \/ "range", 1)$, color paints by sign,
-  thickness interpolates `weight-thickness` by $t$, and opacity runs 15% to
-  100% by $t$ in place of `edge-opacity`.
+  `"opacity"`, `"dash"`. With $t = min(|w| \/ "range", 1)$, color paints by
+  sign, thickness interpolates `weight-thickness` by $t$, opacity runs 15% to
+  100% by $t$ in place of `edge-opacity`, and dash draws negative edges
+  dashed, positive solid.
 ]
-#opt("weight-colors", default: "(positive: #466A9F, negative: #CC2E40)")[
-  The sign colors --- the Playground and 3Blue1Brown convention, in brand
-  hues. A partial dictionary overlays the default.
+#opt("weight-colors", default: "(positive: #0571B0, negative: #CA0020)")[
+  The sign colors --- blue positive, red negative, the ColorBrewer endpoints
+  the Playground and 3Blue1Brown made the convention. A partial dictionary
+  overlays the default.
 ]
 #opt("weight-range", default: "auto")[
   The $|w|$ that saturates the encoding. `auto` takes the maximum over the
@@ -1387,6 +1395,13 @@ both the expected and the received shape.
 
 #ex("mlp-weights-random", fig-width: 82%)
 #ex("mlp-weights-opacity", fig-width: 76%)
+
+Sign carried by color alone does not survive a grayscale printer or every
+reader's eyes. The `"dash"` member is the accessibility channel --- negative
+edges render dashed, positive stay solid --- and it is opt-in rather than a
+default because a dense fan of dashes reads as noise:
+
+#ex("mlp-weights-dash", fig-width: 76%)
 
 #note[
   Bias edges are not covered by `weights` --- those matrices describe $W$, not
