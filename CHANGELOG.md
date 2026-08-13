@@ -9,12 +9,16 @@
   `mlp-gap(..)` constructors; extra edges (skip arcs with an optional ⊕ merge,
   recurrent loops, per-edge restyles) are `mlp-edge(..)` values. `mlp-content`
   is the same figure without the canvas, for embedding in a CeTZ canvas of
-  your own, and `mlp-palettes` exports the named palettes.
+  your own. The default palette is `classic` — the green-input, blue-hidden,
+  red-output convention of published MLP figures — with `brand`, `warm` and
+  `cold` as named alternatives, all exported as `mlp-palettes`.
 - Wide layers collapse past a `cutoff` into a vertical ellipsis with the true
   count badged beneath; `mlp-gap` elides depth the same way horizontally.
 - Weight-driven edge styling from explicit matrices (the $Wx$ orientation,
   shape-checked), a function over indices, or seeded deterministic random
-  values — encoded as color by sign, thickness and opacity by magnitude.
+  values — encoded as color by sign (blue positive, red negative), thickness
+  and opacity by magnitude, and an opt-in `"dash"` channel that dashes
+  negative edges so sign survives grayscale.
 - Activation display as captions, in-node glyphs, transfer-function block
   icons, or split Σ-then-curve nodes, with a sixteen-name curve catalog and a
   layer-spanning bracket for softmax and argmax.
