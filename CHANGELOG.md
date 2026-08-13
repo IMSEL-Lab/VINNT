@@ -25,7 +25,10 @@
 - Activation display as captions, in-node glyphs, transfer-function block
   icons, or split Σ-then-curve nodes, with a sixteen-name curve catalog and a
   layer-spanning bracket for softmax and argmax.
-- Bias nodes, io stubs, node states (dropped, dimmed, highlighted, excluded),
+- Bias nodes, labelled "bias" in small grey text above the node by default
+  (`bias-label-pos: "inside"` restores the classic in-node $1$, and
+  `bias-label: none` drops the label), io stubs, node states (dropped,
+  dimmed, highlighted, excluded),
   per-neuron and per-edge style hooks, square and split node shapes, node
   values as fill, `direction: "up"`, and the package's typos-are-errors
   validation contract throughout, `did-you-mean` included.
