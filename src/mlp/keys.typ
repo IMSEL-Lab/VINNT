@@ -50,7 +50,7 @@
   count-badges: auto,
   palette: "blues",
   node-shape: "circle",
-  node-stroke: (paint: black, thickness: 0.8pt),
+  node-stroke: (paint: black, thickness: 0.6pt),
   node-label: none,
   input-style: "nodes",
   edge-stroke: (paint: rgb("#5C5C5C"), thickness: 0.4pt),
