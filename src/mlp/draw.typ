@@ -4,7 +4,7 @@
 
 #import "@preview/cetz:0.5.2": canvas, draw
 #import "keys.typ": mlp-figure-defaults, bracket-activations, glyph-names
-#import "theme.typ": mlp-grey, mlp-fonts
+#import "theme.typ": mlp-grey, mlp-caption-ink, mlp-fonts
 #import "validate.typ" as mval
 #import "geom.typ" as mgeom
 #import "glyphs.typ" as mglyphs
@@ -627,7 +627,7 @@
     if act-caption {
       let at = if up { P((c.x, cap-left.act)) } else { P((c.x, act-y)) }
       let anch = if up { "east" } else { "center" }
-      draw.content(at, anchor: anch, text(size: mlp-fonts.activation, fill: mlp-grey)[#c.act])
+      draw.content(at, anchor: anch, text(size: mlp-fonts.activation, fill: mlp-caption-ink)[#c.act])
     } else if c.is-bracket {
       // softmax / argmax: a right-side bracket spanning the layer
       let bx = c.x + c.trim + 0.16
@@ -635,7 +635,7 @@
       draw.line(P((bx - 0.07, yt)), P((bx, yt)), P((bx, -yt)), P((bx - 0.07, -yt)),
         stroke: (paint: mlp-grey, thickness: 0.7pt))
       let anch = if up { "south" } else { "west" }
-      draw.content(P((bx + 0.1, 0)), anchor: anch, text(size: mlp-fonts.activation, fill: mlp-grey)[#c.act])
+      draw.content(P((bx + 0.1, 0)), anchor: anch, text(size: mlp-fonts.activation, fill: mlp-caption-ink)[#c.act])
     } else if act-block {
       let by = if up { cap-left.act + block-half } else { act-y }
       let at = if up { (c.x, by) } else { (c.x, by) }
@@ -703,12 +703,12 @@
         draw.content(fx, anchor: "east", text(size: mlp-fonts.label)[#c.label])
       } else {
         draw.content((fx.at(0), fx.at(1) + 0.12), anchor: "east", text(size: mlp-fonts.label)[#c.label])
-        draw.content((fx.at(0), fx.at(1) - 0.14), anchor: "east", text(size: mlp-fonts.sub, fill: mlp-grey)[#c.sub])
+        draw.content((fx.at(0), fx.at(1) - 0.14), anchor: "east", text(size: mlp-fonts.sub, fill: mlp-caption-ink)[#c.sub])
       }
     } else {
       draw.content(P((c.x, label-y)), text(size: mlp-fonts.label)[#c.label])
       if c.sub != none and sub-y != none {
-        draw.content(P((c.x, sub-y)), text(size: mlp-fonts.sub, fill: mlp-grey)[#c.sub])
+        draw.content(P((c.x, sub-y)), text(size: mlp-fonts.sub, fill: mlp-caption-ink)[#c.sub])
       }
     }
   }
