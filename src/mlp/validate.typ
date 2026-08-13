@@ -154,7 +154,7 @@
     panic("vinnt: `weight-encode` must be an array; got " + repr(o.weight-encode) + ".")
   }
   for ch in o.weight-encode {
-    check-enum("weight-encode", "member on the figure", ch, ("color", "thickness", "opacity"))
+    check-enum("weight-encode", "member on the figure", ch, ("color", "thickness", "opacity", "dash"))
   }
   if type(o.weight-colors) != dictionary {
     panic("vinnt: `weight-colors` must be a dict (positive, negative); got " + repr(o.weight-colors) + ".")
