@@ -41,7 +41,7 @@
   direction: "right",
   unit: 1cm,
   node-size: 0.17,
-  node-pitch: 0.52,
+  node-pitch: 0.6,
   layer-pitch: 2.2,
   title: none,
   debug: false,
