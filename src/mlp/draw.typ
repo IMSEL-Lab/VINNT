@@ -200,7 +200,7 @@
       panic("vinnt: mlp-edge " + where + " has from = to, which is a recurrent loop; its style can only be \"loop\".")
     }
 
-    if node-level and is-adjacent {
+    if node-level and is-adjacent and (style == auto or style == "straight") {
       // A style override for the existing adjacent-pair edge; if a filter
       // removed that edge, this re-adds it as a single straight link.
       let k = edge-key(f.pos, f.neuron, t.neuron)
@@ -261,10 +261,11 @@
     let lo = calc.min(index.at(f.pos - 1).col, index.at(t.pos - 1).col)
     let hi = calc.max(index.at(f.pos - 1).col, index.at(t.pos - 1).col)
     let between = cols.slice(lo + 1, hi)
+    let pool = if between.len() == 0 { (ca, cb) } else { between }
     let ends = if node-level { () } else { (ca.slots.top + ca.trim, cb.slots.top + cb.trim) }
     let inter-top = calc.max(
       0.2,
-      ..between.map(c => if c.kind == "layer" { c.slots.top + c.nsize } else { 0.2 }),
+      ..pool.map(c => if c.kind == "layer" { c.slots.top + c.nsize } else { 0.2 }),
       ..ends,
     )
     if style == auto { style = "arc-above" }
