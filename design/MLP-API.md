@@ -173,7 +173,7 @@ two drawn neurons with their true indices (…, n−1, n).
 | --- | --- | --- | --- |
 | `palette` | `"blues"` \| `"classic"` \| `"brand"` \| `"greys"` \| `"teal"` \| `"lilaq"` \| `"white"` \| `"warm"` \| `"cold"` \| dict | `"blues"` | role→color map with keys ⊆ `(input, hidden, output, bias, accent)` plus the optional ink keys `(input-text, hidden-text, output-text, bias-text)`; a partial dict overlays the blues (default) palette; an unknown name is an **error** (no silent fallback). A `<role>-text` entry pins the in-node ink for that role, and applies only while the node's effective fill **is** the palette's role color — a per-layer `fill`, a `node-style` fill, or a `values` ramp falls back to the automatic contrast flip (§17) |
 | `node-shape` | `"circle"` \| `"square"` \| `"split"` | `"circle"` | figure default; per-layer `shape` wins |
-| `node-stroke` | stroke | `(paint: black, thickness: 0.8pt)` | |
+| `node-stroke` | stroke | `(paint: black, thickness: 0.6pt)` | |
 | `node-label` | `none` \| `auto` \| fn(l, i) → content | `none` | figure default; per-layer `node-label` (fn(i)) wins |
 | `input-style` | `"nodes"` \| `"square"` \| `"arrows"` | `"nodes"` | `"square"` renders layer 1 as squares (AIMA); `"arrows"` replaces layer-1 nodes with labelled stub arrows into layer 2 (perceptron style; layer-1 `count` still sets how many) |
 
