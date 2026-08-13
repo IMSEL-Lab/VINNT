@@ -377,7 +377,7 @@
   if up {
     let base = ext-above
     cap-left.label = base + 0.55
-    if has-act-row { cap-left.act = base + 0.55 + (if has-label { 1.15 } else { 0 }) }
+    if has-act-row { cap-left.act = base + 0.55 + (if has-label { 1.27 } else { 0 }) }
     badge-x = ext-below + 0.55
   } else {
     if rows.label != none {
