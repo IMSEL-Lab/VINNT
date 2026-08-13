@@ -171,7 +171,7 @@ two drawn neurons with their true indices (…, n−1, n).
 
 | option | type | default | meaning |
 | --- | --- | --- | --- |
-| `palette` | `"brand"` \| `"warm"` \| `"cold"` \| dict | `"brand"` | role→color map with keys ⊆ `(input, hidden, output, bias, accent)`; a partial dict overlays the brand palette; an unknown name is an **error** (no silent fallback) |
+| `palette` | `"classic"` \| `"brand"` \| `"warm"` \| `"cold"` \| dict | `"classic"` | role→color map with keys ⊆ `(input, hidden, output, bias, accent)`; a partial dict overlays the brand palette; an unknown name is an **error** (no silent fallback) |
 | `node-shape` | `"circle"` \| `"square"` \| `"split"` | `"circle"` | figure default; per-layer `shape` wins |
 | `node-stroke` | stroke | `(paint: black, thickness: 0.8pt)` | |
 | `node-label` | `none` \| `auto` \| fn(l, i) → content | `none` | figure default; per-layer `node-label` (fn(i)) wins |
@@ -179,9 +179,12 @@ two drawn neurons with their true indices (…, n−1, n).
 
 Built-in palettes (`mlp-palettes`):
 
+- `classic` — input `#80FF80` (TikZ `green!50`), hidden `#8080FF`
+  (`blue!50`), output `#FF8080` (`red!50`), bias `#FFFFFF`, accent `#D62728`.
+  The Fauske/tikz.net convention that most published MLP figures copy, and
+  the default.
 - `brand` — input `#FFF2E3` (sand), hidden `#ECECEC`, output `#466A9F`
-  lightened 65%, bias `#FFFFFF`, accent `#73000A` (garnet). This is the fig5
-  look and the default.
+  lightened 65%, bias `#FFFFFF`, accent `#73000A` (garnet). The fig5 look.
 - `warm` / `cold` — derived from the corresponding `theme.typ` block palettes
   so a document using warm isometric figures can match its MLPs.
 
@@ -190,7 +193,7 @@ Built-in palettes (`mlp-palettes`):
 | option | type | default | meaning |
 | --- | --- | --- | --- |
 | `edge-stroke` | stroke | `(paint: #5C5C5C, thickness: 0.4pt)` | base stroke before opacity |
-| `edge-opacity` | ratio | `45%` | applied to `edge-stroke` paint |
+| `edge-opacity` | ratio | `50%` | applied to `edge-stroke` paint |
 | `arrows` | `"none"` \| `"all"` | `"none"` | arrowheads on inter-layer edges (stealth, small). Textbook default is none |
 | `io-stubs` | `false` \| `true` \| `"in"` \| `"out"` | `false` | short stub arrows entering layer 1 / leaving layer L, one per (drawn) neuron |
 | `stub-labels` | `auto` \| `none` \| fn(side, i) → content | `auto` | `auto` → $x_i$ on in-stubs, $hat(y)_i$ on out-stubs (only when `io-stubs` shows that side) |
@@ -203,8 +206,8 @@ Built-in palettes (`mlp-palettes`):
 | option | type | default | meaning |
 | --- | --- | --- | --- |
 | `weights` | `none` \| array of matrices \| fn(l, i, j) → float \| `"random"` | `none` | matrix `l` has `counts[l+1]` rows × `counts[l]` columns (target-major, the $W x$ convention); `"random"` generates deterministic values from `seed` |
-| `weight-encode` | array ⊆ `("color", "thickness", "opacity")` | `("color", "thickness")` | which channels encode the weight |
-| `weight-colors` | dict `(positive, negative)` | `(positive: #466A9F, negative: #CC2E40)` | sign colors (Playground/3B1B convention, brand hues) |
+| `weight-encode` | array ⊆ `("color", "thickness", "opacity", "dash")` | `("color", "thickness")` | which channels encode the weight; `"dash"` is the accessibility opt-in — negative edges render dashed `(2pt, 1.6pt)`, positive stay solid — and is **not** in the default set |
+| `weight-colors` | dict `(positive, negative)` | `(positive: #0571B0, negative: #CA0020)` | sign colors (blue-positive/red-negative — the 3Blue1Brown / ColorBrewer RdBu endpoints) |
 | `weight-range` | `auto` \| float | `auto` | |w| that saturates the encoding; `auto` = max over the data |
 | `weight-thickness` | pair of lengths | `(0.2pt, 1.1pt)` | thickness at 0 and at saturation |
 | `seed` | int | `42` | for `weights: "random"` (small deterministic LCG — Typst has no RNG, and goldens must be stable) |
@@ -248,9 +251,11 @@ exists to reject.
 - **glyph** — the tiny curve drawn inside each neuron of the layer (curve
   only, no axes, spanning ~60% of the node diameter, 0.6pt stroke in the
   node's stroke paint). Known-glyph names only.
-- **block** — one small square (side ≈ 2×`node-size`) containing the glyph,
-  drawn in the activation row under the column: the MATLAB/Hagan transfer-
-  function icon, placed where it cannot collide with edges.
+- **block** — one small square (side ≈ 2×`node-size`, floored at 12pt so the
+  curve stays resolvable) containing the glyph, its stroke scaling with the
+  box (8% of the side, floored at 0.6pt), drawn in the activation row under
+  the column: the MATLAB/Hagan transfer-function icon, placed where it
+  cannot collide with edges.
 - **split** — forces `shape: "split"` (§8) for layers with an activation:
   Σ in the left half, the glyph in the right.
 
@@ -329,6 +334,9 @@ value $w$: let $t = min(|w| / range, 1)$.
 - `thickness` ∈ encode → linear interpolation over `weight-thickness` by $t$.
 - `opacity` ∈ encode → interpolate 15% → 100% by $t$ (replacing
   `edge-opacity`).
+- `dash` ∈ encode → edges with $w < 0$ render dashed `(2pt, 1.6pt)`;
+  positive edges stay solid. An accessibility opt-in so sign survives
+  grayscale and color-vision deficits; not in the default encode set.
 
 Matrix orientation: `weights.at(l-1)` maps gap `l`; entry `[j][i]` is the edge
 from neuron `i` (layer l) to neuron `j` (layer l+1) — the $W x$ convention,
@@ -347,9 +355,9 @@ honest about the true scale.
   slot 3 → three-dot vertical ellipsis (dots radius `0.13 × node-size`);
   slots 4, 5 → neurons count−1, count.
 - Baseline rows (FINDINGS 4): row 0 sits `0.55` below the **figure-wide**
-  lowest column extent (not per-column); rows step by `0.34`. Labels 8pt,
-  subs and activation captions 6.5pt, badges 6pt in 70% black. `sub` renders
-  in the same row block as `label`, directly beneath it.
+  lowest column extent (not per-column); rows step by `0.34`. Labels 8pt;
+  subs and activation captions 7pt in 90% black; badges 6.5pt in 70% black.
+  `sub` renders in the same row block as `label`, directly beneath it.
 - Bias node: centered `node-pitch` above its column's top slot; when the next
   layer is taller, still relative to its own column (matching
   `neuralnetwork.sty`'s toprow).
@@ -445,8 +453,10 @@ section is normative over §1–§16 where they conflict.
   collapsed 1000-wide layers would be pathological).
 - A layer immediately followed by an `mlp-gap` draws no bias node — bias
   edges across an elision would fake adjacency.
-- In `direction: "up"` the caption rows are text columns stepping 1.15 apart
-  (0.34 would overlap); `label-pos` is ignored there.
+- In `direction: "up"` the caption rows are text columns, the activation
+  column 1.27 left of the label column (0.34 would overlap); `label-pos` is
+  ignored there. The title centers over the full horizontal extents actually
+  used — left caption columns to right badge column — not over the flow axis.
 - An adjacent node pair given an explicit `style: "arc-above"/"arc-below"`
   routes as an arc; `auto`/`straight` restyle the existing edge, and re-add
   the single link if `edge-filter` removed it.
@@ -470,6 +480,21 @@ section is normative over §1–§16 where they conflict.
 - A skip arc routed `arc-above` across a column that carries a recurrent
   loop will cross it; route such skips `arc-below` (or move the loop). A
   worked example belongs in the manual; the library does not auto-dodge.
+- Every in-node text size (the split Σ and f, inside node labels, value
+  text, the bias digit) scales with node size but floors at 6.5pt; a tight
+  label beats an unreadable one.
+- Dimmed state: node fill and stroke transparentize 55% (not 70%), dimmed
+  edges multiply their opacity by 0.45 (not 0.3), so dimmed units stay
+  visible at print size.
+- The `sign` glyph is a true discontinuity — flat rails at ±0.8 joined by a
+  thin vertical jump stroke — and `step` runs along the zero baseline before
+  jumping to 0.85, so the two stay distinct from each other and from
+  `sigmoid` at 6pt sizes.
+- `"dash"` is a fourth accepted `weight-encode` member (negatives dashed
+  `(2pt, 1.6pt)`); it is an accessibility opt-in and not in the default set.
+- The default palette is `"classic"` (the tikz.net convention above), not
+  `"brand"`, and the default `weight-colors` are the ColorBrewer RdBu
+  endpoints `#0571B0`/`#CA0020`; the brand hues remain available by name.
 
 ## 18. Out of scope (explicit)
 
