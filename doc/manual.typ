@@ -1088,7 +1088,7 @@ followed by a gap draws no bias node.
   Node radius, in canvas units. Half the side length for squares. Also an
   `mlp-layer` option, so one layer can be drawn larger.
 ]
-#opt("node-pitch", default: "0.52")[Spacing between neuron centers within a layer.]
+#opt("node-pitch", default: "0.6")[Spacing between neuron centers within a layer.]
 #opt("layer-pitch", default: "2.2")[Spacing between layer columns.]
 
 #ex("mlp-pitch", fig-width: 76%)
