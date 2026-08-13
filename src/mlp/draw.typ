@@ -560,11 +560,11 @@
         if shape == "split" {
           let spaint = if type(stroke) == dictionary { stroke.at("paint", default: black) } else { black }
           draw.line(P((c.x, a.y - r)), P((c.x, a.y + r)), stroke: (paint: spaint, thickness: 0.5pt))
-          draw.content(P((c.x - r * 0.45, a.y)), text(size: (r * 26) * 1pt)[$Sigma$])
+          draw.content(P((c.x - r * 0.45, a.y)), text(size: calc.max(6.5pt, (r * 26) * 1pt))[$Sigma$])
           if type(c.act) == str and glyph-names.contains(c.act) {
             mglyphs.glyph(c.act, P((c.x + r * 0.48, a.y)), r * 0.78, spaint, thickness: 0.6pt)
           } else {
-            draw.content(P((c.x + r * 0.48, a.y)), text(size: (r * 24) * 1pt)[$f$])
+            draw.content(P((c.x + r * 0.48, a.y)), text(size: calc.max(6.5pt, (r * 24) * 1pt))[$f$])
           }
         }
         // in-node activation glyph
@@ -576,7 +576,7 @@
         if c.values != none and c.show-value-text {
           let v = float(c.values.at(a.neuron - 1))
           let tcol = if is-dark(color.mix((white, (1 - v) * 100%), (c.fill, v * 100%), space: rgb)) { white } else { black }
-          draw.content(P(pos), text(size: (size * 30) * 1pt, fill: tcol)[#fmt2(v)])
+          draw.content(P(pos), text(size: calc.max(6.5pt, (size * 30) * 1pt), fill: tcol)[#fmt2(v)])
         }
         // dropout X
         if a.dropped {
@@ -594,7 +594,7 @@
         if lab != none and not (c.show-value-text and c.node-label-pos == "inside") {
           if c.node-label-pos == "inside" {
             if o.activation-style != "glyph" and shape != "split" {
-              draw.content(P(pos), text(size: (size * 27) * 1pt)[#lab])
+              draw.content(P(pos), text(size: calc.max(6.5pt, (size * 27) * 1pt))[#lab])
             }
           } else {
             let dxx = if c.node-label-pos == "left" { -(c.trim + 0.09) } else { c.trim + 0.09 }
@@ -618,7 +618,7 @@
   // bias nodes over their edges
   for b in bias-nodes {
     draw.circle(P((b.x, b.y)), radius: b.nsize, fill: pal.bias, stroke: o.node-stroke)
-    draw.content(P((b.x, b.y)), text(size: (b.nsize * 34) * 1pt)[#o.bias-label])
+    draw.content(P((b.x, b.y)), text(size: calc.max(6.5pt, (b.nsize * 34) * 1pt))[#o.bias-label])
   }
 
   // activation display: captions, blocks, brackets
