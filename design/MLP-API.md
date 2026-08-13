@@ -428,7 +428,38 @@ split neuron, input arrows, bias — the Rosenblatt diagram) · `textbook.typ`
 skip arc with ⊕, recurrent loop). Each `#set page(width: auto, height: auto,
 margin: 6mm)`, imports `../../src/lib.typ`, rendered into the gallery.
 
-## 17. Out of scope (explicit)
+## 17. Implementation notes (as built)
+
+The implementation deviates from the text above in these settled ways; this
+section is normative over §1–§16 where they conflict.
+
+- Unknown-option checks fire at draw time (the message needs the column
+  position, which a constructor cannot know); constructors validate
+  `count ≥ 1` immediately and stamp type + marker.
+- The figure-level `activation` option exists as §4 describes; it was missing
+  from the §6 tables.
+- `weight-range: auto` scans full matrices for the array form, but only drawn
+  edges for the function and `"random"` forms (a full scan of a callback over
+  collapsed 1000-wide layers would be pathological).
+- A layer immediately followed by an `mlp-gap` draws no bias node — bias
+  edges across an elision would fake adjacency.
+- In `direction: "up"` the caption rows are text columns stepping 1.15 apart
+  (0.34 would overlap); `label-pos` is ignored there.
+- An adjacent node pair given an explicit `style: "arc-above"/"arc-below"`
+  routes as an arc; `auto`/`straight` restyle the existing edge, and re-add
+  the single link if `edge-filter` removed it.
+- Edge style precedence: base → weight encoding → dimmed/highlighted opacity
+  → `mlp-edge` override → `edge-style` hook.
+- `weights` as an array always has L−1 entries, counting gaps (a matrix
+  facing an `mlp-gap` is accepted and unused).
+- `io-stubs` on the input side is suppressed under `input-style: "arrows"`
+  (they would double up); `show-value-text` wins over an inside node label;
+  inside labels are suppressed under glyph style and split shape.
+- `weights: "random"`: per-edge hash `seed + l·73856093 + i·19349663 +
+  j·83492791`, passed twice through `s·1664525 + 1013904223 mod 2³²`, mapped
+  to [−1, 1]. Golden images depend on this exact sequence.
+
+## 18. Out of scope (explicit)
 
 Composition with `draw-network` and the `mlp()` block constructor (deferred by
 decision, enabled later by `mlp-content`); legends; the Goodfellow one-node-
