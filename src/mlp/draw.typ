@@ -353,7 +353,10 @@
   let has-act-row = (act-caption and layer-cols.any(c => c.act != none)) or (act-block and layer-cols.any(c => c.act != none and not c.is-bracket))
   let badge-for(c) = c.kind == "layer" and (o.count-badges == true or (o.count-badges == auto and c.slots.collapsed))
   let has-badge = o.count-badges != false and cols.any(badge-for)
-  let block-half = if act-block { calc.max(0.17, ..layer-cols.map(c => c.nsize)) } else { 0.17 }
+  // The transfer-function block never drops below a 12pt side whatever
+  // node-size says; the floor converts to canvas units via the unit length.
+  let block-min-half = 6pt / o.unit
+  let block-half = if act-block { calc.max(0.17, block-min-half, ..layer-cols.map(c => c.nsize)) } else { 0.17 }
   let rows = mgeom.row-offsets(has-label, has-sub, has-act-row, has-badge,
     act-block: act-block and has-act-row, act-block-half: block-half)
 
@@ -639,11 +642,12 @@
     } else if act-block {
       let by = if up { cap-left.act + block-half } else { act-y }
       let at = if up { (c.x, by) } else { (c.x, by) }
-      let h = c.nsize
+      let h = calc.max(c.nsize, block-min-half)
       let gpaint = if type(c.stroke) == dictionary { c.stroke.at("paint", default: black) } else { black }
       draw.rect(P((c.x - h, by - h)), P((c.x + h, by + h)),
         fill: white, stroke: (paint: mlp-grey, thickness: 0.5pt))
-      mglyphs.glyph(c.act, P((c.x, by)), 2 * h * 0.72, gpaint, thickness: 0.6pt)
+      mglyphs.glyph(c.act, P((c.x, by)), 2 * h * 0.72, gpaint,
+        thickness: calc.max(0.6pt, 2 * h * o.unit * 0.08))
     }
   }
 
