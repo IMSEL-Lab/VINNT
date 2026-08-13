@@ -30,6 +30,31 @@
     bias: rgb("#FFFFFF"),
     accent: rgb("#73000A"),
   ),
+  // Pure grayscale (ColorBrewer Greys): survives any reproduction.
+  greys: (
+    input: rgb("#F0F0F0"),
+    hidden: rgb("#BDBDBD"),
+    output: rgb("#636363"),
+    bias: rgb("#FFFFFF"),
+    accent: rgb("#000000"),
+  ),
+  // The grayscale ladder with a teal output and accent, so one hue pops.
+  teal: (
+    input: rgb("#F0F0F0"),
+    hidden: rgb("#BDBDBD"),
+    output: rgb("#35978F"),
+    bias: rgb("#FFFFFF"),
+    accent: rgb("#01665E"),
+  ),
+  // The first colors of lilaq's default cycle (petroff10), so MLP figures
+  // sit next to lilaq plots without a second color language.
+  lilaq: (
+    input: rgb("#3F90DA"),
+    hidden: rgb("#FFA90E"),
+    output: rgb("#BD1F01"),
+    bias: rgb("#FFFFFF"),
+    accent: rgb("#832DB6"),
+  ),
   warm: (
     input: colors-warm.input,
     hidden: colors-warm.conv.lighten(35%),
