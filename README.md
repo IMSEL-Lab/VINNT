@@ -16,7 +16,7 @@ kind that open a paper's method section. Built on
 [CeTZ](https://typst.app/universe/package/cetz/).
 
 ```typ
-#import "@preview/vinnt:0.1.1": *
+#import "@preview/vinnt:0.2.0": *
 ```
 
 Requires Typst 0.15 or newer. Not yet on Typst Universe so you will have to point the
@@ -120,6 +120,37 @@ package has no name for:
 
 <img src="doc/readme/recipe-classifier.png" width="820"/>
 
+## Neuron diagrams
+
+The other canonical figure — a circle per neuron, an edge per weight — is
+`draw-mlp`, and zero configuration is publication-ready:
+
+```typ
+#draw-mlp((4, 6, 6, 3))
+```
+
+Per-layer control is constructors, like everything else in the package:
+
+```typ
+#draw-mlp((
+  mlp-layer(4,  label: "input"),
+  mlp-layer(8,  label: "h1", activation: "relu"),
+  mlp-layer(8,  label: "h2", activation: "relu"),
+  mlp-layer(3,  label: "output", activation: "softmax"),
+), bias: true, cutoff: 6)
+```
+
+<img src="doc/readme/mlp-classic.png" width="640"/>
+
+Wide layers collapse to an ellipsis with the true count badged beneath. Also
+in the box: weight-driven edge color and thickness (explicit matrices, a
+function over indices, or seeded random), an activation glyph catalog with the
+softmax bracket, skip and recurrent edges with ⊕ merge nodes, bias nodes,
+square and split node shapes, dropout and highlight node states, and a
+bottom-to-top `direction: "up"`.
+
+<img src="doc/readme/mlp-playground.png" width="720"/>
+
 ---
 
 ## Typos are errors, not silence
@@ -153,7 +184,7 @@ uv run tools/import_model.py --torchvision resnet18 -o resnet18.json
 
 ## Documentation
 
-**[The manual](doc/vinnt-manual.pdf)** — 75 pages, 125 figures. Every option on
+**[The manual](doc/vinnt-manual.pdf)** — 98 pages, 175 figures. Every option on
 its own, several figures each, with the failure shown next to the fix. Every
 figure in it is compiled from the code printed beside it. Build it with
 `doc/build.sh`.
@@ -164,8 +195,8 @@ actual source: plain text throughout, and every example a standalone file that
 compiles on its own.
 
 **[Gallery](gallery/)** — AlexNet, LeNet-5, VGG16/19, ResNet18, U-Net, FCN-8,
-SynthMorph, YOLO26-n and five RGB-IR fusion variants. Sources in
-[`examples/`](examples/).
+SynthMorph, YOLO26-n and five RGB-IR fusion variants, plus six MLP figures in
+[`gallery/mlp/`](gallery/mlp/). Sources in [`examples/`](examples/).
 
 - [YOLO26-n](gallery/networks/YOLO26n.png)
 - [YOLO26-n — early fusion](gallery/networks/YOLO26n-early-fusion.png)
