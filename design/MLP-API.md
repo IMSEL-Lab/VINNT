@@ -171,7 +171,7 @@ two drawn neurons with their true indices (…, n−1, n).
 
 | option | type | default | meaning |
 | --- | --- | --- | --- |
-| `palette` | `"blues"` \| `"classic"` \| `"brand"` \| `"greys"` \| `"teal"` \| `"lilaq"` \| `"warm"` \| `"cold"` \| dict | `"blues"` | role→color map with keys ⊆ `(input, hidden, output, bias, accent)`; a partial dict overlays the blues (default) palette; an unknown name is an **error** (no silent fallback) |
+| `palette` | `"blues"` \| `"classic"` \| `"brand"` \| `"greys"` \| `"teal"` \| `"lilaq"` \| `"white"` \| `"warm"` \| `"cold"` \| dict | `"blues"` | role→color map with keys ⊆ `(input, hidden, output, bias, accent)` plus the optional ink keys `(input-text, hidden-text, output-text, bias-text)`; a partial dict overlays the blues (default) palette; an unknown name is an **error** (no silent fallback). A `<role>-text` entry pins the in-node ink for that role, and applies only while the node's effective fill **is** the palette's role color — a per-layer `fill`, a `node-style` fill, or a `values` ramp falls back to the automatic contrast flip (§17) |
 | `node-shape` | `"circle"` \| `"square"` \| `"split"` | `"circle"` | figure default; per-layer `shape` wins |
 | `node-stroke` | stroke | `(paint: black, thickness: 0.8pt)` | |
 | `node-label` | `none` \| `auto` \| fn(l, i) → content | `none` | figure default; per-layer `node-label` (fn(i)) wins |
@@ -197,8 +197,18 @@ Built-in palettes (`mlp-palettes`):
 - `lilaq` — input `#3F90DA`, hidden `#FFA90E`, output `#BD1F01`, accent
   `#832DB6`: the first colors of lilaq's default cycle (petroff10), for
   documents whose plots are drawn with lilaq.
+- `white` — every fill white: the uncolored textbook figure; accent black.
 - `warm` / `cold` — derived from the corresponding `theme.typ` block palettes
   so a document using warm isometric figures can match its MLPs.
+
+A palette dict may also carry `input-text`, `hidden-text`, `output-text` and
+`bias-text` — explicit in-node ink colors per role. Precedence: an explicit
+`<role>-text` applies only when the node's effective fill is the palette's own
+role color; any overridden fill (per-layer `fill`, `node-style` fill, `values`
+ramp) uses the automatic contrast flip instead, because a text color tuned to
+a role color cannot be trusted against an arbitrary user fill. No built-in
+palette sets these keys; the automatic flip picks the right side for every
+built-in role color.
 
 ### Edges
 
@@ -496,6 +506,14 @@ section is normative over §1–§16 where they conflict.
 - Every in-node text size (the split Σ and f, inside node labels, value
   text, the bias digit) scales with node size but floors at 6.5pt; a tight
   label beats an unreadable one.
+- All in-node ink — inside node labels, the split Σ and f/glyph, in-node
+  activation glyph strokes, value text, the inside bias label, the dropout
+  X — flips white over dark effective fills through one perceived-luminance
+  test (the flip the values mode already had; values-mode renders are
+  pixel-identical to the pre-generalization behavior). An explicit
+  `<role>-text` palette entry applies only on an unmodified role fill;
+  side-positioned labels, captions, badges and stubs sit on the white canvas
+  and stay black.
 - Dimmed state: node fill and stroke transparentize 55% (not 70%), dimmed
   edges multiply their opacity by 0.45 (not 0.3), so dimmed units stay
   visible at print size.
