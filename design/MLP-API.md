@@ -458,6 +458,16 @@ section is normative over §1–§16 where they conflict.
 - `weights: "random"`: per-edge hash `seed + l·73856093 + i·19349663 +
   j·83492791`, passed twice through `s·1664525 + 1013904223 mod 2³²`, mapped
   to [−1, 1]. Golden images depend on this exact sequence.
+- In `direction: "up"`, `matrix-labels` render in the left caption column
+  beside each gap rather than centered over the edge fan — deliberate, since
+  the fan is horizontal there.
+- Per-layer `shape: "split"` under the default `activation-style: "caption"`
+  shows both the in-node glyph and the caption text; the orthogonal options
+  compose as stated. `activation-style: "split"` is the recommended spelling
+  and the one the manual teaches.
+- A skip arc routed `arc-above` across a column that carries a recurrent
+  loop will cross it; route such skips `arc-below` (or move the loop). A
+  worked example belongs in the manual; the library does not auto-dodge.
 
 ## 18. Out of scope (explicit)
 
