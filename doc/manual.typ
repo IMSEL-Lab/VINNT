@@ -1222,8 +1222,8 @@ another. No built-in palette sets these keys.
 
 #ex("mlp-palette-text", fig-width: 66%,
   caption: [The hidden fill is dark, so its ink would flip to white; the
-    `hidden-text` key pins it instead. The input and output keep the
-    automatic black.])
+    `hidden-text` key pins it instead. The other roles keep the automatic
+    choice --- black on the light input, white on the dark blues output.])
 
 === Values as fill
 
