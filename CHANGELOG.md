@@ -14,8 +14,17 @@
   reproduction — with `classic` (the green-input, blue-hidden, red-output
   convention of published MLP figures), `brand`, `greys` (pure grayscale),
   `teal` (the grey ladder with a teal output, one hue pops), `lilaq` (the
-  first colors of lilaq's default plot cycle), `warm` and `cold` as named
-  alternatives, all exported as `mlp-palettes`.
+  first colors of lilaq's default plot cycle), `white` (every fill white,
+  accent black — the uncolored textbook line-art figure), `warm` and `cold`
+  as named alternatives, all exported as `mlp-palettes`.
+- Contrast-aware in-node ink: everything drawn inside a node (inside labels,
+  the split Σ and f, in-node glyphs, value text, the inside bias label, the
+  dropout X) picks white or black automatically from the node's effective
+  fill by perceived luminance. Palette dicts accept the optional keys
+  `input-text`, `hidden-text`, `output-text` and `bias-text` to pin the ink
+  for a role; a pinned color applies only while the node keeps the palette's
+  own role fill, and any per-layer fill, `node-style` fill or `values` ramp
+  falls back to the automatic flip.
 - Wide layers collapse past a `cutoff` into a vertical ellipsis with the true
   count badged beneath; `mlp-gap` elides depth the same way horizontally.
 - Weight-driven edge styling from explicit matrices (the $Wx$ orientation,
