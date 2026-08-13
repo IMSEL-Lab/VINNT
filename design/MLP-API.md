@@ -229,7 +229,8 @@ Built-in palettes (`mlp-palettes`):
 | option | type | default | meaning |
 | --- | --- | --- | --- |
 | `bias` | bool | `false` | bias node above each layer 1..L−1, one `node-pitch` above the top slot, labelled by `bias-label`, filled with palette `bias`, edges to every drawn neuron of the next layer |
-| `bias-label` | content | `$1$` | |
+| `bias-label` | content \| `none` | `[bias]` | `none` suppresses the label |
+| `bias-label-pos` | `"above"` \| `"inside"` | `"above"` | `"above"` puts the label over the node in small grey text, where a word fits; `"inside"` is the classic look for short content like `$1$` |
 
 Bias edges are styled as normal edges but are **not** covered by `weights`
 matrices (those describe $W$, not $b$); `edge-style` and `edge-filter` do not
@@ -505,6 +506,11 @@ section is normative over §1–§16 where they conflict.
   collapse under black-and-white printing. classic and brand remain available
   by name. Default `weight-colors` are the ColorBrewer RdBu endpoints
   `#0571B0`/`#CA0020`.
+- The default bias label is the word `[bias]` above the node (user direction:
+  the bare constant `1` inside the circle read as cryptic). `bias-label-pos:
+  "inside"` restores the classic in-node placement for short content, and
+  `bias-label: none` suppresses the label. A recurrent loop and a bias label
+  can crowd each other over the same column; move one if they meet.
 
 ## 18. Out of scope (explicit)
 
