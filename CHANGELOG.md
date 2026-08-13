@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.2.0
+
+### Added
+
+- `draw-mlp(layers, ..)` — neuron-and-edge MLP diagrams, a second renderer
+  alongside the isometric blocks. Columns are integers or `mlp-layer(..)` /
+  `mlp-gap(..)` constructors; extra edges (skip arcs with an optional ⊕ merge,
+  recurrent loops, per-edge restyles) are `mlp-edge(..)` values. `mlp-content`
+  is the same figure without the canvas, for embedding in a CeTZ canvas of
+  your own, and `mlp-palettes` exports the named palettes.
+- Wide layers collapse past a `cutoff` into a vertical ellipsis with the true
+  count badged beneath; `mlp-gap` elides depth the same way horizontally.
+- Weight-driven edge styling from explicit matrices (the $Wx$ orientation,
+  shape-checked), a function over indices, or seeded deterministic random
+  values — encoded as color by sign, thickness and opacity by magnitude.
+- Activation display as captions, in-node glyphs, transfer-function block
+  icons, or split Σ-then-curve nodes, with a sixteen-name curve catalog and a
+  layer-spanning bracket for softmax and argmax.
+- Bias nodes, io stubs, node states (dropped, dimmed, highlighted, excluded),
+  per-neuron and per-edge style hooks, square and split node shapes, node
+  values as fill, `direction: "up"`, and the package's typos-are-errors
+  validation contract throughout, `did-you-mean` included.
+
 ## 0.1.1
 
 ### Breaking
