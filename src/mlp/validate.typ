@@ -65,7 +65,7 @@
   }
   if type(p) == dictionary {
     check-keys("palette", "on the figure", p, palette-roles)
-    let base = mlp-palettes.classic
+    let base = mlp-palettes.blues
     for (k, v) in p {
       if type(v) != color {
         panic("vinnt: palette entry `" + k + "` must be a color; got " + repr(v) + ".")
