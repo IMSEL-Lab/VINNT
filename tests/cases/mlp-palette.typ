@@ -26,3 +26,8 @@
 #v(8mm)
 
 #draw-mlp((3, 4, 2), palette: "lilaq")
+
+#v(8mm)
+
+// every fill white: the uncolored textbook line-art figure
+#draw-mlp((3, 4, 2), palette: "white")
