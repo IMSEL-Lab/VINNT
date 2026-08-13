@@ -22,6 +22,7 @@ echo ""
 mkdir -p "$OUTPUT_DIR/features"
 mkdir -p "$OUTPUT_DIR/networks"
 mkdir -p "$OUTPUT_DIR/imported"
+mkdir -p "$OUTPUT_DIR/mlp"
 
 # Export features examples
 echo -e "${GREEN}Exporting features examples...${NC}"
@@ -39,6 +40,16 @@ for file in examples/networks/*.typ; do
     if [ -f "$file" ]; then
         filename=$(basename "$file" .typ)
         typst compile "$file" "$OUTPUT_DIR/networks/$filename.png" --ppi "$DPI" --root "."
+        echo "Exported $filename.typ"
+    fi
+done
+
+# Export MLP examples
+echo -e "${GREEN}Exporting mlp examples...${NC}"
+for file in examples/mlp/*.typ; do
+    if [ -f "$file" ]; then
+        filename=$(basename "$file" .typ)
+        typst compile "$file" "$OUTPUT_DIR/mlp/$filename.png" --ppi "$DPI" --root "."
         echo "Exported $filename.typ"
     fi
 done
