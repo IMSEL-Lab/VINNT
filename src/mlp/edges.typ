@@ -126,6 +126,11 @@
     if o.weight-encode.contains("opacity") {
       s.opacity = 15% + 85% * t
     }
+    // Accessibility opt-in: dash the negative edges so sign survives
+    // grayscale and color-vision deficits. Not in the default encode set.
+    if o.weight-encode.contains("dash") and float(w) < 0 {
+      s.dash = (2pt, 1.6pt)
+    }
   }
   if edge.dimmed { s.opacity = s.opacity * 0.45 }
   if edge.highlighted { s.opacity = 100% }
