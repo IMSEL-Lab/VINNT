@@ -1253,7 +1253,7 @@ circle with a vertical divider, $Sigma$ in the left half, the activation curve
 
 #ex("mlp-shapes", fig-width: 66%)
 
-#opt("node-stroke", default: "(paint: black, thickness: 0.8pt)")[
+#opt("node-stroke", default: "(paint: black, thickness: 0.6pt)")[
   The node outline, for the whole figure; per-layer `stroke` wins.
 ]
 #opt("input-style", default: "\"nodes\"")[
