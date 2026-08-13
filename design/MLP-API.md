@@ -148,7 +148,7 @@ A gap has no neurons, cannot be an edge endpoint, and gets an auto name
 | `direction` | `"right"` \| `"up"` | `"right"` | `"up"` is the Goodfellow/AIMA orientation; implemented as a coordinate swap, captions move to the left of each row, badges to the right |
 | `unit` | length | `1cm` | canvas length (`draw-mlp` only) |
 | `node-size` | number | `0.17` | default node radius |
-| `node-pitch` | number | `0.52` | spacing between neuron centers within a layer |
+| `node-pitch` | number | `0.6` | spacing between neuron centers within a layer (raised from 0.52 on user direction — the default column read as cramped) |
 | `layer-pitch` | number | `2.2` | spacing between layer columns |
 | `title` | content \| `none` | `none` | centered above the figure |
 | `debug` | bool | `false` | draw slot grid and baseline rows in faint garnet |
