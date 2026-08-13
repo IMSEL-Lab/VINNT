@@ -184,7 +184,7 @@ uv run tools/import_model.py --torchvision resnet18 -o resnet18.json
 
 ## Documentation
 
-**[The manual](doc/vinnt-manual.pdf)** — 98 pages, 175 figures. Every option on
+**[The manual](doc/vinnt-manual.pdf)** — 98 pages, 176 figures. Every option on
 its own, several figures each, with the failure shown next to the fix. Every
 figure in it is compiled from the code printed beside it. Build it with
 `doc/build.sh`.
