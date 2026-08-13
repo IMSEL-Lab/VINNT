@@ -22,6 +22,22 @@
 
 #let is-num(v) = type(v) == int or type(v) == float
 
+// check-keys for constructor-stamped dicts: `type` is the constructor's own
+// marker, accepted like ctor-marker but never listed as a user-facing option.
+#let check-ctor-keys(what, where, dict, allowed) = {
+  let visible = allowed.filter(k => k != "type")
+  for k in dict.keys() {
+    if k == ctor-marker or k == "type" { continue }
+    if k not in visible {
+      panic(
+        "vinnt: unknown " + what + " option \"" + k + "\" " + where + "."
+          + did-you-mean(k, visible)
+          + " Options accepted here: " + visible.sorted().join(", ") + "."
+      )
+    }
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Figure options
 
@@ -129,7 +145,7 @@
           + repr(e) + "."
       )
     }
-    check-keys("mlp-edge", "on edges entry " + str(i + 1), e, mlp-edge-keys)
+    check-ctor-keys("mlp-edge", "on edges entry " + str(i + 1), e, mlp-edge-keys)
     if "style" in e {
       check-enum("style", "on edges entry " + str(i + 1), e.style,
         ("straight", "arc-above", "arc-below", "loop"))
@@ -248,11 +264,11 @@
     let ty = l.at("type", default: none)
     if ty == "mlp-layer" {
       n-layer += 1
-      check-keys("mlp-layer", "on layer " + str(n-layer), l, mlp-layer-keys)
+      check-ctor-keys("mlp-layer", "on layer " + str(n-layer), l, mlp-layer-keys)
       cols.push((kind: "layer", src: l, pos: n-layer))
     } else if ty == "mlp-gap" {
       n-gap += 1
-      check-keys("mlp-gap", "on gap " + str(n-gap) + " (\"g" + str(n-gap) + "\")", l, mlp-gap-keys)
+      check-ctor-keys("mlp-gap", "on gap " + str(n-gap) + " (\"g" + str(n-gap) + "\")", l, mlp-gap-keys)
       cols.push((kind: "gap", src: l, pos: n-gap))
     } else {
       panic(
